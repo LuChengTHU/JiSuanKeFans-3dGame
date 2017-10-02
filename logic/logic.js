@@ -7,11 +7,6 @@
  */
 var gameMap = null;
 
-var GameUp    = 16;
-var GameLeft  = 17;
-var GameDown  = 18;
-var GameRight = 19;
-
 /**
  * Set the current map.
  * @param The map to set.
@@ -43,6 +38,10 @@ function gameInit()
 	'IllegalInstruction'.
 */
 
+var GameUp    = 16;
+var GameLeft  = 17;
+var GameDown  = 18;
+var GameRight = 19;
 function gameMove(dir)
 {
 	if(!gameMap.instrSet[11])
@@ -69,6 +68,7 @@ function gameMove(dir)
 	}
 	else
 		throw new Error('IllegalInstruction');
+	gameCheckFinished();
 }
 
 /**
@@ -76,7 +76,7 @@ function gameMove(dir)
  * @throw Error 'GameFinished' if finished.
  * This function is called after every player's instruction.
  */
-function gameFinished()
+function gameCheckFinished()
 {
 	if(
 	gameFinishedHelper(gameMap.curPos         , gameMap.finalPos         ) &&
