@@ -4,7 +4,6 @@ from django.shortcuts import render
 
 from api.models import User
 from rest_framework import views
-from api.serializers import *
 
-class User(views.APIView):
+class UserResource(views.APIView):
     pass

@@ -15,11 +15,11 @@ class User(models.Model):
     expiration = models.DateField()
     join_date = models.DateField()
 
-    def get_privilege():
-        if is_admin:
+    def get_privilege(self):
+        if self.is_admin:
             return USER_PRIVILEGE_ADMIN
 
-        if date.today() >= expiration:
+        if date.today() >= self.expiration:
             return USER_PRIVILEGE_VIP
 
         return USER_PRIVILEGE_COMMON
