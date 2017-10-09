@@ -17,11 +17,10 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.conf.urls import url, include
 from rest_framework import routers
-from polls import views
+from api import views
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
+router.register(r'user', views.User)
 
 # 使用URL路由来管理我们的API
 # 另外添加登录相关的URL
