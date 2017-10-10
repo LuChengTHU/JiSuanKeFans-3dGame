@@ -1,7 +1,8 @@
 
-# Created by https://www.gitignore.io/api/macos,django,pycharm,visualstudiocode
+# Created by https://www.gitignore.io/api/macos,django,pycharm
 
 ### Django ###
+.idea/
 *.log
 *.pot
 *.pyc
@@ -103,13 +104,10 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
-### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history
-.vscode
+# End of https://www.gitignore.io/api/macos,django,pycharm
+/.vs
+/env
+/pip-selfcheck.json
 
-# End of https://www.gitignore.io/api/macos,django,pycharm,visualstudiocode
+.vscode
+.history
