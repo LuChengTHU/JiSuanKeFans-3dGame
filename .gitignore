@@ -107,4 +107,7 @@ fabric.properties
 # End of https://www.gitignore.io/api/macos,django,pycharm
 /.vs
 /env
-/pip-selfcheck.json
+/pip-selfcheck.json
+
+.vscode
+.history
