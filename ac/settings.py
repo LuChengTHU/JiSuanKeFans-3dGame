@@ -25,7 +25,9 @@ SECRET_KEY = 'igi+dy%=_!6+y-!bv6r)hv9nv-d01(r!a80jf%!u99-=2fm8&g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+# PAY ATTENTION: This is only for TESTING! When deployed in production environments, this
+# shall not be *.
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,11 +81,11 @@ WSGI_APPLICATION = 'ac.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_ac',
+        'NAME': os.environ['MYSQL_DB_NAME'],
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': os.environ['MYSQL_ROOT_PASSWORD'],
         'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'PORT': '3306'
     }
 }
 
