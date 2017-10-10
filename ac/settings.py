@@ -25,7 +25,7 @@ SECRET_KEY = 'igi+dy%=_!6+y-!bv6r)hv9nv-d01(r!a80jf%!u99-=2fm8&g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # Application definition
@@ -39,12 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
-    'PAGINATE_BY': 10
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
