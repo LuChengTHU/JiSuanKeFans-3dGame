@@ -3,7 +3,7 @@
  * height, width
  * nMaxHandBoxes
  * instrSet
- * {init, cur, final} {Pos, GroundColors, GroundBoxes, HandBoxes}
+ * {init, cur, final} {Pos, GroundColors, GroundBoxes, HandBoxes, Dir}
  */
 var gameMap = null;
 
@@ -27,6 +27,7 @@ function gameSetMap(map)
  */
 function gameInit()
 {
+	gameMap.curDir          = gameMap.initDir;
 	gameMap.curPos          = gameMap.initPos;
 	gameMap.curGroundColors = gameMap.initGroundColors;
 	gameMap.curGroundBoxes  = gameMap.initGroundBoxes;
@@ -42,10 +43,11 @@ var GameUp    = 16;
 var GameLeft  = 17;
 var GameDown  = 18;
 var GameRight = 19;
-function gameMove(dir)
+function gameMove()
 {
 	if(!gameMap.instrSet[11])
 		throw new Error('IllegalInstruction');
+	dir = gameMap.curDir;
 	if(dir == GameUp && gameMap.instrSet[GameUp])
 	{
 		if(gameMap.curPos[0] > 0)
@@ -71,6 +73,23 @@ function gameMove(dir)
 	gameCheckFinished();
 }
 
+var GameCW    = 14;
+var GameCCW   = 15;
+function gameTurn(way)
+{
+	if(way == GameCW && gameMap.instrSet[GameCW])
+	{
+		gameMap.curDir = (gameMap.curDir + 3) % 4 + 16;
+	}
+	else if(way == GameCCW && gameMap.instrSet[GameCCW])
+	{
+		gameMap.curDir = (gameMap.curDir + 1) % 4 + 16;
+	}
+	else
+		throw new Error('IllegalInstruction');
+	gameCheckFinished();
+}
+
 /**
  * Judge whether the game is finished.
  * @throw Error 'GameFinished' if finished.
@@ -80,6 +99,7 @@ function gameCheckFinished()
 {
 	if(
 	gameFinishedHelper(gameMap.curPos         , gameMap.finalPos         ) &&
+	gameFinishedHelper(gameMap.curDir         , gameMap.finalDir         ) &&
 	gameFinishedHelper(gameMap.curGroundColors, gameMap.finalGroundColors) &&
 	gameFinishedHelper(gameMap.curGroundBoxes , gameMap.finalGroundBoxes ) &&
 	gameFinishedHelper(gameMap.curHandBoxes   , gameMap.finalHandBoxes   )
