@@ -25,7 +25,9 @@ SECRET_KEY = 'igi+dy%=_!6+y-!bv6r)hv9nv-d01(r!a80jf%!u99-=2fm8&g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# PAY ATTENTION: This is only for TESTING! When deployed in production environments, this
+# shall not be *.
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
