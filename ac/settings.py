@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'ac.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_ac',
+        'NAME': os.environ['MYSQL_DB_NAME'],
         'USER': 'root',
         'PASSWORD': os.environ['MYSQL_ROOT_PASSWORD'],
         'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'PORT': '3306'
     }
 }
 
