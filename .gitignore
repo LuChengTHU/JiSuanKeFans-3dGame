@@ -2,6 +2,7 @@
 # Created by https://www.gitignore.io/api/macos,django,pycharm
 
 ### Django ###
+.idea/
 *.log
 *.pot
 *.pyc
@@ -104,3 +105,8 @@ fabric.properties
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/macos,django,pycharm
+
+env/
+pip-selfcheck.json
+
+.vs/
