@@ -75,7 +75,7 @@ def with_pagination(page_size_lim = 40, page_size_default = 20,\
     return with_pagination_decorator
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
-    parser_classes = (JSONParser,)
+    parser_classes = (JSONParser, FormParser)
     serializer_class = TokenPostSerializer
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
@@ -108,7 +108,7 @@ obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
 
 
 class UserView(APIView):
-    parser_classes = (JSONParser,)
+    parser_classes = (JSONParser, FormParser)
     serializer_class = UserPostSerializer
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
