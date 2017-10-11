@@ -26,7 +26,7 @@ class Profile(models.Model):
 
 class Map(models.Model):
     title = models.CharField(max_length=30)
-    author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    #author = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     height = models.IntegerField()
     width = models.IntegerField()

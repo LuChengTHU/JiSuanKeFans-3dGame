@@ -23,5 +23,7 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     url(r'^token', views.obtain_expiring_auth_token),
-    url(r'^user', views.cus_user_view)
+    url(r'^user', views.cus_user_view),
+    url(r'^map/(?P<map_id>[0-9]+)', views.map_view),
+    url(r'^map', views.map_list_view)
 ]

@@ -11,7 +11,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
-from api.serializers import UserPostSerializer, UserBriefSerializer, TokenPostSerializer
+from api.serializers import UserPostSerializer, UserBriefSerializer, TokenPostSerializer, MapFullSerializer
+import json
+
+from api.models import Map
 
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
@@ -74,3 +77,32 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 cus_user_view = UserView.as_view()
+
+
+class MapView(APIView):
+
+    # get a single map
+    def get(self, request, map_id, format=None):
+        try:
+            map = Map.objects.get(id=map_id)       
+        except:
+            # not found
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'res_code' : 0, 'map' : \
+            MapFullSerializer.repr_inflate(MapFullSerializer(map).data)})
+
+    def put(self, request, map_id, format=None):
+        pass
+
+map_view = MapView.as_view()
+
+class MapListView(APIView):
+    # create a new map
+    def post(self, request):
+        serializer = MapFullSerializer(data=MapFullSerializer.repr_deflate(request.data))
+        if serializer.is_valid():
+            map = serializer.save()
+            return Response({'res_code' : 0, 'map_id': map.id})
+        return Response({'res_code' : 1}, status=status.HTTP_400_BAD_REQUEST)
+
+map_list_view = MapListView.as_view()
