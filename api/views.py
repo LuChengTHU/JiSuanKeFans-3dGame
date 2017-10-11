@@ -5,22 +5,26 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 import datetime
 
-from rest_framework.parsers import JSONParser
+from rest_framework.parsers import JSONParser, FormParser
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from api.serializers import UserPostSerializer, UserBriefSerializer, TokenPostSerializer
-
+from django.views.decorators.csrf import csrf_exempt
+from .authenticaters import CsrfExemptSessionAuthentication
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
 
-    parser_classes = (JSONParser,)
+    parser_classes = (JSONParser, FormParser)
     serializer_class = TokenPostSerializer
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+
 
     def post(self, request):
-
+        print(request.data)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
@@ -47,6 +51,7 @@ obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
 
 class UserView(APIView):
     serializer_class = UserPostSerializer
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     def get(self, request):
         # return User list
@@ -55,10 +60,8 @@ class UserView(APIView):
 
     def post(self, request):
         # create new User
-        print(request.data)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            print("HERE")
             new_user_info = serializer.validated_data['new_user_info']
             new_user_inst = User()
             new_user_inst.email = new_user_info['email']
@@ -69,8 +72,11 @@ class UserView(APIView):
             token, created = Token.objects.get_or_create(user=new_user_inst)
 
             return Response({'token': token.key})
-        print("NOPE")
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 cus_user_view = UserView.as_view()
+
+@csrf_exempt
+def index(request):
+    return render(request, 'api/index.html')
