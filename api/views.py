@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .authenticaters import CsrfExemptSessionAuthentication
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
-    parser_classes = (JSONParser,)
+    parser_classes = (JSONParser, FormParser)
     serializer_class = TokenPostSerializer
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
@@ -50,7 +50,7 @@ obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
 
 
 class UserView(APIView):
-    parser_classes = (JSONParser,)
+    parser_classes = (JSONParser, FormParser)
     serializer_class = UserPostSerializer
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
