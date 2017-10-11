@@ -19,13 +19,56 @@ from api.models import Map
 
 # A convenience decorator for appending res_code in response
 def with_res_code(func):
-    def calc(*arg_list, **arg_dict):
+    def get_response(*arg_list, **arg_dict):
         response, res_code = func(*arg_list, **arg_dict)
         response.data['res_code'] = res_code
         return response
 
-    return calc
+    return get_response
 
+
+def with_pagination(page_size_lim = 40, page_size_default = 20,\
+    page_no_default = 1, data_entrypoint = 'list', has_prev_entrypoint = 'has_prev', \
+    has_next_entrypoint = 'has_next', page_no_param_name = 'pageNo',\
+    page_size_param_name = 'pageSize', serializer_class = None):
+
+    def with_pagination_decorator(func):
+
+        @with_res_code
+        def get_response(self, request, *arg_list, **arg_dict):
+            try:
+                page_no = int(request.query_params.get('pageNo', page_no_default))
+                page_size = int(request.query_params.get('pageSize', page_size_default))
+            except:
+                # not good integers
+                return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+
+            if page_no < 1 or page_size < 1 or page_size > page_size_lim:
+                return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+
+            query, extra_data = func(self, request, *arg_list, **arg_dict)
+
+            # good, it is lazy
+            query = query[(page_no - 1) * page_size : page_no * page_size + 1]
+            # fetch one item more to help check whether the next page exists
+            cnt = len(query)
+            if cnt == 0:
+                # not an existing page
+                return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+
+            has_next = cnt > page_size
+            has_prev = page_no > 1
+
+            list = query[:min(page_size, cnt)]
+            if serializer_class is not None:
+                list = serializer_class(list, many=True).data
+
+            return Response({data_entrypoint : list, has_prev_entrypoint : has_prev,\
+                has_next_entrypoint : has_next}), 1
+            
+        return get_response
+
+    return with_pagination_decorator
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
 
@@ -123,16 +166,9 @@ map_view = MapView.as_view()
 
 class MapListView(APIView):
     # create a new map
-    @with_res_code
+    @with_pagination(serializer_class=MapBriefSerializer)
     def get(self, request):
-        page_no = request.query_params.get('pageNo', 1)
-        page_size = request.query_params.get('pageSize', 20)
-        if page_no < 1 or page_size < 1 or page_size > 40:
-            return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
-        data = Map.objects.all()
-        return Response({'list' : MapBriefSerializer(data, many=True).data, \
-            'has_prev': False, \
-            'has_next': False}), 1
+        return Map.objects.all(), {}
 
     @with_res_code
     def post(self, request):
