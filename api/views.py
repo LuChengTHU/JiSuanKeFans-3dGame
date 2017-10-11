@@ -1,7 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
-
 from django.contrib.auth.models import User
 import datetime
 
@@ -27,18 +25,20 @@ def with_res_code(func):
     return get_response
 
 
+# this function returns a decorator for paginations, with some of the configuration specified
 def with_pagination(page_size_lim = 40, page_size_default = 20,\
     page_no_default = 1, data_entrypoint = 'list', has_prev_entrypoint = 'has_prev', \
     has_next_entrypoint = 'has_next', page_no_param_name = 'pageNo',\
     page_size_param_name = 'pageSize', serializer_class = None):
 
+    # a decorator for paginations
     def with_pagination_decorator(func):
 
         @with_res_code
         def get_response(self, request, *arg_list, **arg_dict):
             try:
-                page_no = int(request.query_params.get('pageNo', page_no_default))
-                page_size = int(request.query_params.get('pageSize', page_size_default))
+                page_no = int(request.query_params.get(page_no_param_name, page_no_default))
+                page_size = int(request.query_params.get(page_size_param_name, page_size_default))
             except:
                 # not good integers
                 return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
@@ -145,9 +145,27 @@ class MapView(APIView):
         return Response({'map' : \
             MapFullSerializer.repr_inflate(MapFullSerializer(map).data)}), 1
 
+    @with_res_code
     def put(self, request, map_id, format=None):
-        # TODO: for stage 2
-        pass
+        # modify the map
+        try:
+            map = Map.objects.get(id=map_id)
+        except:
+            # not found
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+        try:
+            serializer = MapFullSerializer(map, \
+                data = MapFullSerializer.repr_deflate(request.data['new_map_info']))
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except:
+                return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
+            return Response({}), 1
+        return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
     @with_res_code
     def delete(self, request, map_id, format=None):
@@ -172,10 +190,17 @@ class MapListView(APIView):
 
     @with_res_code
     def post(self, request):
-        serializer = MapFullSerializer(data=MapFullSerializer.repr_deflate(request.data))
+        try:
+            serializer = MapFullSerializer(data=MapFullSerializer.repr_deflate(request.data['map']))
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
         if serializer.is_valid():
-            map = serializer.save()
-            return Response({'map_id': map.id}), 1
+            try:
+                map = serializer.save()
+            except:
+                return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
+
+            return Response({'map_id': map.id}, status=status.HTTP_201_CREATED), 1
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
 map_list_view = MapListView.as_view()

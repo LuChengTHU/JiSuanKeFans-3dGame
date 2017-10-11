@@ -3,13 +3,6 @@ from django.contrib.auth.models import User
 from api.models import Map
 import json
 
-class ReversedJSONField(serializers.Field):
-    def to_representation(self, value):
-        return json.loads(value)
-
-    def to_internal_value(self, data):
-        json.dumps(data)
-
 # for the brief information of users
 class UserBriefSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,19 +26,6 @@ class MapBriefSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'width', 'height')
 
 class MapFullSerializer(serializers.ModelSerializer):
-    '''
-    init_ground_colors = ReversedJSONField(source='init_ground_colors')
-    init_ground_boxes = ReversedJSONField(source='init_ground_boxes')
-    init_hand_boxes = ReversedJSONField(source='init_hand_boxes')
-    instr_set = ReversedJSONField(source='instr_set')
-    final_ground_colors = ReversedJSONField(source='final_ground_colors')
-    final_ground_boxes = ReversedJSONField(source='final_ground_boxes')
-    final_hand_boxes = ReversedJSONField(source='final_hand_boxes')
-    '''
-    '''
-    init_pos = serializers.ListField(child=serializers.IntegerField())
-    final_pos = serializers.ListField(child=serializers.IntegerField())
-    '''
 
     JSON_FIELDS = ['init_hand_boxes', 'final_hand_boxes', 'instr_set', 'init_ground_boxes',\
         'final_ground_boxes', 'init_ground_colors', 'final_ground_colors']
@@ -85,7 +65,7 @@ class MapFullSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Map
-        fields = ('id', 'n_max_hand_boxes', 'n_blockly', 'height', 'width',\
+        fields = ('id', 'title', 'n_max_hand_boxes', 'n_blockly', 'height', 'width',\
             'init_pos_x', 'init_pos_y', 'final_pos_x', 'final_pos_y', 'instr_set',\
             'init_ground_colors', 'init_ground_boxes', 'init_hand_boxes',\
             'final_ground_colors', 'final_ground_boxes', 'final_hand_boxes')
