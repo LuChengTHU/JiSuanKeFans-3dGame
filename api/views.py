@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User 
 
-from django.contrib.auth.models import User
+
 import datetime
 
 from rest_framework.parsers import JSONParser, FormParser
@@ -13,9 +13,9 @@ from rest_framework.views import APIView
 from api.serializers import UserPostSerializer, UserBriefSerializer,\
     UserGetSerializer,\
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer
-from .authenticaters import CsrfExemptSessionAuthentication
-from django.views.decorators.csrf import csrf_exempt
 import json
+
+from .authenticaters import CsrfExemptSessionAuthentication
 
 from api.models import Map
 
@@ -223,7 +223,3 @@ class MapListView(APIView):
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
 map_list_view = MapListView.as_view()
-
-@csrf_exempt
-def index(request):
-    return render(request, 'api/index.html')

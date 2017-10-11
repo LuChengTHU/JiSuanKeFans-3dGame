@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'api',
+    'web_game',
     'rest_framework',
     'rest_framework.authtoken',
 ]
@@ -55,7 +56,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ac.urls'
 
 TEMPLATES = [
     {
@@ -143,3 +143,5 @@ STATIC_URL = '/static/'
 BOOTSTRAP3 = {
     'javascript_in_head': True,
 }
+
+ROOT_URLCONF = 'ac.urls'
