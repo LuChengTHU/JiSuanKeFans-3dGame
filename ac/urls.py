@@ -28,4 +28,6 @@ urlpatterns = [
     url(r'^user', views.cus_user_view),
     url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls, name='admin'),
+    url(r'^map/(?P<map_id>[0-9]+)', views.map_view),
+    url(r'^map', views.map_list_view)
 ]

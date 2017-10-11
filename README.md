@@ -10,7 +10,7 @@ and run the image in a Docker container using the default database password
 
 ```
 docker run -it -p 8000:8000 ac_dev
-``
+```
 
 To specify the database password, use
 
