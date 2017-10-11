@@ -27,6 +27,11 @@ class UserFullSerializer(serializers.ModelSerializer):
         model = User
         exclude = ('password',)
 
+class MapBriefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Map
+        fields = ('id', 'title', 'width', 'height')
+
 class MapFullSerializer(serializers.ModelSerializer):
     '''
     init_ground_colors = ReversedJSONField(source='init_ground_colors')
