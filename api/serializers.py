@@ -14,14 +14,22 @@ class UserDetailedSerializer(serializers.ModelSerializer):
         model = User
         exclude = ('expiration', 'join_date', 'password')
 
+# for complete information of users
 class UserFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ('password',)
 
-# for view class used to create new users
+# User: Get request
+class UserGetSerializer(serializers.Serializer):
+    pageNo = serializers.IntegerField(required = False)
+    pageSize = serializers.IntegerField(required = False, max_value = 40)
+
+# User: Post request
 class UserPostSerializer(serializers.Serializer):
-    new_user_info = UserFullSerializer()
+    # new_user_info = UserFullSerializer()
+    username = serializers.CharField(max_length = 30)
+    email = serializers.CharField(max_length = 30)
     password = serializers.CharField(max_length = 100)
 
 
