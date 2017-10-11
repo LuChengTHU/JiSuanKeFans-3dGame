@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
-from api.serializers import UserPostSerializer, UserBriefSerializer, TokenPostSerializer
+from api.serializers import UserPostSerializer, UserBriefSerializer, TokenPostSerializer, UserGetSerializer
 
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
@@ -52,7 +52,18 @@ class UserView(APIView):
 
     def get(self, request):
         # return User list
-        pass
+        return Response({'res_code': 0, 'list': {}, 'has_prev': 0, 'has_next': 1})
+        serializer = UserGetSerializer(data=request.data)
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            pageNo = serializer.validated_data['pageNo'] or 1
+            pageSize = serializer.validated_data['pageSize'] or 20
+            userCnt = User.objects.count()
+            if pageNo < 1 or pageSize < 1 or pageSize > 40 or (pageNo - 1) * pageSize > userCnt:
+                Response({'res_code': 0, 'list': {}, 'has_prev': 0, 'has_next': 1})
+
+
+        return Response({'res_code': 0, 'list': {}, 'has_prev': 0, 'has_next': 1})
 
 
     def post(self, request):
