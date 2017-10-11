@@ -15,12 +15,12 @@ from api.serializers import UserPostSerializer, UserBriefSerializer, TokenPostSe
 
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
-
     parser_classes = (JSONParser,)
     serializer_class = TokenPostSerializer
 
-    def post(self, request):
 
+    def post(self, request):
+        # Return token for User
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
@@ -46,7 +46,9 @@ obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
 
 
 class UserView(APIView):
+    parser_classes = (JSONParser,)
     serializer_class = UserPostSerializer
+
 
     def get(self, request):
         # return User list
@@ -58,19 +60,20 @@ class UserView(APIView):
         print(request.data)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            print("HERE")
-            new_user_info = serializer.validated_data['new_user_info']
+            # new_user_info = serializer.validated_data['new_user_info']
+            if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
+                return Response({'res_code': 2, 'user_id': 0})
+
             new_user_inst = User()
-            new_user_inst.email = new_user_info['email']
-            new_user_inst.username = new_user_info['username']
+            new_user_inst.email = serializer.validated_data['email']
+            new_user_inst.username = serializer.validated_data['username']
             new_user_inst.password = serializer.validated_data['password']
             new_user_inst.save()
 
             token, created = Token.objects.get_or_create(user=new_user_inst)
 
-            return Response({'token': token.key})
-        print("NOPE")
+            return Response({'res_code': 1, 'user_id': new_user_inst.id})
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'res_code': 3, 'user_id': 0})
 
 cus_user_view = UserView.as_view()

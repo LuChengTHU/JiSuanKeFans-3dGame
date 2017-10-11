@@ -21,7 +21,9 @@ class UserFullSerializer(serializers.ModelSerializer):
 
 # for view class used to create new users
 class UserPostSerializer(serializers.Serializer):
-    new_user_info = UserFullSerializer()
+    # new_user_info = UserFullSerializer()
+    username = serializers.CharField(max_length = 30)
+    email = serializers.CharField(max_length = 30)
     password = serializers.CharField(max_length = 100)
 
 
