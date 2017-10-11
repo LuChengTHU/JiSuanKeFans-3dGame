@@ -7,7 +7,7 @@ USER_PRIVILEGE_COMMON = 0
 
 class Profile(models.Model):
     # note that a primary key field `id' has been implicitly added
-    name = models.CharField(max_length = 30)
+    username = models.CharField(max_length = 30)
     email = models.CharField(max_length = 100)
     gender = models.IntegerField()
     is_admin = models.BooleanField()
