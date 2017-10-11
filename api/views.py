@@ -5,22 +5,26 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 import datetime
 
-from rest_framework.parsers import JSONParser
+from rest_framework.parsers import JSONParser, FormParser
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from api.serializers import UserPostSerializer, UserBriefSerializer, TokenPostSerializer, UserGetSerializer
-
+from django.views.decorators.csrf import csrf_exempt
+from .authenticaters import CsrfExemptSessionAuthentication
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
     parser_classes = (JSONParser,)
     serializer_class = TokenPostSerializer
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
 
     def post(self, request):
         # Return token for User
+        print(request.data)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
@@ -48,6 +52,7 @@ obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
 class UserView(APIView):
     parser_classes = (JSONParser,)
     serializer_class = UserPostSerializer
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
 
     def get(self, request):
@@ -68,13 +73,11 @@ class UserView(APIView):
 
     def post(self, request):
         # create new User
-        print(request.data)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             # new_user_info = serializer.validated_data['new_user_info']
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
                 return Response({'res_code': 2, 'user_id': 0})
-
             new_user_inst = User()
             new_user_inst.email = serializer.validated_data['email']
             new_user_inst.username = serializer.validated_data['username']
@@ -88,3 +91,7 @@ class UserView(APIView):
         return Response({'res_code': 3, 'user_id': 0})
 
 cus_user_view = UserView.as_view()
+
+@csrf_exempt
+def index(request):
+    return render(request, 'api/index.html')

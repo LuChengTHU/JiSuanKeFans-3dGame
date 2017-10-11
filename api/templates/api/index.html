@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+{% load static %}
+{% block title %}Hello{% endblock %}
+
+{% block extra_head %}
+<script src="{% static 'api/blockly_compressed.js' %}"></script>
+<script src="{% static 'api/blocks_compressed.js' %}"></script>
+<script src="{% static 'api/en.js' %}"></script>
+<script src="{% static 'api/javascript_compressed.js' %}"></script>
+<script src="{% static 'api/python_compressed.js' %}"></script>
+<script src="{% static 'api/lua_compressed.js' %}"></script>
+<script src="{% static 'api/php_compressed.js' %}"></script>
+<script src="{% static 'api/111.js' %}"></script>
+<script src="{% static 'api/logic.js' %}"></script>
+<script src="{% static 'api/acorn_interpreter.js' %}"></script>
+{% comment %} <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script> {% endcomment %}
+<xml id="toolbox" style="display: none">
+  <block type="_111"></block>
+  <block type="controls_if"></block>
+  <block type="controls_repeat_ext"></block>
+  <block type="logic_compare"></block>
+  <block type="math_number"></block>
+  <block type="math_arithmetic"></block>
+  <block type="text"></block>
+  <block type="text_print"></block>
+</xml>
+<xml xmlns="http://www.w3.org/1999/xhtml" id="blocklyDefault" style="display:none">
+  <variables></variables>
+  <block type="_111" id="j?Z1`Ck,)@m#P+)BM4}[" x="163" y="13"></block>
+  <block type="text" id="VXa$~kCiT09bz2N1qP-?" x="313" y="188">
+    <field name="TEXT"></field>
+  </block>
+</xml>
+{% endblock %}
+{% block extra_script %}
+<script>
+  //var workspacePlayground = Blockly.inject('blocklyDiv',
+      //{toolbox: document.getElementById('toolbox')});
+      var workspace = Blockly.inject('blocklyDiv',
+      {toolbox: document.getElementById('toolbox')});
+  var defaultBlocks = document.getElementById('blocklyDefault');
+  Blockly.Xml.domToWorkspace(defaultBlocks, workspace);
+  function myUpdateFunction(event) {
+    var languageDropdown = document.getElementById('languageDropdown');
+    var languageSelection = languageDropdown.options[languageDropdown.selectedIndex].value;
+    var codeDiv = document.getElementById('codeDiv');
+    var codeHolder = document.createElement('pre');
+    codeHolder.className = 'prettyprint but-not-that-pretty';
+    var code = document.createTextNode(Blockly[languageSelection].workspaceToCode(workspace));
+    codeHolder.appendChild(code);
+    codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
+    PR.prettyPrint();
+  }
+  workspace.addChangeListener(myUpdateFunction);
+  function executeBlockCode() {
+    var code = Blockly.JavaScript.workspaceToCode(workspace);
+    var initFunc = function(interpreter, scope) {
+      var alertWrapper = function(text) {
+        text = text ? text.toString() : '';
+        return interpreter.createPrimitive(alert(text));
+      };
+      interpreter.setProperty(scope, 'alert',
+          interpreter.createNativeFunction(alertWrapper));
+      var promptWrapper = function(text) {
+        text = text ? text.toString() : '';
+        return interpreter.createPrimitive(prompt(text));
+      };
+      interpreter.setProperty(scope, 'prompt',
+          interpreter.createNativeFunction(promptWrapper));
+      var wrapper = function(x) {
+        return interpreter.createPrimitive(moveForward(x));
+      };
+      interpreter.setProperty(scope, 'moveForward',
+          interpreter.createNativeFunction(wrapper));
+    };
+    var myInterpreter = new Interpreter(code, initFunc);
+    var stepsAllowed = 10000;
+    while (myInterpreter.step() && stepsAllowed) {
+      stepsAllowed--;
+    }
+    if (!stepsAllowed) {
+      throw EvalError('Infinite loop.');
+    }
+  }
+  
+  document.getElementById('playButton').addEventListener('click', executeBlockCode);
+</script>
+{% endblock %}
+{% block main %}
+<div class="row">
+
+  <div id="blocklyDiv" class="col-xs-6 col-sm-3" style="height: 480px; width: 600px;" ></div>
+  {% comment %} <div id="blocklyDiv" class="main blockly-panel"></div> {% endcomment %}
+  <div id="codeDiv" class="main output-panel">
+    <div class="dropdown-bar">
+      Language:
+      <div id="im-just-an-underline">
+        <select id="languageDropdown" onChange="myUpdateFunction();">
+          <option value="JavaScript">JavaScript</option>
+          <option value="Python">Python</option>
+          <option value="PHP">PHP</option>
+          <option value="Lua">Lua</option>
+          <option value="Dart">Dart</option>
+        </select>
+      </div>
+    </div>
+    <hr class="POps">
+    <pre></pre>
+  </div>
+  <div class="col-xs-12">
+      <hr class="POps">
+  <button type="button" id="playButton" class="btn-success">Play</div>
+  </div>
+</div>
+
+{% endblock %}

@@ -101,3 +101,4 @@ env/
 pip-selfcheck.json
 
 .vs/
+.vscode/

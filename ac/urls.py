@@ -19,9 +19,13 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from api import views
 
+
+
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    url(r'^token', views.obtain_expiring_auth_token),
-    url(r'^user', views.cus_user_view)
+    url(r'^token', views.obtain_expiring_auth_token, name='token'),
+    url(r'^user', views.cus_user_view),
+    url(r'^$', views.index, name='index'),
+    url(r'^admin/', admin.site.urls, name='admin'),
 ]
