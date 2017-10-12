@@ -34,7 +34,7 @@ class User(AbstractUser):
 
 class Map(models.Model):
     title = models.CharField(max_length=30)
-    #author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     height = models.IntegerField()
     width = models.IntegerField()

@@ -2,7 +2,8 @@ import datetime
 import base64
 
 from rest_framework.parsers import JSONParser, FormParser
-from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import views, status
@@ -114,7 +115,7 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
                     'user': user_serializer_class().data},\
                     status=status.HTTP_400_BAD_REQUEST), 3
 
-            if get_pwd_hash(user.password) != serializer.validated_data['password']:
+            if user.password.encode('ascii') != base64.b64encode(get_pwd_hash(serializer.validated_data['password'])):
                 return Response({'token': '', \
                     'user': user_serializer_class().data}, \
                     status=status.HTTP_400_BAD_REQUEST), 2
@@ -224,6 +225,8 @@ class MapView(APIView):
 map_view = MapView.as_view()
 
 class MapListView(APIView):
+    authentication_classes = (TokenAuthentication,)
+
     # create a new map
     @with_pagination(serializer_class=MapBriefSerializer)
     def get(self, request):
@@ -231,8 +234,14 @@ class MapListView(APIView):
 
     @with_res_code
     def post(self, request):
+        # authentication required
+        if request.auth is None:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
+
+        map = Map()
+        map.author = request.user
         try:
-            serializer = MapFullSerializer(data=MapFullSerializer.repr_deflate(request.data['map']))
+            serializer = MapFullSerializer(map, data=MapFullSerializer.repr_deflate(request.data['map']))
         except:
             return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
         if serializer.is_valid():
