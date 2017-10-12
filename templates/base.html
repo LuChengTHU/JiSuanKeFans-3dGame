@@ -6,10 +6,11 @@
 {% load static %}
 {% block bootstrap3_extra_head %}
   <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="{% static 'api/style.css' %}" />
-  <script src="{% static 'api/axios.min.js' %}"></script>
-  <script src="{% static 'api/vue.js' %}"></script>
-  <script src="{% static 'api/main.js' %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'api/css/style.css' %}" />
+  <script src="{% static 'api/js/utils/axios.min.js' %}"></script>
+  <script src="{% static 'api/js/utils/vue.js' %}"></script>
+  <script src="{% static 'api/js/utils/common.js' %}"></script>
+  <script src="{% static 'api/js/nav.js' %}"></script>
   {% block extra_head %}
   {% endblock %}
 {% endblock %}
