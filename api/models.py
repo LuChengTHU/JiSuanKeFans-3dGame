@@ -1,25 +1,33 @@
 from django.db import models
 from datetime import date
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 USER_PRIVILEGE_ADMIN = 2
 USER_PRIVILEGE_VIP = 1
 USER_PRIVILEGE_COMMON = 0
 
-class UserProfile(models.Model):
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=50)
+    password = models.CharField(max_length=100)
+
     # note that a primary key field `id' has been implicitly added
-    user = models.OneToOneField(User)
-    gender = models.IntegerField(min=0, max=3)
-    is_admin = models.BooleanField()
-    expiration = models.DateField()
-    join_date = models.DateField()
+    gender = models.IntegerField(default=0)
+    is_admin = models.BooleanField(default=False)
+    #expiration = models.DateField()
+    #join_date = models.DateField()
+
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'password']
 
     def get_privilege(self):
         if self.is_admin:
             return USER_PRIVILEGE_ADMIN
-
+        '''
         if date.today() >= self.expiration:
             return USER_PRIVILEGE_VIP
+        '''
 
         return USER_PRIVILEGE_COMMON
 

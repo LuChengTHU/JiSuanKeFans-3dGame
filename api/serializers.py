@@ -1,48 +1,34 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from api.models import Map, UserProfile
+from api.models import Map, User
 import json
 
 RATE_BRIEF = 0
 RATE_FULL = 1
+RATE_CREATE = 2
 
-# for the brief information of users
-class UserBriefSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email')
-
-# for detailed information of users
-class UserDetailedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ('expiration', 'join_date', 'password')
-
-# for complete information of users
-class UserFullSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ('password',)
-
-
-def get_user_profile_serializer_class(rate):
-    class UserProfileSerializer(serializers.ModelSerializer):
-        gender = serializers.IntegerField(min=0, max=3, source='user.gender')
-        privilege = serializers.ReadOnlyField(source='get_privilege')
-        is_admin = serializers.IntegerField(source='user.is_admin')
+def get_user_serializer_class(rate):
+    class UserSerializer(serializers.ModelSerializer):
+        if rate == RATE_BRIEF or rate == RATE_FULL:
+            privilege = serializers.ReadOnlyField(source='get_privilege')
+        #is_admin = serializers.IntegerField(source='user_profile.is_admin')
         
+        '''
         if rate == RATE_FULL:
-            expiration = serializers.DateField(source='user.expiration')
-            join_date = serializers.DateField(source='user.join_date')
+            expiration = serializers.DateField(source='user_profile.expiration')
+            join_date = serializers.DateField(source='user_profile.join_date')
+            '''
 
         class Meta:
-            model = UserProfile
+            model = User
             if rate == RATE_BRIEF:
                 fields = ('id', 'username', 'email', 'gender', 'privilege')
+            elif rate == RATE_FULL:
+                # fields = ('id', 'username', 'email', 'gender', 'is_admin', 'privilege', 'expiration', 'join_date')
+                fields = ('id', 'username', 'email', 'gender', 'privilege')
             else:
-                fields = ('id', 'username', 'email', 'gender', 'is_admin', 'privilege', 'expiration', 'join_date')
+                fields = ('id', 'username', 'email', 'password')
 
-    return UserProfileSerializer
+    return UserSerializer
 
 
 class MapBriefSerializer(serializers.ModelSerializer):

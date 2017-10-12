@@ -145,3 +145,5 @@ BOOTSTRAP3 = {
 }
 
 ROOT_URLCONF = 'ac.urls'
+
+AUTH_USER_MODEL = 'api.User'
