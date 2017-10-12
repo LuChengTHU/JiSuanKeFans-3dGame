@@ -17,7 +17,8 @@
 <script src="{% static 'api/js/utils/acorn_interpreter.js' %}"></script>
 {% comment %} <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script> {% endcomment %}
 <xml id="toolbox" style="display: none">
-  <block type="_111"></block>
+  <block type="game_move"></block>
+  <block type="game_turn"></block>
   <block type="controls_if"></block>
   <block type="controls_repeat_ext"></block>
   <block type="logic_compare"></block>
@@ -26,11 +27,17 @@
   <block type="text"></block>
   <block type="text_print"></block>
 </xml>
-<xml xmlns="http://www.w3.org/1999/xhtml" id="blocklyDefault" style="display:none">
+<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
   <variables></variables>
-  <block type="_111" id="j?Z1`Ck,)@m#P+)BM4}[" x="163" y="13"></block>
-  <block type="text" id="VXa$~kCiT09bz2N1qP-?" x="313" y="188">
-    <field name="TEXT"></field>
+  <block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c`k=Y" x="13" y="13">
+    <value name="TIMES">
+      <shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
+        <field name="NUM">10</field>
+      </shadow>
+    </value>
+    <statement name="DO">
+      <block type="game_move" id="+!cL)/7;TB9NG)vuHr+;"></block>
+    </statement>
   </block>
 </xml>
 {% endblock %}
@@ -40,7 +47,7 @@
       //{toolbox: document.getElementById('toolbox')});
       var workspace = Blockly.inject('blocklyDiv',
       {toolbox: document.getElementById('toolbox')});
-  var defaultBlocks = document.getElementById('blocklyDefault');
+  var defaultBlocks = document.getElementById('workspaceBlocks');
   Blockly.Xml.domToWorkspace(defaultBlocks, workspace);
   function myUpdateFunction(event) {
     var languageDropdown = document.getElementById('languageDropdown');
