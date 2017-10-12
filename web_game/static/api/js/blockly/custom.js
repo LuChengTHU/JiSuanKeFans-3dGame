@@ -14,7 +14,7 @@ Blockly.Blocks['game_turn'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("Turn")
-        .appendField(new Blockly.FieldDropdown([["Clockwise","Game.GameCW"], ["CounterClockwise","Game.GameCCW"]]), "Turn");
+        .appendField(new Blockly.FieldDropdown([["Clockwise","0"], ["CounterClockwise","1"]]), "Turn");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
@@ -26,7 +26,7 @@ Blockly.Blocks['game_turn'] = {
 Blockly.JavaScript['game_move'] = function(block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = 'Game.gameMove();\n';
+  var code = 'gameMove();\n';
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
 };
@@ -34,6 +34,6 @@ Blockly.JavaScript['game_move'] = function(block) {
 Blockly.JavaScript['game_turn'] = function(block) {
   var dropdown_turn = block.getFieldValue('Turn');
   // TODO: Assemble JavaScript into code variable.
-  var code = `Game.gameTurn(${dropdown_turn});\n`;
+  var code = `gameTurn(${dropdown_turn});\n`;
   return code;
 };

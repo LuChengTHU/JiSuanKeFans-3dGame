@@ -12,7 +12,7 @@
 <script src="{% static 'api/js/blockly/python_compressed.js' %}"></script>
 <script src="{% static 'api/js/blockly/lua_compressed.js' %}"></script>
 <script src="{% static 'api/js/blockly/php_compressed.js' %}"></script>
-<script src="{% static 'api/js/blockly/111.js' %}"></script>
+<script src="{% static 'api/js/blockly/custom.js' %}"></script>
 <script src="{% static 'api/js/game/logic.js' %}"></script>
 <script src="{% static 'api/js/utils/acorn_interpreter.js' %}"></script>
 {% comment %} <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script> {% endcomment %}
@@ -76,11 +76,16 @@
       };
       interpreter.setProperty(scope, 'prompt',
           interpreter.createNativeFunction(promptWrapper));
-      var wrapper = function(x) {
-        return interpreter.createPrimitive(moveForward(x));
+      var GameMove = function() {
+        return interpreter.createPrimitive(Game.gameMove());
       };
-      interpreter.setProperty(scope, 'moveForward',
-          interpreter.createNativeFunction(wrapper));
+      interpreter.setProperty(scope, 'gameMove',
+          interpreter.createNativeFunction(GameMove));
+      var GameTurn = function(x) {
+        return interpreter.createPrimitive(Game.gameTurn(x));
+      };
+      interpreter.setProperty(scope, 'gameTurn',
+          interpreter.createNativeFunction(GameTurn));
     };
     var myInterpreter = new Interpreter(code, initFunc);
     var stepsAllowed = 10000;
