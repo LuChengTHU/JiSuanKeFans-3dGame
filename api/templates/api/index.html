@@ -51,7 +51,7 @@
     var code = document.createTextNode(Blockly[languageSelection].workspaceToCode(workspace));
     codeHolder.appendChild(code);
     codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
-    PR.prettyPrint();
+    //PR.prettyPrint();
   }
   workspace.addChangeListener(myUpdateFunction);
   function executeBlockCode() {
