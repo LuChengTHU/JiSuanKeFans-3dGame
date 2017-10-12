@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'api/style.css' %}" />
   <script src="{% static 'api/axios.min.js' %}"></script>
   <script src="{% static 'api/vue.js' %}"></script>
-  <script src="{% static 'api/submit.js' %}"></script>
+  <script src="{% static 'api/main.js' %}"></script>
   {% block extra_head %}
   {% endblock %}
 {% endblock %}
@@ -96,6 +96,10 @@
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                 {% verbatim %}{{ msg }}{% endverbatim %}
             </div>
+            <div class="alert alert-success alert-dismissable"  v-for="msg in succ_msgs">
+                <button type="button" class="close" data-dismiss="success" aria-hidden="true">×</button>
+                {% verbatim %}{{ msg }}{% endverbatim %}
+            </div>
             {% include 'api/login-form.html' %}
           </div>
         </div>
@@ -110,7 +114,15 @@
             <h4 class="modal-title" id="registerFormModalLabel">Login</h4>
           </div>
           <div class="modal-body">
-            {% comment %} {% include 'api/register-form.html' %} {% endcomment %}
+            <div class="alert alert-danger alert-dismissable"  v-for="msg in msgs">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {% verbatim %}{{ msg }}{% endverbatim %}
+            </div>
+            <div class="alert alert-success alert-dismissable"  v-for="msg in succ_msgs">
+                <button type="button" class="close" data-dismiss="success" aria-hidden="true">×</button>
+                {% verbatim %}{{ msg }}{% endverbatim %}
+            </div>
+            {% include 'api/register-form.html' %}
           </div>
         </div>
       </div>
