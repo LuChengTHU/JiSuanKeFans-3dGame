@@ -19,9 +19,12 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from api import views
 
+
+
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    url(r'^token', views.obtain_expiring_auth_token),
-    url(r'^user', views.cus_user_view)
+    url(r'^admin/', admin.site.urls, name='admin'),
+    url(r'^api/v0.1/', include('api.urls'), name='api'),
+    url(r'^', include('web_game.urls'))
 ]

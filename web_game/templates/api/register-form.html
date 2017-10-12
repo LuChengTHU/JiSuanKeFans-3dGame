@@ -1,0 +1,16 @@
+<form method="POST" action="{% url 'api:user' %}" class="form-horizontal" id="registerForm">
+
+<div class="form-group"><label class="col-md-3 control-label" for="id_username">Username</label><div class="col-md-9"><input type="text" name="username" class="form-control" maxlength="256" id="id_username" title="" placeholder="Username" required=""></div></div>
+<div class="form-group"><label class="col-md-3 control-label" for="id_email">Email</label><div class="col-md-9"><input v-model="email" type="email" name="email" class="form-control" maxlength="256" id="id_email" title="" placeholder="Email"></div></div>
+<div class="form-group"><label class="col-md-3 control-label" for="id_password">Password</label><div class="col-md-9"><input v-model="password" type="password" name="password" class="form-control" maxlength="256" id="id_password" title="" placeholder="Password" required=""></div></div>
+{% comment %} <div class="form-grogup"><label class="col-md-3 control-label" for="id_password_confirm">Password confirm</label><div class="col-md-9"><input type="password" name="password_confirm" class="form-control" maxlength="256" id="id_password_confirm" title="" placeholder="Password confirm" required=""></div></div> {% endcomment %}
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+      <button type="submit" class="btn btn-primary" name="login">
+        
+          Register
+        
+      </button>
+    </div>
+  </div>
+</form>
