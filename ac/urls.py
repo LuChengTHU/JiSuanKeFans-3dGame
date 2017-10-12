@@ -24,10 +24,7 @@ from api import views
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    url(r'^token', views.obtain_expiring_auth_token, name='token'),
-    url(r'^user', views.cus_user_view),
-    url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls, name='admin'),
-    url(r'^map/(?P<map_id>[0-9]+)', views.map_view),
-    url(r'^map', views.map_list_view)
+    url(r'^api/v0.1/', include('api.urls')),
+    url(r'^', include('web_game.urls'))
 ]
