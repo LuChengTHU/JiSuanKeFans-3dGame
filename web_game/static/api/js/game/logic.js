@@ -1,4 +1,9 @@
-function moveForward(x) {
-    console.log(`moveForward(${x})`);
-    return x;
+"use strict";
+var Game = {
+    gameTurn: (x) => {
+        console.log('gameTurn'+x);        
+    },
+    gameMove: () => {
+        console.log('gameMove');        
+    },
 }
