@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
 
 
 import datetime
@@ -12,12 +12,13 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from api.serializers import UserPostSerializer, UserBriefSerializer,\
     UserGetSerializer,\
-   TokenPostSerializer, MapFullSerializer, MapBriefSerializer
+   TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_profile_serializer_class,\
+   RATE_BRIEF, RATE_FULL
 import json
 
 from .authenticaters import CsrfExemptSessionAuthentication
 
-from api.models import Map
+from api.models import Map, UserProfile
 
 # A convenience decorator for appending res_code in response
 def with_res_code(func):
@@ -109,44 +110,34 @@ obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
 
 class UserView(APIView):
     parser_classes = (JSONParser, FormParser)
-    serializer_class = UserPostSerializer
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
 
+    @with_pagination(serializer_class=get_user_profile_serializer_class(RATE_BRIEF))
     def get(self, request):
         # return User list
-        return Response({'res_code': 0, 'list': {}, 'has_prev': 0, 'has_next': 1})
-        serializer = UserGetSerializer(data=request.data)
-        if serializer.is_valid():
-            print(serializer.validated_data)
-            pageNo = serializer.validated_data['pageNo'] or 1
-            pageSize = serializer.validated_data['pageSize'] or 20
-            userCnt = User.objects.count()
-            if pageNo < 1 or pageSize < 1 or pageSize > 40 or (pageNo - 1) * pageSize > userCnt:
-                Response({'res_code': 0, 'list': {}, 'has_prev': 0, 'has_next': 1})
+        return UserProfile.objects.all(), {}
 
-
-        return Response({'res_code': 0, 'list': {}, 'has_prev': 0, 'has_next': 1})
-
-
+    @with_res_code
     def post(self, request):
         # create new User
-        serializer = self.serializer_class(data=request.data)
+        
+        serializer = UserPostSerializer(data=request.data)
         if serializer.is_valid():
             # new_user_info = serializer.validated_data['new_user_info']
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
-                return Response({'res_code': 2, 'user_id': 0})
+                return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 2
             new_user_inst = User()
             new_user_inst.email = serializer.validated_data['email']
             new_user_inst.username = serializer.validated_data['username']
             new_user_inst.password = serializer.validated_data['password']
             new_user_inst.save()
 
-            token, created = Token.objects.get_or_create(user=new_user_inst)
+            #token, created = Token.objects.get_or_create(user=new_user_inst)
 
             return Response({'res_code': 1, 'user_id': new_user_inst.id})
 
-        return Response({'res_code': 3, 'user_id': 0})
+        return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 3
 
 cus_user_view = UserView.as_view()
 

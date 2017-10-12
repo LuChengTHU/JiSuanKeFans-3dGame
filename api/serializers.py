@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from api.models import Map
+from api.models import Map, UserProfile
 import json
+
+RATE_BRIEF = 0
+RATE_FULL = 1
 
 # for the brief information of users
 class UserBriefSerializer(serializers.ModelSerializer):
@@ -20,6 +23,27 @@ class UserFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ('password',)
+
+
+def get_user_profile_serializer_class(rate):
+    class UserProfileSerializer(serializers.ModelSerializer):
+        gender = serializers.IntegerField(min=0, max=3, source='user.gender')
+        privilege = serializers.ReadOnlyField(source='get_privilege')
+        is_admin = serializers.IntegerField(source='user.is_admin')
+        
+        if rate == RATE_FULL:
+            expiration = serializers.DateField(source='user.expiration')
+            join_date = serializers.DateField(source='user.join_date')
+
+        class Meta:
+            model = UserProfile
+            if rate == RATE_BRIEF:
+                fields = ('id', 'username', 'email', 'gender', 'privilege')
+            else:
+                fields = ('id', 'username', 'email', 'gender', 'is_admin', 'privilege', 'expiration', 'join_date')
+
+    return UserProfileSerializer
+
 
 class MapBriefSerializer(serializers.ModelSerializer):
     class Meta:
