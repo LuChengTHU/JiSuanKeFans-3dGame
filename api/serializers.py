@@ -1,32 +1,42 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from api.models import Map
+from api.models import Map, User
 import json
 
-# for the brief information of users
-class UserBriefSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email')
+RATE_BRIEF = 0
+RATE_FULL = 1
+RATE_CREATE = 2
 
-# for detailed information of users
-class UserDetailedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ('expiration', 'join_date', 'password')
+def get_user_serializer_class(rate):
+    class UserSerializer(serializers.ModelSerializer):
+        if rate == RATE_BRIEF or rate == RATE_FULL:
+            privilege = serializers.ReadOnlyField(source='get_privilege')
+        #is_admin = serializers.IntegerField(source='user_profile.is_admin')
 
-# for complete information of users
-class UserFullSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ('password',)
+        if rate == RATE_FULL:
+            expiration = serializers.DateField()
+            join_date = serializers.DateField(required=False)
+
+        class Meta:
+            model = User
+            if rate == RATE_BRIEF:
+                fields = ('id', 'username', 'email', 'gender', 'privilege')
+            elif rate == RATE_FULL:
+                # fields = ('id', 'username', 'email', 'gender', 'is_admin', 'privilege', 'expiration', 'join_date')
+                fields = ('id', 'username', 'email', 'gender', 'privilege', 'expiration', 'join_date')
+            else:
+                fields = ('id', 'username', 'email', 'password')
+
+    return UserSerializer
+
 
 class MapBriefSerializer(serializers.ModelSerializer):
+    author = get_user_serializer_class(RATE_BRIEF)()
     class Meta:
         model = Map
-        fields = ('id', 'title', 'width', 'height')
+        fields = ('id', 'title', 'width', 'height', 'author')
 
 class MapFullSerializer(serializers.ModelSerializer):
+    author = get_user_serializer_class(RATE_BRIEF)()
 
     JSON_FIELDS = ['init_hand_boxes', 'final_hand_boxes', 'instr_set', 'init_ground_boxes',\
         'final_ground_boxes', 'init_ground_colors', 'final_ground_colors']
@@ -69,23 +79,8 @@ class MapFullSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'n_max_hand_boxes', 'n_blockly', 'height', 'width',\
             'init_pos_x', 'init_pos_y', 'final_pos_x', 'final_pos_y', 'instr_set',\
             'init_ground_colors', 'init_ground_boxes', 'init_hand_boxes',\
-            'final_ground_colors', 'final_ground_boxes', 'final_hand_boxes')
-        depth = 1
+            'final_ground_colors', 'final_ground_boxes', 'final_hand_boxes', 'author')
 
-
-# for view class used to create new users
-
-# User: Get request
-class UserGetSerializer(serializers.Serializer):
-    pageNo = serializers.IntegerField(required = False)
-    pageSize = serializers.IntegerField(required = False, max_value = 40)
-
-# User: Post request
-class UserPostSerializer(serializers.Serializer):
-    # new_user_info = UserFullSerializer()
-    username = serializers.CharField(max_length = 30)
-    email = serializers.CharField(max_length = 30)
-    password = serializers.CharField(max_length = 100)
 
 
 class TokenPostSerializer(serializers.Serializer):

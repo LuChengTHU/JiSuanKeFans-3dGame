@@ -82,9 +82,9 @@ WSGI_APPLICATION = 'ac.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['MYSQL_DB_NAME'],
+        'NAME': os.getenv('MYSQL_DB_NAME'),
         'USER': 'root',
-        'PASSWORD': os.environ['MYSQL_ROOT_PASSWORD'],
+        'PASSWORD': os.getenv('MYSQL_ROOT_PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': '3306'
     }
@@ -126,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TZ_SETTING') or 'UTC'
 
 USE_I18N = True
 
@@ -145,3 +145,5 @@ BOOTSTRAP3 = {
 }
 
 ROOT_URLCONF = 'ac.urls'
+
+AUTH_USER_MODEL = 'api.User'
