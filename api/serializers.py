@@ -11,12 +11,10 @@ def get_user_serializer_class(rate):
         if rate == RATE_BRIEF or rate == RATE_FULL:
             privilege = serializers.ReadOnlyField(source='get_privilege')
         #is_admin = serializers.IntegerField(source='user_profile.is_admin')
-        
-        '''
+
         if rate == RATE_FULL:
-            expiration = serializers.DateField(source='user_profile.expiration')
-            join_date = serializers.DateField(source='user_profile.join_date')
-            '''
+            expiration = serializers.DateField()
+            join_date = serializers.DateField(required=False)
 
         class Meta:
             model = User
@@ -24,7 +22,7 @@ def get_user_serializer_class(rate):
                 fields = ('id', 'username', 'email', 'gender', 'privilege')
             elif rate == RATE_FULL:
                 # fields = ('id', 'username', 'email', 'gender', 'is_admin', 'privilege', 'expiration', 'join_date')
-                fields = ('id', 'username', 'email', 'gender', 'privilege')
+                fields = ('id', 'username', 'email', 'gender', 'privilege', 'expiration', 'join_date')
             else:
                 fields = ('id', 'username', 'email', 'password')
 
@@ -32,13 +30,13 @@ def get_user_serializer_class(rate):
 
 
 class MapBriefSerializer(serializers.ModelSerializer):
-    author = get_user_serializer_class(RATE_BRIEF)
+    author = get_user_serializer_class(RATE_BRIEF)()
     class Meta:
         model = Map
         fields = ('id', 'title', 'width', 'height', 'author')
 
 class MapFullSerializer(serializers.ModelSerializer):
-    author = get_user_serializer_class(RATE_BRIEF)
+    author = get_user_serializer_class(RATE_BRIEF)()
 
     JSON_FIELDS = ['init_hand_boxes', 'final_hand_boxes', 'instr_set', 'init_ground_boxes',\
         'final_ground_boxes', 'init_ground_colors', 'final_ground_colors']

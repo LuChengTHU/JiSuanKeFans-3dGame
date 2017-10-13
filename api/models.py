@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import AbstractUser
+import django.utils.timezone
 
 USER_PRIVILEGE_ADMIN = 2
 USER_PRIVILEGE_VIP = 1
@@ -14,8 +15,9 @@ class User(AbstractUser):
     # note that a primary key field `id' has been implicitly added
     gender = models.IntegerField(default=0)
     is_admin = models.BooleanField(default=False)
-    #expiration = models.DateField()
-    #join_date = models.DateField()
+
+    expiration = models.DateField(default=None, blank=True, null=True)
+    join_date = models.DateField(default=django.utils.timezone.now())
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
@@ -24,10 +26,8 @@ class User(AbstractUser):
     def get_privilege(self):
         if self.is_admin:
             return USER_PRIVILEGE_ADMIN
-        '''
-        if date.today() >= self.expiration:
+        if self.expiration and date.today() >= self.expiration:
             return USER_PRIVILEGE_VIP
-        '''
 
         return USER_PRIVILEGE_COMMON
 
