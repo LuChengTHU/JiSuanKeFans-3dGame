@@ -7,4 +7,4 @@ EXPOSE 8000
 
 ENV TZ_SETTING="UTC"
 
-CMD ["./launch.sh", "0.0.0.0:8000"]
+CMD ["./launch.sh", "runserver", "0.0.0.0:8000"]
