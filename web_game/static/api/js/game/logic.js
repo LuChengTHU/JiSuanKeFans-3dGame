@@ -6,4 +6,6 @@ var Game = {
     gameMove: () => {
         console.log('gameMove');        
     },
+    GameCW: 14,
+    GameCCW: 15,
 }
