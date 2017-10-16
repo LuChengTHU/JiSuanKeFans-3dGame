@@ -32,7 +32,7 @@
   <block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c`k=Y" x="13" y="13">
     <value name="TIMES">
       <shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
-        <field name="NUM">10</field>
+        <field name="NUM">2</field>
       </shadow>
     </value>
     <statement name="DO">
@@ -64,28 +64,40 @@
   function executeBlockCode() {
     var code = Blockly.JavaScript.workspaceToCode(workspace);
     var initFunc = function(interpreter, scope) {
+      interpreter.setProperty(scope, 'GameCW', Game.GameCW);
+      interpreter.setProperty(scope, 'GameCCW', Game.GameCW);
+      interpreter.setProperty(scope, "gameTurn",
+        interpreter.createNativeFunction((x) => {
+          return Game.gameTurn(x);     
+        })
+      );
+      interpreter.setProperty(scope, "gameMove",
+        interpreter.createNativeFunction(() => {
+          return Game.gameMove();     
+        })
+      );
+      
       var alertWrapper = function(text) {
         text = text ? text.toString() : '';
-        return interpreter.createPrimitive(alert(text));
+        return alert(text);
       };
       interpreter.setProperty(scope, 'alert',
           interpreter.createNativeFunction(alertWrapper));
       var promptWrapper = function(text) {
         text = text ? text.toString() : '';
-        return interpreter.createPrimitive(prompt(text));
+        return prompt(text);
       };
       interpreter.setProperty(scope, 'prompt',
           interpreter.createNativeFunction(promptWrapper));
-      var GameMove = function() {
-        return interpreter.createPrimitive(Game.gameMove());
+
+      var consoleObj = this.createObject(interpreter.OBJECT);
+      this.setProperty(scope, 'console', consoleObj);
+      var logWrapper = function(text) {
+        text = text ? text.toString() : '';
+        return console.log(text);
       };
-      interpreter.setProperty(scope, 'gameMove',
-          interpreter.createNativeFunction(GameMove));
-      var GameTurn = function(x) {
-        return interpreter.createPrimitive(Game.gameTurn(x));
-      };
-      interpreter.setProperty(scope, 'gameTurn',
-          interpreter.createNativeFunction(GameTurn));
+      interpreter.setProperty(consoleObj, 'log',
+          interpreter.createNativeFunction(logWrapper));
     };
     var myInterpreter = new Interpreter(code, initFunc);
     var stepsAllowed = 10000;
@@ -96,7 +108,6 @@
       throw EvalError('Infinite loop.');
     }
   }
-  
   document.getElementById('playButton').addEventListener('click', executeBlockCode);
 </script>
 {% endblock %}
