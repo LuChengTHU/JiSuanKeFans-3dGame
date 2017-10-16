@@ -1,8 +1,11 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase as TestCase
 from django.utils.timezone import now
+from rest_framework.views import APIView
+from rest_framework.test import APIRequestFactory
 
 # Create your tests here.
+factory = APIRequestFactory()
 
 class BackendTestCase(TestCase):
     def create_and_fetch_user(self, new_user):
@@ -58,3 +61,30 @@ class BackendTestCase(TestCase):
 
         # ---------- creating map ------------------
         # TODO
+
+    def test_with_pagination(self):
+        # Tester for with_pagination decorator. Extra data seems no use.
+        from .views import with_pagination, RATE_BRIEF
+        from .serializers import get_user_serializer_class
+        from .models import User
+
+        class Dummy(APIView):
+            @with_pagination(serializer_class=get_user_serializer_class(RATE_BRIEF))
+            def get(self, request):
+                return User.objects.all(), {'extra_data': 1}
+
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+            }
+        self.create_and_fetch_user(new_user)
+
+        view = Dummy.as_view()
+        response = view(factory.get('/whatever'))
+        self.assertEqual(response.status_code, 200)  
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.data['has_next'], False)
+        self.assertEqual(len(response.data['list']), 1)
+        self.assertEqual(response.data['list'][0]['username'], 'test_user')
+        self.assertEqual(response.data['extra_data'], 1)       
