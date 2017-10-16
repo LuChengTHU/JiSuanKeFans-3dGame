@@ -16,6 +16,8 @@ def get_user_serializer_class(rate):
             expiration = serializers.DateField()
             join_date = serializers.DateField(required=False)
 
+        id = serializers.IntegerField(required=False)
+
         class Meta:
             model = User
             if rate == RATE_BRIEF:

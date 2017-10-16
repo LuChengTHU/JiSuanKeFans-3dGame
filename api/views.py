@@ -149,19 +149,15 @@ class UserListView(APIView):
     def post(self, request):
         # create new User
         
-        # serializer = UserPostSerializer(data=request.data)
         serializer = get_user_serializer_class(RATE_CREATE)(data=request.data)
         if serializer.is_valid():
-            # new_user_info = serializer.validated_data['new_user_info']
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
                 return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 2
             serializer.validated_data['password'] = \
                 base64.b64encode(get_pwd_hash(serializer.validated_data['password']))
             new_user = serializer.save()
 
-            #token, created = Token.objects.get_or_create(user=new_user_inst)
-
-            return Response({'user_id': new_user.id}), 1
+            return Response({'user_id': new_user.id}, status=status.HTTP_201_CREATED), 1
 
         return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 3
 
