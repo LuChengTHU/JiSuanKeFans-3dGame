@@ -220,7 +220,7 @@ class MapView(APIView):
             # the map not found
             return Response({}, status=status.HTTP_404_NOT_FOUND), 2
         # remove map from db
-        map.remove()
+        map.delete()
 
         return Response({}), 1
 

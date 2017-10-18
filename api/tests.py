@@ -166,9 +166,6 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(response.json()['list']), 22)
 
 
-        # ---------- creating map ------------------
-        # TODO
-
     def test_with_pagination(self):
         # Tester for with_pagination decorator.
         from .views import with_pagination, RATE_BRIEF
@@ -202,6 +199,7 @@ class BackendTestCase(TestCase):
         return response
 
     def test_map(self):
+
         new_user = {
             'email' : 'test@test.org',
             'username' : 'test_user',
@@ -211,6 +209,7 @@ class BackendTestCase(TestCase):
         
         uid = response.json()['user_id']
 
+        # ---------- creating map ------------------
         token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
         
         map = {
@@ -243,6 +242,18 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['res_code'], 1)
         self.assertEqual(len(response.json()['list']), 1)
+
+        # update map information
+        map['init_ground_colors'] = [0, 0, 0]
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': map})
+        self.assertEqual(response.status_code, 200)
+
+        # delete map
+        response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse('api:map_list'))
+        self.assertEqual(response.status_code, 404)
         
    
     def test_margins(self):
