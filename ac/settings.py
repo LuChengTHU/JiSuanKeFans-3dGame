@@ -25,7 +25,9 @@ SECRET_KEY = 'igi+dy%=_!6+y-!bv6r)hv9nv-d01(r!a80jf%!u99-=2fm8&g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# PAY ATTENTION: This is only for TESTING! When deployed in production environments, this
+# shall not be *.
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap3',
+    'api',
+    'web_game',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -49,12 +56,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ac.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [(os.path.join(BASE_DIR, 'templates')),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,11 +81,26 @@ WSGI_APPLICATION = 'ac.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_DB_NAME'),
+        'USER': 'root',
+        'PASSWORD': os.getenv('MYSQL_ROOT_PASSWORD'),
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
     }
 }
 
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db_ac'),
+        'HOST': '',
+        'PORT': ''
+    }
+}
+
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -105,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TZ_SETTING') or 'UTC'
 
 USE_I18N = True
 
@@ -118,3 +139,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+BOOTSTRAP3 = {
+    'javascript_in_head': True,
+}
+
+ROOT_URLCONF = 'ac.urls'
+
+AUTH_USER_MODEL = 'api.User'

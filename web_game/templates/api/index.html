@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+{% load static %}
+{% block title %}Hello{% endblock %}
+
+{% block extra_head %}
+<script src="{% static 'api/js/blockly/blockly_compressed.js' %}"></script>
+<script src="{% static 'api/js/blockly/blocks_compressed.js' %}"></script>
+<script src="{% static 'api/js/blockly/en.js' %}"></script>
+<script src="{% static 'api/js/blockly/javascript_compressed.js' %}"></script>
+<script src="{% static 'api/js/blockly/python_compressed.js' %}"></script>
+<script src="{% static 'api/js/blockly/lua_compressed.js' %}"></script>
+<script src="{% static 'api/js/blockly/php_compressed.js' %}"></script>
+<script src="{% static 'api/js/blockly/custom.js' %}"></script>
+<script src="{% static 'api/js/game/logic.js' %}"></script>
+<script src="{% static 'api/js/utils/acorn_interpreter.js' %}"></script>
+{% comment %} <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script> {% endcomment %}
+<xml id="toolbox" style="display: none">
+  <block type="game_move"></block>
+  <block type="game_turn"></block>
+  <block type="controls_if"></block>
+  <block type="controls_repeat_ext"></block>
+  <block type="logic_compare"></block>
+  <block type="math_number"></block>
+  <block type="math_arithmetic"></block>
+  <block type="text"></block>
+  <block type="text_print"></block>
+</xml>
+<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
+  <variables></variables>
+  <block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c`k=Y" x="13" y="13">
+    <value name="TIMES">
+      <shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
+        <field name="NUM">2</field>
+      </shadow>
+    </value>
+    <statement name="DO">
+      <block type="game_move" id="+!cL)/7;TB9NG)vuHr+;"></block>
+    </statement>
+  </block>
+</xml>
+{% endblock %}
+{% block extra_script %}
+<script src="{% static 'api/js/blockly/main.js' %}"></script>
+{% endblock %}
+{% block main %}
+<div class="row">
+
+  <div id="blocklyDiv" class="col-xs-6 col-sm-3" style="height: 480px; width: 600px;" ></div>
+  {% comment %} <div id="blocklyDiv" class="main blockly-panel"></div> {% endcomment %}
+  <div id="codeDiv" class="main output-panel">
+    <div class="dropdown-bar">
+      Language:
+      <div id="im-just-an-underline">
+        <select id="languageDropdown" onChange="myUpdateFunction();">
+          <option value="JavaScript">JavaScript</option>
+          <option value="Python">Python</option>
+          <option value="PHP">PHP</option>
+          <option value="Lua">Lua</option>
+          <option value="Dart">Dart</option>
+        </select>
+      </div>
+    </div>
+    <hr class="POps">
+    <pre></pre>
+  </div>
+  <div class="col-xs-12">
+      <hr class="POps">
+  <button type="button" id="playButton" class="btn-success">Play</div>
+  </div>
+</div>
+
+{% endblock %}
