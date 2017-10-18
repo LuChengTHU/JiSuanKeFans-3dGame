@@ -244,7 +244,8 @@ class MapListView(APIView):
         map.author = request.user
         try:
             serializer = MapFullSerializer(map, data=MapFullSerializer.repr_deflate(request.data['map']))
-        except:
+        except Exception as e:
+            print(e)
             return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
         if serializer.is_valid():
             try:
@@ -253,6 +254,7 @@ class MapListView(APIView):
                 return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
 
             return Response({'map_id': map.id}, status=status.HTTP_201_CREATED), 1
+        print(serializer.errors)
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
 map_list_view = MapListView.as_view()

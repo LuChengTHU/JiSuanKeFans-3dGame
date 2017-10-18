@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase as TestCase
 from django.utils.timezone import now
 from rest_framework.views import APIView
 from rest_framework.test import APIRequestFactory
+from rest_framework.authentication import TokenAuthentication
 
 # Create your tests here.
 factory = APIRequestFactory()
@@ -164,6 +165,7 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.json()['has_next'], False)
         self.assertEqual(len(response.json()['list']), 22)
 
+
         # ---------- creating map ------------------
         # TODO
 
@@ -193,6 +195,55 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(response.data['list']), 1)
         self.assertEqual(response.data['list'][0]['username'], 'test_user')
         self.assertEqual(response.data['extra_data'], 1) 
+
+    def create_map(self, map, token):
+        response = self.client.post(reverse('api:map_list'), data={
+            'map': map}, HTTP_AUTHORIZATION='Token ' + token)
+        return response
+
+    def test_map(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+            }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
+
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+        
+        map = {
+            "init_ground_boxes": [0,0,0],
+            "title": "imgod-map",
+            "init_ground_colors": [0,1],
+            "init_pos": [0, 1],
+            "init_hand_boxes": [0, 0],
+            "final_hand_boxes": [1, 1],
+            "final_ground_colors": [1],
+            "final_ground_boxes": [],
+            "final_pos": [0, 1],
+            "n_blockly": 10,
+            "n_max_hand_boxes": 10,
+            "instr_set": [True, True, False],
+            "height": 10,
+            "width": 10
+            }
+        print(token)
+        response = self.create_map(map, token)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['res_code'], 1)
+        mid = response.json()['map_id']
+
+        response = self.client.get(reverse('api:map', kwargs={'map_id': mid}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['map']['author']['id'], uid)
+
+        response = self.client.get(reverse('api:map_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['res_code'], 1)
+        self.assertEqual(len(response.json()['list']), 1)
+        
    
     def test_margins(self):
         pass

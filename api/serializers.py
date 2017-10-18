@@ -32,13 +32,13 @@ def get_user_serializer_class(rate):
 
 
 class MapBriefSerializer(serializers.ModelSerializer):
-    author = get_user_serializer_class(RATE_BRIEF)()
+    author = get_user_serializer_class(RATE_BRIEF)(required=False)
     class Meta:
         model = Map
         fields = ('id', 'title', 'width', 'height', 'author')
 
 class MapFullSerializer(serializers.ModelSerializer):
-    author = get_user_serializer_class(RATE_BRIEF)()
+    author = get_user_serializer_class(RATE_BRIEF)(required=False)
 
     JSON_FIELDS = ['init_hand_boxes', 'final_hand_boxes', 'instr_set', 'init_ground_boxes',\
         'final_ground_boxes', 'init_ground_colors', 'final_ground_colors']
