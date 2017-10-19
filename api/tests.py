@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase as TestCase
 from django.utils.timezone import now
 from rest_framework.views import APIView
 from rest_framework.test import APIRequestFactory
+from rest_framework.serializers import Serializer
 from rest_framework.authentication import TokenAuthentication
 
 # Create your tests here.
@@ -56,6 +57,13 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['res_code'], 1)
         self.assertEqual(response.json()['user'], new_user_brief)
+
+        # ------------------ re-fetch the token to test the margin ----------
+        response = self.fetch_token(credential)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['res_code'], 1)
+        self.assertEqual(response.json()['user'], new_user_brief)
+
         token = response.json()['token'] # the token generated
 
         bad_credential = {'email' : 'test@test.org', \
@@ -257,5 +265,42 @@ class BackendTestCase(TestCase):
         
    
     def test_margins(self):
-        pass
+        from .views import with_record_fetch, with_pagination
+        from .models import User
 
+        # ------------- test margins in with_record_fetch ---------
+        class Dummy(APIView):
+            @with_record_fetch(Serializer)
+            def get(self, request):
+                return User, {}
+
+        view = Dummy.as_view()
+        response = view(factory.get('/whatever'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['res_code'], 2)
+        
+        # ------------- test margins in with_pagination ------------
+        response = self.client.get(reverse('api:user_list'), data={'pageNo': 'gg', 'pageSize': 'NaN'})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['res_code'], 0)
+
+        # ------------- test margins in with_pagination ------------
+        credential = {'email':'yz@hh.org'}
+        response = self.fetch_token(credential)
+        self.assertEqual(response.json()['res_code'], 0)
+
+        # ------------- test margins in map ------------
+        response = self.client.get(reverse('api:map', kwargs={'map_id': 0}))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()['res_code'], 2)
+
+
+        response = self.client.put(reverse('api:map', kwargs={'map_id': 0}))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()['res_code'], 2)
+
+        response = self.client.delete(reverse('api:map', kwargs={'map_id': 0}))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()['res_code'], 2)
+
+        # TODO: more tests

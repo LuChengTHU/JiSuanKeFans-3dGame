@@ -9,6 +9,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
+from django.utils.timezone import now
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
@@ -126,7 +127,7 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
 
             if not created:
                 # update the created time of the token to keep it valid
-                token.created = datetime.datetime.utcnow()
+                token.created = now()
                 token.save()
 
             return Response({'token': token.key, \
@@ -153,15 +154,12 @@ class UserListView(APIView):
         
         serializer = get_user_serializer_class(RATE_CREATE)(data=request.data)
         if serializer.is_valid():
-            if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
-                return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 2
             serializer.validated_data['password'] = \
                 base64.b64encode(get_pwd_hash(serializer.validated_data['password']))
             new_user = serializer.save()
 
             return Response({'user_id': new_user.id}, status=status.HTTP_201_CREATED), 1
 
-        # TODO: check why this does not work
         if serializer.errors == {'email' : ['user with this email already exists.']}:
             return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 2
 
