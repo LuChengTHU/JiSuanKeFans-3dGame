@@ -8,10 +8,10 @@ const Player = ({ position, rotation }) => <group
 >
     <mesh>
         <geometryResource
-            resourceId="playerGeometry"
+            resourceId="robotGeometry"
         />
         <materialResource
-            resourceId="playerTexture"
+            resourceId="robotTexture"
         />
     </mesh>
 </group>;

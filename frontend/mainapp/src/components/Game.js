@@ -39,7 +39,7 @@ export default class Game extends Component {
             <resources>
                 <texture
                     resourceId="robotImage"
-                    url={ require( '../../assets/sitepoint-robot-texture.jpg' ) }
+                    url={ require( '../assets/sitepoint-robot-texture.jpg' ) }
                     anisotropy={ 16 }
                 />
                 <meshPhongMaterial
