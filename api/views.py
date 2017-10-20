@@ -9,6 +9,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
+from django.utils.timezone import now
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
@@ -66,10 +67,10 @@ def with_pagination(page_size_lim = 40, page_size_default = 20,\
                 page_size = int(request.query_params.get(page_size_param_name, page_size_default))
             except:
                 # not good integers
-                return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+                return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
 
             if page_no < 1 or page_size < 1 or page_size > page_size_lim:
-                return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+                return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
 
             query, extra_data = func(self, request, *arg_list, **arg_dict)
 
@@ -79,7 +80,7 @@ def with_pagination(page_size_lim = 40, page_size_default = 20,\
             cnt = len(query)
             if cnt == 0:
                 # not an existing page
-                return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+                return Response({}, status=status.HTTP_404_NOT_FOUND), 0
 
             has_next = cnt > page_size
             has_prev = page_no > 1
@@ -88,8 +89,10 @@ def with_pagination(page_size_lim = 40, page_size_default = 20,\
             if serializer_class is not None:
                 list = serializer_class(list, many=True).data
 
-            return Response({data_entrypoint : list, has_prev_entrypoint : has_prev,\
-                has_next_entrypoint : has_next}), 1
+            extra_data[data_entrypoint] = list
+            extra_data[has_prev_entrypoint] = has_prev
+            extra_data[has_next_entrypoint] = has_next
+            return Response(extra_data), 1
             
         return get_response
 
@@ -124,7 +127,7 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
 
             if not created:
                 # update the created time of the token to keep it valid
-                token.created = datetime.datetime.utcnow()
+                token.created = now()
                 token.save()
 
             return Response({'token': token.key, \
@@ -143,25 +146,22 @@ class UserListView(APIView):
     @with_pagination(serializer_class=get_user_serializer_class(RATE_BRIEF))
     def get(self, request):
         # return User list
-        return User.objects.all(), {}
+        return User.objects.order_by('-id'), {}
 
     @with_res_code
     def post(self, request):
         # create new User
         
-        # serializer = UserPostSerializer(data=request.data)
         serializer = get_user_serializer_class(RATE_CREATE)(data=request.data)
         if serializer.is_valid():
-            # new_user_info = serializer.validated_data['new_user_info']
-            if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
-                return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 2
             serializer.validated_data['password'] = \
                 base64.b64encode(get_pwd_hash(serializer.validated_data['password']))
             new_user = serializer.save()
 
-            #token, created = Token.objects.get_or_create(user=new_user_inst)
+            return Response({'user_id': new_user.id}, status=status.HTTP_201_CREATED), 1
 
-            return Response({'user_id': new_user.id}), 1
+        if serializer.errors == {'email' : ['user with this email already exists.']}:
+            return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 2
 
         return Response({'user_id': 0}, status=status.HTTP_400_BAD_REQUEST), 3
 
@@ -218,7 +218,7 @@ class MapView(APIView):
             # the map not found
             return Response({}, status=status.HTTP_404_NOT_FOUND), 2
         # remove map from db
-        map.remove()
+        map.delete()
 
         return Response({}), 1
 
@@ -242,7 +242,8 @@ class MapListView(APIView):
         map.author = request.user
         try:
             serializer = MapFullSerializer(map, data=MapFullSerializer.repr_deflate(request.data['map']))
-        except:
+        except Exception as e:
+            print(e)
             return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
         if serializer.is_valid():
             try:
@@ -251,6 +252,7 @@ class MapListView(APIView):
                 return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
 
             return Response({'map_id': map.id}, status=status.HTTP_201_CREATED), 1
+        print(serializer.errors)
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
 map_list_view = MapListView.as_view()

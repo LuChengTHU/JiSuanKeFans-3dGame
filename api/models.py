@@ -17,7 +17,7 @@ class User(AbstractUser):
     is_admin = models.BooleanField(default=False)
 
     expiration = models.DateField(default=None, blank=True, null=True)
-    join_date = models.DateField(default=django.utils.timezone.now())
+    join_date = models.DateField(default=django.utils.timezone.now)
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
@@ -26,7 +26,7 @@ class User(AbstractUser):
     def get_privilege(self):
         if self.is_admin:
             return USER_PRIVILEGE_ADMIN
-        if self.expiration and date.today() >= self.expiration:
+        if self.expiration and django.utils.timezone.now() >= self.expiration:
             return USER_PRIVILEGE_VIP
 
         return USER_PRIVILEGE_COMMON
@@ -67,8 +67,4 @@ class Map(models.Model):
     final_pos_x = models.IntegerField(default=None, blank=True, null=True)
     final_pos_y = models.IntegerField(default=None, blank=True, null=True)
     final_hand_boxes = models.TextField(default=None, blank=True, null=True)
-
-
-
-
 

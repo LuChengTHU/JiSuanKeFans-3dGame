@@ -147,3 +147,7 @@ BOOTSTRAP3 = {
 ROOT_URLCONF = 'ac.urls'
 
 AUTH_USER_MODEL = 'api.User'
+
+REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
