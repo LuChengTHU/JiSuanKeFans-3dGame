@@ -1,7 +1,7 @@
 import { JSONLoader, TextureLoader } from 'three';
 
-const jsonLoader = new JSONLoader();
-const textureLoader = new TextureLoader();
+let jsonLoader = new JSONLoader();
+let textureLoader = new TextureLoader();
 
 
 export function loadModel( path ) {
@@ -12,6 +12,7 @@ export function loadModel( path ) {
             () => null,
             error => reject
         );
+
     });
 }
 

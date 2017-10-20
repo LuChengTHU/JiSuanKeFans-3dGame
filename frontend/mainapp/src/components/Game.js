@@ -5,7 +5,6 @@ import * as THREE from 'three';
 
 import Player from './Player';
 
-
 /**
  * Our main class to display the game. This contains only view code! It's very
  * easy to reason about
@@ -30,7 +29,7 @@ export default class Game extends Component {
             playerRotation
         } = this.props;
 
-        const { faces, vertices, faceVertexUvs, vertexNormals} = geometry;
+        const { faces, vertices, faceVertexUvs} = geometry;
 
         console.log(geometry);
 
@@ -43,7 +42,7 @@ export default class Game extends Component {
             <resources>
                 <texture
                     resourceId="robotImage"
-                    url={ '../assets/sitepoint-robot-texture.jpg' }
+                    url={ require('../assets/sitepoint-robot-texture.jpg') }
                     anisotropy={ 16 }
                 />
                 <meshPhongMaterial
@@ -59,7 +58,6 @@ export default class Game extends Component {
                     faces={ faces }
                     vertices={ vertices }
                     faceVertexUvs={ faceVertexUvs }
-                    vertexNormals={ vertexNormals }
                 />
             </resources>
             <scene>
