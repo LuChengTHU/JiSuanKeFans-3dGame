@@ -1,4 +1,4 @@
-import THREE, { Vector3, Euler, } from 'three';
+import { Vector3, Euler, } from 'three';
 
 const positionScale = 0.5;
 const positionSpeed = 0.001;

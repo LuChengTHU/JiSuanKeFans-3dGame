@@ -1,6 +1,7 @@
 import React, { Component, PropTypes, } from 'react';
 import React3 from 'react-three-renderer';
-import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
+import { Vector3, Euler, Geometry } from 'three';
+import * as THREE from 'three';
 
 import Player from './Player';
 
@@ -9,6 +10,7 @@ import Player from './Player';
  * Our main class to display the game. This contains only view code! It's very
  * easy to reason about
  */
+
 export default class Game extends Component {
 
     static propTypes = {
@@ -16,7 +18,7 @@ export default class Game extends Component {
         height: PropTypes.number.isRequired,
         cameraPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         lookAt: PropTypes.instanceOf( Vector3 ).isRequired,
-        geometry: PropTypes.instanceOf( Geometry ).isRequired,
+        //geometry: PropTypes.instanceOf( Geometry ).isRequired,
         playerPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         playerRotation: PropTypes.instanceOf( Euler ).isRequired,
     }
@@ -24,11 +26,13 @@ export default class Game extends Component {
     render() {
 
         const {
-            width, height, cameraPosition, geometry, lookAt, playerPosition,
+            width, height, cameraPosition, lookAt, geometry, playerPosition,
             playerRotation
         } = this.props;
 
-        const { faces, vertices, faceVertexUvs, } = geometry;
+        const { faces, vertices, faceVertexUvs, vertexNormals} = geometry;
+
+        console.log(geometry);
 
         return <React3
             mainCamera="camera"
@@ -39,12 +43,12 @@ export default class Game extends Component {
             <resources>
                 <texture
                     resourceId="robotImage"
-                    url={ require( '../assets/sitepoint-robot-texture.jpg' ) }
+                    url={ '../assets/sitepoint-robot-texture.jpg' }
                     anisotropy={ 16 }
                 />
                 <meshPhongMaterial
                     resourceId="robotTexture"
-                    side={ DoubleSide }
+                    side={ THREE.DoubleSide }
                 >
                     <textureResource
                         resourceId="robotImage"
@@ -55,6 +59,7 @@ export default class Game extends Component {
                     faces={ faces }
                     vertices={ vertices }
                     faceVertexUvs={ faceVertexUvs }
+                    vertexNormals={ vertexNormals }
                 />
             </resources>
             <scene>
