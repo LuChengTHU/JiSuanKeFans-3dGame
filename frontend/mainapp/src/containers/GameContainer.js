@@ -20,7 +20,7 @@ export default class GameContainer extends Component {
 
         // Initial scene state
         this.state = {
-            cameraPosition: new THREE.Vector3( 0, 5, 0 ),
+            cameraPosition: new THREE.Vector3( -3, 3, -3 ),
             geometry: new THREE.Geometry(),
             lookAt: new THREE.Vector3( 0, 0, 0 ),
             playerPosition: new THREE.Vector3( 0, 2, 0),
@@ -106,16 +106,18 @@ export default class GameContainer extends Component {
         // until the geometry model file is loaded. This could be replaced with
         // a loading  screen, or even a 3d scene without geometry in it
         return <div>
-            { geometry ? <Game
-                width={ width }
-                height={ height }
-                cameraPosition={ cameraPosition }
-                lookAt={ lookAt }
-                geometry={ geometry }
-                playerPosition={ playerPosition }
-                playerRotation={ playerRotation }
-            /> : 'Loading' }
-        </div>;
+			<div>
+				{ geometry ? <Game
+					width={ width }
+					height={ height }
+					cameraPosition={ cameraPosition }
+					lookAt={ lookAt }
+					geometry={ geometry }
+					playerPosition={ playerPosition }
+					playerRotation={ playerRotation }
+				/> : 'Loading' }
+			</div>
+		</div>;
 
     }
 
