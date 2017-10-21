@@ -44,7 +44,7 @@ class BlocklyContainer extends Component {
         this.workspace.addChangeListener((e) => this.myUpdateFunction(e));
         function executeBlockCode() {
 
-            let code = Blockly.JavaScript.workspaceToCode(this.workspace);
+            let code = 'gameInit();\n' + Blockly.JavaScript.workspaceToCode(this.workspace);
             let initFunc = function(interpreter, scope) {
             let alertWrapper = function(text) {
             text = text ? text.toString() : '';
@@ -58,6 +58,11 @@ class BlocklyContainer extends Component {
             };
             interpreter.setProperty(scope, 'prompt',
                 interpreter.createNativeFunction(promptWrapper));
+            let GameInit = function() {
+            return interpreter.createPrimitive(Game.gameInit());
+            };
+            interpreter.setProperty(scope, 'gameInit',
+                interpreter.createNativeFunction(GameInit));
             let GameMove = function() {
             return interpreter.createPrimitive(Game.gameMove());
             };
@@ -118,7 +123,7 @@ class BlocklyContainer extends Component {
                 </div>
                 <div className="col-xs-12">
                     <hr className="POps"/>
-                <button type="button" id="playButton" className="btn-success"/>Play
+                <button type="button" id="playButton" className="btn-success">Play</button>
                 </div>
             </div>
 

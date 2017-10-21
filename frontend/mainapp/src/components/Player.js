@@ -6,53 +6,53 @@ export default class Player extends Component {
 
     constructor(props, context) {
         super(props, context);
-		this.state = {
-			position : props.position,
-			rotation : props.rotation,
-			direction : new Vector3(1, 0, 0),
-		};
-		window.player = this;
+		// window.player = this;
+		// this.state = {
+			// position : props.position,
+			// rotation : props.rotation,
+			// direction : new Vector3(1, 0, 0),
+		// };
 		
-		this.turnCW = this.turnCW.bind(this);
-		this.turnCCW = this.turnCCW.bind(this);
-		this.moveForward = this.moveForward.bind(this);
+		// this.turnCW = this.turnCW.bind(this);
+		// this.turnCCW = this.turnCCW.bind(this);
+		// this.moveForward = this.moveForward.bind(this);
+		
+		// this.version = -1;
     }
 	
-	turnCW()
-	{
-		if(this.state.direction.x == 1)
-			this.setState({direction: new Vector3(0, 0, 1)});
-		else if(this.state.direction.z == 1)
-			this.setState({direction: new Vector3(-1, 0, 0)});
-		else if(this.state.direction.x == -1)
-			this.setState({direction: new Vector3(0, 0, -1)});
-		else
-			this.setState({direction: new Vector3(1, 0, 0)});
-	}
-	turnCCW()
-	{
-		if(this.state.direction.x == 1)
-			this.setState({direction: new Vector3(0, 0, -1)});
-		else if(this.state.direction.z == -1)
-			this.setState({direction: new Vector3(-1, 0, 0)});
-		else if(this.state.direction.x == -1)
-			this.setState({direction: new Vector3(0, 0, 1)});
-		else
-			this.setState({direction: new Vector3(1, 0, 0)});
-	}
-	moveForward()
-	{
-		console.log(this.state.position);
-		console.log(this.state.direction);
-		this.setState( (prevState, props) => ({position: prevState.position.add(prevState.direction)}) );
-		console.log(this.state.position);
-		console.log(this.group);
-	}
+	// componentWillReceiveProps(props)
+	// {
+		// if(props.version != this.version)
+		// {
+			// this.state = {
+				// position : props.position,
+				// rotation : props.rotation,
+				// direction : new Vector3(1, 0, 0),
+			// };
+			// this.version = props.version;
+		// }
+	// }
+	
+	// turnCW()
+	// {
+	// }
+	// turnCCW()
+	// {
+	// }
+	// moveForward()
+	// {
+		// console.log(this.state.position);
+		// console.log(this.state.direction);
+		// this.setState({position: this.state.position.add(this.state.direction)});
+		// console.log(this.state.position);
+		// console.log(this.group);
+		// window.ui.forceUpdate();
+	// }
 
     render() {
         const {
             position, rotation
-        } = this.state;
+        } = this.props;
 		
 		this.group = <group
 			position={ position }
