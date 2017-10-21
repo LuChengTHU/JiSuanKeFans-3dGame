@@ -11,16 +11,6 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
 
-    <script src="%PUBLIC_URL%/js/blockly/blockly_compressed.js"></script>
-    <script src="%PUBLIC_URL%/js/blockly/blocks_compressed.js"></script>
-    <script src="%PUBLIC_URL%/js/blockly/en.js"></script>
-    <script src="%PUBLIC_URL%/js/blockly/javascript_compressed.js"></script>
-    <script src="%PUBLIC_URL%/js/blockly/python_compressed.js"></script>
-    <script src="%PUBLIC_URL%/js/blockly/lua_compressed.js"></script>
-    <script src="%PUBLIC_URL%/js/blockly/php_compressed.js"></script>
-    <script src="%PUBLIC_URL%/js/blockly/custom.js"></script>
-    <script src="%PUBLIC_URL%/js/utils/acorn_interpreter.js"></script>
-    <script src="%PUBLIC_URL%/js/logic.js"></script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -30,30 +20,6 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <xml id="toolbox" style="display: none">
-      <block type="game_move"></block>
-      <block type="game_turn"></block>
-      <block type="controls_if"></block>
-      <block type="controls_repeat_ext"></block>
-      <block type="logic_compare"></block>
-      <block type="math_number"></block>
-      <block type="math_arithmetic"></block>
-      <block type="text"></block>
-      <block type="text_print"></block>
-    </xml>
-    <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
-      <variables></variables>
-      <block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c`k=Y" x="13" y="13">
-        <value name="TIMES">
-          <shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
-            <field name="NUM">10</field>
-          </shadow>
-        </value>
-        <statement name="DO">
-          <block type="game_move" id="+!cL)/7;TB9NG)vuHr+;"></block>
-        </statement>
-      </block>
-    </xml>
     <title>React App</title>
 	<script>
 	function cw()
@@ -78,34 +44,11 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="game"></div>
+    <div id="root"></div>
 	<button type="button" className="btn btn-info" onClick="cw()">cw</button>
 	<button type="button" className="btn btn-info" onClick="ccw()">ccw</button>
 	<button type="button" className="btn btn-info" onClick="forward()">forward</button>
 	<button type="button" className="btn btn-info" onClick="cli()">iii</button>
-    <div class="row">
-        <div id="blocklyDiv" class="col-xs-6 col-sm-3" style="height: 480px; width: 600px;" ></div>
-        <div id="codeDiv" class="main output-panel">
-          <div class="dropdown-bar">
-            Language:
-            <div id="im-just-an-underline">
-              <select id="languageDropdown" onChange="myUpdateFunction();">
-                <option value="JavaScript">JavaScript</option>
-                <option value="Python">Python</option>
-                <option value="PHP">PHP</option>
-                <option value="Lua">Lua</option>
-                <option value="Dart">Dart</option>
-              </select>
-            </div>
-          </div>
-          <hr class="POps">
-          <pre></pre>
-        </div>
-        <div class="col-xs-12">
-            <hr class="POps">
-        <button type="button" id="playButton" class="btn-success">Play</div>
-        </div>
-      </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -116,62 +59,5 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script>
-      //var workspacePlayground = Blockly.inject('blocklyDiv',
-          //{toolbox: document.getElementById('toolbox')});
-      var workspace = Blockly.inject('blocklyDiv',
-      {toolbox: document.getElementById('toolbox')});
-      var defaultBlocks = document.getElementById('workspaceBlocks');
-      Blockly.Xml.domToWorkspace(defaultBlocks, workspace);
-      function myUpdateFunction(event) {
-        var languageDropdown = document.getElementById('languageDropdown');
-        var languageSelection = languageDropdown.options[languageDropdown.selectedIndex].value;
-        var codeDiv = document.getElementById('codeDiv');
-        var codeHolder = document.createElement('pre');
-        codeHolder.className = 'prettyprint but-not-that-pretty';
-        var code = document.createTextNode(Blockly[languageSelection].workspaceToCode(workspace));
-        codeHolder.appendChild(code);
-        codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
-        //PR.prettyPrint();
-      }
-      workspace.addChangeListener(myUpdateFunction);
-      function executeBlockCode() {
-        var code = Blockly.JavaScript.workspaceToCode(workspace);
-        var initFunc = function(interpreter, scope) {
-          var alertWrapper = function(text) {
-            text = text ? text.toString() : '';
-            return interpreter.createPrimitive(alert(text));
-          };
-          interpreter.setProperty(scope, 'alert',
-              interpreter.createNativeFunction(alertWrapper));
-          var promptWrapper = function(text) {
-            text = text ? text.toString() : '';
-            return interpreter.createPrimitive(prompt(text));
-          };
-          interpreter.setProperty(scope, 'prompt',
-              interpreter.createNativeFunction(promptWrapper));
-          var GameMove = function() {
-            return interpreter.createPrimitive(Game.gameMove());
-          };
-          interpreter.setProperty(scope, 'gameMove',
-              interpreter.createNativeFunction(GameMove));
-          var GameTurn = function(x) {
-            return interpreter.createPrimitive(Game.gameTurn(x));
-          };
-          interpreter.setProperty(scope, 'gameTurn',
-              interpreter.createNativeFunction(GameTurn));
-        };
-        var myInterpreter = new Interpreter(code, initFunc);
-        var stepsAllowed = 10000;
-        while (myInterpreter.step() && stepsAllowed) {
-          stepsAllowed--;
-        }
-        if (!stepsAllowed) {
-          throw EvalError('Infinite loop.');
-        }
-      }
-      
-      document.getElementById('playButton').addEventListener('click', executeBlockCode);
-    </script>
   </body>
 </html>
