@@ -8,7 +8,7 @@ import { loadModel, } from '../utils/utils';
 
 // Load our simple functions that manage scene/game state
 import playerMovement from '../logic/playerMovement';
-import robot from '../assets/robot.json';
+
 
 /**
  * Our "container" component. See https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.jwywi6ltw
@@ -42,7 +42,7 @@ export default class GameContainer extends Component {
         //
         // this.setState({geometry}, ()=>{console.log(this.state);});
 
-        loadModel( robot ).then(
+        loadModel( `${process.env.PUBLIC_URL}/assets/robot.json` ).then(
             (geometry) => {
                 console.log(geometry);
                 this.setState({geometry}, ()=>{console.log(this.state);});
