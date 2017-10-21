@@ -43,37 +43,46 @@ class BlocklyContainer extends Component {
         Blockly.Xml.domToWorkspace(defaultBlocks, this.workspace);
         this.workspace.addChangeListener((e) => this.myUpdateFunction(e));
         function executeBlockCode() {
-
             let code = 'gameInit();\n' + Blockly.JavaScript.workspaceToCode(this.workspace);
             let initFunc = function(interpreter, scope) {
-            let alertWrapper = function(text) {
-            text = text ? text.toString() : '';
-            return interpreter.createPrimitive(alert(text));
+                interpreter.setProperty(scope, 'GameCW', Game.GameCW);
+                interpreter.setProperty(scope, 'GameCCW', Game.GameCCW);
+                interpreter.setProperty(scope, "gameTurn",
+                    interpreter.createNativeFunction((x) => {
+                        return Game.gameTurn(x);     
+                    }));
+                interpreter.setProperty(scope, "gameMove",
+                    interpreter.createNativeFunction(() => {
+                        return Game.gameMove();     
+                    }));
+                interpreter.setProperty(scope, "gameInit",
+                    interpreter.createNativeFunction(() => {
+                        return Game.gameInit();     
+                    }));
+                var alertWrapper = function(text) {
+                    text = text ? text.toString() : '';
+                    return alert(text);
+                };
+                interpreter.setProperty(scope, 'alert',
+                    interpreter.createNativeFunction(alertWrapper));
+
+                var promptWrapper = function(text) {
+                    text = text ? text.toString() : '';
+                    return prompt(text);
+                };
+                interpreter.setProperty(scope, 'prompt',
+                    interpreter.createNativeFunction(promptWrapper));
+
+                var consoleObj = this.createObject(interpreter.OBJECT);
+                this.setProperty(scope, 'console', consoleObj);
+                var logWrapper = function(text) {
+                text = text ? text.toString() : '';
+                return console.log(text);
+                };
+                interpreter.setProperty(consoleObj, 'log',
+                    interpreter.createNativeFunction(logWrapper));
             };
-            interpreter.setProperty(scope, 'alert',
-                interpreter.createNativeFunction(alertWrapper));
-            let promptWrapper = function(text) {
-            text = text ? text.toString() : '';
-            return interpreter.createPrimitive(prompt(text));
-            };
-            interpreter.setProperty(scope, 'prompt',
-                interpreter.createNativeFunction(promptWrapper));
-            let GameInit = function() {
-            return interpreter.createPrimitive(Game.gameInit());
-            };
-            interpreter.setProperty(scope, 'gameInit',
-                interpreter.createNativeFunction(GameInit));
-            let GameMove = function() {
-            return interpreter.createPrimitive(Game.gameMove());
-            };
-            interpreter.setProperty(scope, 'gameMove',
-                interpreter.createNativeFunction(GameMove));
-            let GameTurn = function(x) {
-            return interpreter.createPrimitive(Game.gameTurn(x));
-            };
-            interpreter.setProperty(scope, 'gameTurn',
-                interpreter.createNativeFunction(GameTurn));
-            };
+
             let myInterpreter = new Interpreter(code, initFunc);
             let stepsAllowed = 10000;
             while (myInterpreter.step() && stepsAllowed) {

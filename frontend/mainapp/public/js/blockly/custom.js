@@ -14,7 +14,7 @@ Blockly.Blocks['game_turn'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("Turn")
-        .appendField(new Blockly.FieldDropdown([["Clockwise","14"], ["CounterClockwise","15"]]), "Turn");
+        .appendField(new Blockly.FieldDropdown([["Clockwise","GameCW"], ["CounterClockwise","GameCCW"]]), "Turn");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
