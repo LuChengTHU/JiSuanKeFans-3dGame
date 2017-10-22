@@ -42,27 +42,47 @@ export default class GameContainer extends Component {
         //
         // this.setState({geometry}, ()=>{console.log(this.state);});
 
-        loadJsonModel( `${process.env.PUBLIC_URL}/assets/robot.json` ).then(
-            (geometry) => {
-                this.setState({geometry});
+        // loadJsonModel( `${process.env.PUBLIC_URL}/assets/robot.json` ).then(
+        //     (geometry) => {
+        //         this.setState({geometry});
+        //     }
+        // );
+
+        loadJsonModel(`${process.env.PUBLIC_URL}/assets/knight.js`).then(
+            (geometry, materials) => {
+                let material = materials[ 0 ];
+                material.emissive.set( 0x101010 );
+                material.skinning = true;
+                material.morphTargets = true;
+                let mesh = new THREE.SkinnedMesh( geometry, material );
+                mesh.position.y = -30;
+                mesh.scale.multiplyScalar( 5 );
+                mixer = new THREE.AnimationMixer( mesh );
+                for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
+                    let action = mixer.clipAction( mesh.geometry.animations[ i ] );
+                    if ( i === 1 ) action.timeScale = 0.25;
+                    action.play();
+                }
+                scene.add( mesh );
+                ready = true;
             }
         );
 
-
-        loadObjModel( `${process.env.PUBLIC_URL}/assets/Garen.obj` ).then(
-            (obj) => {
-                // let texture = new THREE.Texture();
-                // obj.traverse( function( child ) {
-                //     if(child instanceof THREE.Mesh) {
-                //         //child.material.map = texture;
-                //     }
-                // })
-                obj.position.y = 0;
-                obj.position.x = 0;
-                obj.position.z = 0;
-                this.setState({objPlayer : obj});
-            }
-        );
+        // loadObjModel( `${process.env.PUBLIC_URL}/assets/Garen.obj` ).then(
+        //     (obj) => {
+        //         // let texture = new THREE.Texture();
+        //         // obj.traverse( function( child ) {
+        //         //     if(child instanceof THREE.Mesh) {
+        //         //         //child.material.map = texture;
+        //         //     }
+        //         // })
+        //         obj.position.y = 0;
+        //         obj.position.x = 0;
+        //         obj.position.z = 0;
+        //         this.setState({objPlayer : obj});
+        //         console.log(obj)
+        //     }
+        // );
 
         // Start the game loop when this component loads
         this.requestGameLoop();

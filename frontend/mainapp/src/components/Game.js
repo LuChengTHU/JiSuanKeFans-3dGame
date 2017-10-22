@@ -77,7 +77,7 @@ export default class Game extends Component {
                     position={ playerPosition }
                     rotation={ playerRotation }
                 />
-                { objPlayer }
+
             </scene>
         </React3>;
 
