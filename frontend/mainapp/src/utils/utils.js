@@ -1,10 +1,14 @@
 import { JSONLoader, TextureLoader } from 'three';
+import React, { Component } from 'react';
+let THREE = require('three');
+let OBJLoader = require('three-obj-loader');
+OBJLoader(THREE);
 
 let jsonLoader = new JSONLoader();
 let textureLoader = new TextureLoader();
+let objLoader = new THREE.OBJLoader();
 
-
-export function loadModel( path ) {
+export function loadJsonModel( path ) {
     return new Promise( ( resolve, reject ) => {
         jsonLoader.load(
             path,
@@ -13,6 +17,17 @@ export function loadModel( path ) {
             error => reject
         );
 
+    });
+}
+
+export function loadObjModel( path ) {
+    return new Promise( ( resolve, reject ) => {
+        objLoader.load(
+            path,
+            resolve,
+            () => null,
+            error => reject
+        );
     });
 }
 

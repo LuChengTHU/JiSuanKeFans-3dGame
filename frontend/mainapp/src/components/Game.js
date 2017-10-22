@@ -26,7 +26,7 @@ export default class Game extends Component {
 
         const {
             width, height, cameraPosition, lookAt, geometry, playerPosition,
-            playerRotation
+            playerRotation, objPlayer
         } = this.props;
 
         const { faces, vertices, faceVertexUvs} = geometry;
@@ -77,6 +77,7 @@ export default class Game extends Component {
                     position={ playerPosition }
                     rotation={ playerRotation }
                 />
+                { objPlayer }
             </scene>
         </React3>;
 
