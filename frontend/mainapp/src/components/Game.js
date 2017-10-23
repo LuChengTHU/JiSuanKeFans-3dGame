@@ -17,7 +17,6 @@ export default class Game extends Component {
         height: PropTypes.number.isRequired,
         cameraPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         lookAt: PropTypes.instanceOf( Vector3 ).isRequired,
-        //geometry: PropTypes.instanceOf( Geometry ).isRequired,
         playerPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         playerRotation: PropTypes.instanceOf( Euler ).isRequired,
     };
@@ -26,19 +25,16 @@ export default class Game extends Component {
         const {knightMesh, playerPosition, playerRotation} = this.props;
         knightMesh.position.set(0,0,0);
         knightMesh.rotation.set(0,0,0);
-        //knightMesh.rotation = playerRotation;
         this.sceneRef.add(knightMesh);
-        console.log(this.sceneRef);
     }
 
     render() {
 
         const {
-            width, height, cameraPosition, lookAt, geometry, playerPosition,
-            playerRotation, knightMesh
+            width, height, cameraPosition, lookAt
         } = this.props;
 
-        const { faces, vertices, faceVertexUvs} = geometry;
+
 
         return <React3
             mainCamera="camera"
@@ -47,25 +43,20 @@ export default class Game extends Component {
             antialias
         >
             <resources>
-                <texture
-                    resourceId="robotImage"
-                    url={ require('../assets/sitepoint-robot-texture.jpg') }
-                    anisotropy={ 16 }
-                />
-                <meshPhongMaterial
-                    resourceId="robotTexture"
-                    side={ THREE.DoubleSide }
-                >
-                    <textureResource
-                        resourceId="robotImage"
-                    />
-                </meshPhongMaterial>
-                <geometry
-                    resourceId="robotGeometry"
-                    faces={ faces }
-                    vertices={ vertices }
-                    faceVertexUvs={ faceVertexUvs }
-                />
+                {/*<texture*/}
+                    {/*resourceId="robotImage"*/}
+                    {/*url={ require('../assets/sitepoint-robot-texture.jpg') }*/}
+                    {/*anisotropy={ 16 }*/}
+                {/*/>*/}
+                {/*<meshPhongMaterial*/}
+                    {/*resourceId="robotTexture"*/}
+                    {/*side={ THREE.DoubleSide }*/}
+                {/*>*/}
+                    {/*<textureResource*/}
+                        {/*resourceId="robotImage"*/}
+                    {/*/>*/}
+                {/*</meshPhongMaterial>*/}
+
             </resources>
             <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
@@ -80,10 +71,6 @@ export default class Game extends Component {
                 <ambientLight
                     color={ 0xdddddd }
                 />
-                {/*<Player*/}
-                    {/*position={ playerPosition }*/}
-                    {/*rotation={ playerRotation }*/}
-                {/*/>*/}
 
             </scene>
         </React3>;

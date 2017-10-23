@@ -15,7 +15,7 @@ export default function playerMovement( oldState, time ) {
 
     let mixer = oldState.mixer;
     const clock = oldState.clock;
-    mixer.update(clock.getDelta() / 2.0);
+    mixer.update(clock.getDelta() );
     
 
 

@@ -23,10 +23,7 @@ export default class GameContainer extends Component {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, 0, 0 ),
             cameraPosition: new Vector3( 10, 10, 20 ),
-            lookAt: new Vector3( 0, 0, 0 ),
-            knightMesh : null,
-            knightMixer : null,
-            ready : false
+            lookAt: new Vector3( 0, 0, 0 )
         };
     }
 
@@ -37,20 +34,6 @@ export default class GameContainer extends Component {
 
         // Expose the global THREE object for use in debugging console
         window.THREE = THREE;
-
-        // Load the geometry in didMount, which is only executed server side.
-        // Note we can pass our JSON file paths to webpack!
-
-        // const geometry = robot;
-        //
-        // this.setState({geometry}, ()=>{console.log(this.state);});
-
-        // loadJsonModel( `${process.env.PUBLIC_URL}/assets/robot.json` ).then(
-        //     (geometry) => {
-        //         this.setState({geometry});
-        //     }
-        // );
-
 
         let loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/knight.json`,
@@ -69,8 +52,6 @@ export default class GameContainer extends Component {
                 this.setState({
                     knightMesh:mesh,
                     mixer:mixer,
-                    ready:true,
-                    geometry:mesh.geometry,
                     clock:new THREE.Clock()
                 });
 
@@ -78,23 +59,6 @@ export default class GameContainer extends Component {
                 this.requestGameLoop();
 
             });
-
-        // loadObjModel( `${process.env.PUBLIC_URL}/assets/Garen.obj` ).then(
-        //     (obj) => {
-        //         // let texture = new THREE.Texture();
-        //         // obj.traverse( function( child ) {
-        //         //     if(child instanceof THREE.Mesh) {
-        //         //         //child.material.map = texture;
-        //         //     }
-        //         // })
-        //         obj.position.y = 0;
-        //         obj.position.x = 0;
-        //         obj.position.z = 0;
-        //         this.setState({objPlayer : obj});
-        //         console.log(obj)
-        //     }
-        // );
-
 
 
     }
@@ -123,7 +87,7 @@ export default class GameContainer extends Component {
     // callback
     gameLoop = (time) => {
 
-        if( !this.mounted || !this.state.ready) {
+        if( !this.mounted ) {
             return;
         }
 
@@ -145,19 +109,18 @@ export default class GameContainer extends Component {
         const height = window.innerHeight;
 
         const {
-            cameraPosition, geometry, lookAt, playerPosition, playerRotation, knightMesh
+            cameraPosition, lookAt, playerPosition, playerRotation, knightMesh
         } = this.state;
 
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
         // a loading  screen, or even a 3d scene without geometry in it
         return <div>
-            { geometry ? <Game
+            { knightMesh ? <Game
                 width={ width }
                 height={ height }
                 cameraPosition={ cameraPosition }
                 lookAt={ lookAt }
-                geometry={ geometry }
                 playerPosition={ playerPosition }
                 playerRotation={ playerRotation }
                 knightMesh={ knightMesh }
