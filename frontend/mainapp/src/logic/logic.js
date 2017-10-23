@@ -65,12 +65,13 @@ export default class Game {
 		let dir = Game.map.curDir;
 		console.log(dir);
 		console.log(Game.GameUp);
+		let shouldCall = false;
 		if(dir === Game.GameUp)
 		{
 			if(Game.map.curPos[0] > 0)
 			{
 				Game.map.curPos[0]--;
-				window.ui.playerMoveForward();
+				shouldCall = true;
 			}
 		}
 		else if(dir === Game.GameLeft)
@@ -78,7 +79,7 @@ export default class Game {
 			if(Game.map.curPos[1] > 0)
 			{
 				Game.map.curPos[1]--;
-				window.ui.playerMoveForward();
+				shouldCall = true;
 			}
 		}
 		else if(dir === Game.GameDown)
@@ -86,7 +87,7 @@ export default class Game {
 			if(Game.map.curPos[0] < Game.map.height - 1)
 			{
 				Game.map.curPos[0]++;
-				window.ui.playerMoveForward();
+				shouldCall = true;
 			}
 		}
 		else if(dir === Game.GameRight)
@@ -94,12 +95,14 @@ export default class Game {
 			if(Game.map.curPos[1] < Game.map.width - 1)
 			{
 				Game.map.curPos[1]++;
-				window.ui.playerMoveForward();
+				shouldCall = true;
 			}
 		}
 		else
 			throw new Error('IllegalState');
 		Game.gameCheckFinished();
+		if(shouldCall)
+			window.ui.playerMoveForward();
 	}
 
 	static gameTurn(way)
@@ -107,19 +110,21 @@ export default class Game {
 		console.log(way);
 		console.log(Game.GameCW);
 		console.log(Game.map.instrSet[Game.GameCW]);
+		let callback = null;
 		if(way === Game.GameCW && Game.map.instrSet[Game.GameCW])
 		{
 			Game.map.curDir = (Game.map.curDir + 1) % 4 + 16;
-			window.ui.playerTurnCW();
+			callback = window.ui.playerTurnCW;
 		}
 		else if(way === Game.GameCCW && Game.map.instrSet[Game.GameCCW])
 		{
 			Game.map.curDir = (Game.map.curDir + 3) % 4 + 16;
-			window.ui.playerTurnCCW();
+			callback = window.ui.playerTurnCCW;
 		}
 		else
 			throw new Error('IllegalInstruction');
 		Game.gameCheckFinished();
+		callback();
 	}
 
 	/**
@@ -147,7 +152,7 @@ export default class Game {
 		let isa = Game.isArray(a), isb = Game.isArray(b);
 		if(isa && isb)
 		{
-			if(a.length != b.length)
+			if(a.length !== b.length)
 				return false;
 			for(let i = 0; i < a.length; i++)
 				if(!Game.gameFinishedEqual(a[i], b[i]))
@@ -155,12 +160,12 @@ export default class Game {
 			return true;
 		}
 		if(!isa && !isb)
-			return a == b;
+			return a === b;
 		return false;
 	}
 	static isArray(o)
 	{
-		return Object.prototype.toString.call(o) == '[object Array]';
+		return Object.prototype.toString.call(o) === '[object Array]';
 	}
     // static gameTurn(x) {
         // console.log('gameTurn'+x);        

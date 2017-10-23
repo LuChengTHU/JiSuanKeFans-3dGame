@@ -16,8 +16,8 @@ export default function playerMovement( oldState, time ) {
     // Merge the old state with the updated properties
     return {
         ...oldState,
-        playerPosition: new Vector3( 0, 0, positionScale * Math.sin( time * positionSpeed ) + positionOffset ),
-        playerRotation: new Euler( 0, 0, rotationScale * Math.sin( time * rotationSpeed ) )
+        // playerPosition: new Vector3( 0, 0, positionScale * Math.sin( time * positionSpeed ) + positionOffset ),
+        // playerRotation: new Euler( 0, 0, rotationScale * Math.sin( time * rotationSpeed ) )
     };
 
 }
