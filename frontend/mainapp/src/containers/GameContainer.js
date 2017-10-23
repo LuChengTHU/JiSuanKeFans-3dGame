@@ -22,14 +22,22 @@ export default class GameContainer extends Component {
         super();
 		window.ui = this;
 		window.Game = Logic.default;
+		window.blocklyCallback = () => {};
+		window.blocklyShouldRun = false;
+		
+		window.blocklyAutoRun = () =>
+		{
+			window.setTimeout(window.blocklyAutoRun, 1);
+			if(window.blocklyShouldRun)
+				window.blocklyCallback();
+		};
+		window.blocklyAutoRun();
 
         // Initial scene state
         this.state = {
-            cameraPosition: new THREE.Vector3( -3, 3, -3 ),
+            cameraPosition: new THREE.Vector3( -3, 6, -3 ),
             geometry: new THREE.Geometry(),
-            lookAt: new THREE.Vector3( 0, 0, 0 ),
-            playerPosition: new THREE.Vector3( 0, 2, 0),
-            playerRotation: new THREE.Vector3( 0, 0, 0)
+            lookAt: new THREE.Vector3( 3, 0, 3 ),
         };
 
         loadModel(  '../assets/sitepoint-robot.json'  ).then(geometry =>
@@ -56,7 +64,9 @@ export default class GameContainer extends Component {
 	createPlayer(x, z)
 	{
 		this.setState(
-			{	playerPosition : new Vector3(x, 1, z),
+			{
+				playerPosition : new Vector3(x, 1, z),
+				playerTargetPosition : new Vector3(x, 1, z),
 				playerRotation : new Euler(),
 			}
 		);
@@ -82,7 +92,8 @@ export default class GameContainer extends Component {
 			else
 				return {playerDirection: new Vector3(1, 0, 0)};
 		});
-		window.blocklyCallback();
+		this.setState({playerAnimateCW: true});
+		window.blocklyShouldRun = false;
 	}
 	
 	playerTurnCCW()
@@ -97,19 +108,14 @@ export default class GameContainer extends Component {
 			else
 				return {playerDirection: new Vector3(1, 0, 0)};
 		});
-		window.blocklyCallback();
+		this.setState({playerAnimateCCW: true});
+		window.blocklyShouldRun = false;
 	}
 	
 	playerMoveForward()
 	{
-		console.log('call move');
-		this.setState((prevState, props) => {
-			let tmp = new Vector3(0, 0, 0);
-			tmp.add(prevState.playerPosition);
-			tmp.add(prevState.playerDirection);
-			return {playerPosition: tmp};
-		});
-		window.blocklyCallback();
+		this.setState({playerAnimateForward: true});
+		window.blocklyShouldRun = false;
 	}
     
     componentDidMount() {
@@ -169,6 +175,8 @@ export default class GameContainer extends Component {
         const newState = playerMovement( oldState, time );
     
         this.setState( newState );
+		if(newState.ready)
+			window.blocklyCallback();
     }
 
     render() {

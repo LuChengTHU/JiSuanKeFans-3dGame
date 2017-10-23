@@ -92,19 +92,14 @@ class BlocklyContainer extends Component {
 					throw EvalError('Infinite loop.');
 				stepsAllowed--;
 				if(!myInterpreter.step())
-					throw new Error('ExecutionFinished');
+				{
+					window.blocklyCallback = () => {};
+					window.blocklyShouldRun = false;
+				}
 			};
 			window.blocklyCallback = stepCallback;
 			console.log('before call');
-			try
-			{
-				while(true)
-					stepCallback();
-			}
-			catch(err)
-			{
-				console.log(err);
-			}
+			window.blocklyShouldRun = true;
         }
 
         document.getElementById('playButton').addEventListener('click', executeBlockCode);
