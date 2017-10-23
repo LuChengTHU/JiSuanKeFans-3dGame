@@ -85,12 +85,20 @@ class BlocklyContainer extends Component {
 
             let myInterpreter = new Interpreter(code, initFunc);
             let stepsAllowed = 10000;
-            while (myInterpreter.step() && stepsAllowed) {
-            stepsAllowed--;
-            }
-            if (!stepsAllowed) {
-            throw EvalError('Infinite loop.');
-            }
+			let stepCallback = () =>
+			{
+				console.log('calling ' + stepsAllowed);
+				if(stepsAllowed <= 0)
+					throw EvalError('Infinite loop.');
+				stepsAllowed--;
+				if(!myInterpreter.step())
+				{
+					window.blocklyCallback = () => {};
+					window.blocklyShouldRun = false;
+				}
+			};
+			window.blocklyCallback = stepCallback;
+			window.blocklyShouldRun = true;
         }
 
         document.getElementById('playButton').addEventListener('click', executeBlockCode);

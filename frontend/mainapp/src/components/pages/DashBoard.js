@@ -27,9 +27,11 @@ class DashBoard extends Component {
     {
         return (
             <div className={this.classes.root}>
-                <Grid container spacing={24} justify='center'>
+                <Grid container spacing={25} justify='center'>
                 <Grid item xs={12} sm={6} >
+				<div id={'gameContainer'}>
                 <GameContainer />
+				</div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                 <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}/>

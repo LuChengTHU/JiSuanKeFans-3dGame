@@ -5,7 +5,6 @@ import * as THREE from 'three';
 
 import Player from './Player';
 import MapBlock from './MapBlock';
-import * as Logic from '../logic/logic';
 
 
 /**
@@ -25,119 +24,13 @@ export default class Game extends Component {
     }
     constructor(props, context) {
         super(props, context);
-		window.ui = this;
-		window.Game = Logic.default;
-
-        this.state = {
-			rotation: new THREE.Euler(),
-			
-			roting: true,
-			mapBlocks: [],
-			playerPosition: new Vector3(0, 1, 0),
-			playerRotation: new Euler(),
-			playerDirection: new Vector3(1, 0, 0)
-        };
-
-		this._onAnimate = () => {
-		  // we will get this callback every frame
-
-		  // this helps with updates and pure rendering.
-		  
-		  if(this.state.roting)
-			  this.setState({
-				rotation: new THREE.Euler(
-				  this.state.rotation.x + 0.1,
-				  this.state.rotation.y + 0.2,
-				  0
-				),
-			  });
-		};
-		
-		this.createMap = this.createMap.bind(this);
-		this.setPlayerDirection = this.setPlayerDirection.bind(this);
-		this.createPlayer = this.createPlayer.bind(this);
-		this.addPlayer = this.addPlayer.bind(this);
-		this.playerMoveForward = this.playerMoveForward.bind(this);
-		this.playerTurnCW = this.playerTurnCW.bind(this);
-		this.playerTurnCCW = this.playerTurnCCW.bind(this);
     }
-	
-	createMap(height, width)
-	{
-		let bs = [];
-		for(let i = 0; i < height; ++i)
-			for(let j = 0; j < width; ++j)
-				bs.push(<MapBlock x={i} z={j}/>);
-		this.setState({mapBlocks: bs});
-	}
-	
-	createPlayer(x, z)
-	{
-		this.setState(
-			{	playerPosition : new Vector3(x, 1, z),
-				playerRotation : new Euler(),
-			}
-		);
-	}
-	
-	setPlayerDirection(x, z)
-	{
-		this.setState(
-			{	playerDirection : new Vector3(x, 0, z),
-			}
-		);
-	}
-	
-	playerTurnCW()
-	{
-		this.setState((prevState, props) => {
-			if(prevState.playerDirection.x === 1)
-				return {playerDirection: new Vector3(0, 0, 1)};
-			else if(prevState.playerDirection.z === 1)
-				return {playerDirection: new Vector3(-1, 0, 0)};
-			else if(prevState.playerDirection.x === -1)
-				return {playerDirection: new Vector3(0, 0, -1)};
-			else
-				return {playerDirection: new Vector3(1, 0, 0)};
-		});
-	}
-	
-	playerTurnCCW()
-	{
-		this.setState((prevState, props) => {
-			if(prevState.playerDirection.x === 1)
-				return {playerDirection: new Vector3(0, 0, -1)};
-			else if(prevState.playerDirection.z === -1)
-				return {playerDirection: new Vector3(-1, 0, 0)};
-			else if(prevState.playerDirection.x === -1)
-				return {playerDirection: new Vector3(0, 0, 1)};
-			else
-				return {playerDirection: new Vector3(1, 0, 0)};
-		});
-	}
-	
-	playerMoveForward()
-	{
-		console.log('call move');
-		this.setState((prevState, props) => {
-			let tmp = new Vector3(0, 0, 0);
-			tmp.add(prevState.playerPosition);
-			tmp.add(prevState.playerDirection);
-			return {playerPosition: tmp};
-		});
-	}
-	
-	// TODO: change its name to "onClick"
-	addPlayer()
-	{
-		this.createMap(Math.ceil(Math.random() * 10), Math.ceil(Math.random() * 10));
-		this.createPlayer();
-	}
 
     render() {
         const {
             width, height, cameraPosition, geometry, lookAt, playerPosition,
-            playerRotation
+            playerRotation,
+			mapBlocks
         } = this.props;
 
         const { faces, vertices, faceVertexUvs, } = geometry;
@@ -149,7 +42,6 @@ export default class Game extends Component {
             width={ width }
             height={ height }
             antialias
-			onAnimate={this._onAnimate}
         >
             <resources>
                 <texture
@@ -198,10 +90,10 @@ export default class Game extends Component {
                 <ambientLight
                     color={ 0xdddddd }
                 />
-				{ this.state.mapBlocks }
+				{ mapBlocks }
 				<Player
-					position={this.state.playerPosition}
-					rotation={this.state.playerRotation}
+					position={playerPosition}
+					rotation={playerRotation}
 				/>
             </scene>
         </React3>;
