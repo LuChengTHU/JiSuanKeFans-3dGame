@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'api/play_main.css' %}" type='text/css' >
+</head>
+<body>
+<div class="play_main">
+   <header class="navbar">
+        <div class="navbar_container">
+            <h2 class="level_description">第一关</h2>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="game-area">
+            {% load static %}
+            <img src="{% static "api/game_bg.jpg" %}"/>
+
+            <div class="inner-radius">
+                <svg viewBox="0, 0, 1000, 690" class="gs-svg" style="background: rgb(102, 185, 33) none repeat scroll 0% 0%;" width="653" height="451" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+                    <defs></defs>
+
+                    <g style="visibility: visible;" transform="matrix(1,0,0,1,500,150)">
+                        <svg id="people" x="-37.5" y="-121" width="75" height="134" viewBox="0, 268, 75, 134" style="opacity: 1;">
+                            <desc>Created with Snap</desc>
+                            <defs></defs>
+                            <image xlink:href="{% static "img/box.jpg" %}" preserveAspectRatio="none" x="0" y="0" width="75" height="134"></image>
+                        </svg>
+                        <svg x="0" y="0" width="0" height="0" viewBox="0 0 0 0" style="opacity: 0;">
+                            <desc>Created with Snap</desc>
+                            <defs></defs>
+                            <image xlink:href="{% static "img/box.jpg" %}" preserveAspectRatio="none" x="0" y="0" width="150" height="134"></image>
+                        </svg>
+                        <g style="opacity: 0;">
+                            <rect x="-80" y="-60" width="160" height="40" rx="10" ry="10" style="stroke-width: 3;" fill="#65afe5" stroke="#222222"></rect>
+                            <text x="0" y="-32" background="#65afe5" style="font-size: 30px; text-anchor: middle;" fill="#222222"></text>
+                        </g>
+                        <g style="opacity: 0; cursor: pointer;">
+                            <rect x="-37.5" y="-121" width="75" height="134"></rect>
+                        </g>
+                    </g>
+
+                </svg>
+            </div>
+
+
+        </div>
+        <div class="code-area">
+            <button class="run btn-tnn">运行</button>
+            <button class="reset btn-tnn">
+                <span class="icon-repeat"></span>
+            </button>
+        </div>
+    </main>
+
+
+
+
+</div>
+
+
+<script>
+    function GAME() {
+        var game = new Object();
+        game.pos.x = document.getElementById('people').x.value;
+        game.pos.y = document.getElementById('people').x.value;
+        game.gameMove = function () {
+            g = document.getElementById('people');
+            g.setAttribute('x', game.pos.x + 10);
+        };
+
+        return game;
+    }
+</script>
+
+
+</body>
+</html>

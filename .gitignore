@@ -111,3 +111,7 @@ fabric.properties
 
 .vscode
 .history
+.coverage
+Coverage_Python
+
+.eslintrc
