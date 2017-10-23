@@ -20,18 +20,25 @@ export default class Game extends Component {
         //geometry: PropTypes.instanceOf( Geometry ).isRequired,
         playerPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         playerRotation: PropTypes.instanceOf( Euler ).isRequired,
+    };
+
+    componentDidMount() {
+        const {knightMesh, playerPosition, playerRotation} = this.props;
+        knightMesh.position.set(0,0,0);
+        knightMesh.rotation.set(0,0,0);
+        //knightMesh.rotation = playerRotation;
+        this.sceneRef.add(knightMesh);
+        console.log(this.sceneRef);
     }
 
     render() {
 
         const {
             width, height, cameraPosition, lookAt, geometry, playerPosition,
-            playerRotation, objPlayer
+            playerRotation, knightMesh
         } = this.props;
 
         const { faces, vertices, faceVertexUvs} = geometry;
-
-        console.log(geometry);
 
         return <React3
             mainCamera="camera"
@@ -60,7 +67,7 @@ export default class Game extends Component {
                     faceVertexUvs={ faceVertexUvs }
                 />
             </resources>
-            <scene>
+            <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
                     name="camera"
                     fov={ 75 }
@@ -73,10 +80,10 @@ export default class Game extends Component {
                 <ambientLight
                     color={ 0xdddddd }
                 />
-                <Player
-                    position={ playerPosition }
-                    rotation={ playerRotation }
-                />
+                {/*<Player*/}
+                    {/*position={ playerPosition }*/}
+                    {/*rotation={ playerRotation }*/}
+                {/*/>*/}
 
             </scene>
         </React3>;

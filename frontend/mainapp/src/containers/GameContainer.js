@@ -1,10 +1,8 @@
 import React, { Component, PropTypes} from 'react';
 import * as THREE from 'three';
-import { Vector3 } from 'three';
+import { Vector3, Euler } from 'three';
 
 import Game from '../components/Game';
-
-import { loadJsonModel, loadObjModel} from '../utils/utils';
 
 // Load our simple functions that manage scene/game state
 import playerMovement from '../logic/playerMovement';
@@ -22,8 +20,13 @@ export default class GameContainer extends Component {
 
         // Initial scene state
         this.state = {
-            cameraPosition: new Vector3( 0, 5, 0 ),
-            lookAt: new Vector3( 0, 0, 0 )
+            playerPosition: new Vector3( 0, 0, 0 ),
+            playerRotation: new Euler( 0, 0, 0 ),
+            cameraPosition: new Vector3( 10, 10, 20 ),
+            lookAt: new Vector3( 0, 0, 0 ),
+            knightMesh : null,
+            knightMixer : null,
+            ready : false
         };
     }
 
@@ -48,25 +51,33 @@ export default class GameContainer extends Component {
         //     }
         // );
 
-        loadJsonModel(`${process.env.PUBLIC_URL}/assets/knight.js`).then(
+
+        let loader = new THREE.JSONLoader();
+        loader.load(`${process.env.PUBLIC_URL}/assets/knight.json`,
             (geometry, materials) => {
                 let material = materials[ 0 ];
                 material.emissive.set( 0x101010 );
                 material.skinning = true;
                 material.morphTargets = true;
                 let mesh = new THREE.SkinnedMesh( geometry, material );
-                mesh.position.y = -30;
-                mesh.scale.multiplyScalar( 5 );
-                mixer = new THREE.AnimationMixer( mesh );
+                let mixer = new THREE.AnimationMixer( mesh );
                 for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
                     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
-                    if ( i === 1 ) action.timeScale = 0.25;
+                    if ( i === 1 ) action.timeScale = 0.05;
                     action.play();
                 }
-                scene.add( mesh );
-                ready = true;
-            }
-        );
+                this.setState({
+                    knightMesh:mesh,
+                    mixer:mixer,
+                    ready:true,
+                    geometry:mesh.geometry,
+                    clock:new THREE.Clock()
+                });
+
+                // Start the game loop when this component loads
+                this.requestGameLoop();
+
+            });
 
         // loadObjModel( `${process.env.PUBLIC_URL}/assets/Garen.obj` ).then(
         //     (obj) => {
@@ -84,8 +95,7 @@ export default class GameContainer extends Component {
         //     }
         // );
 
-        // Start the game loop when this component loads
-        this.requestGameLoop();
+
 
     }
 
@@ -113,7 +123,7 @@ export default class GameContainer extends Component {
     // callback
     gameLoop = (time) => {
 
-        if( !this.mounted ) {
+        if( !this.mounted || !this.state.ready) {
             return;
         }
 
@@ -135,7 +145,7 @@ export default class GameContainer extends Component {
         const height = window.innerHeight;
 
         const {
-            cameraPosition, geometry, lookAt, playerPosition, playerRotation, objPlayer
+            cameraPosition, geometry, lookAt, playerPosition, playerRotation, knightMesh
         } = this.state;
 
         // Pass the data <Game /> needs to render. Note we don't show the game
@@ -150,7 +160,7 @@ export default class GameContainer extends Component {
                 geometry={ geometry }
                 playerPosition={ playerPosition }
                 playerRotation={ playerRotation }
-                objPlayer={ objPlayer }
+                knightMesh={ knightMesh }
             /> : 'Loading' }
         </div>;
 

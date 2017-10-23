@@ -13,11 +13,19 @@ const rotationScale = 0.03;
  **/
 export default function playerMovement( oldState, time ) {
 
+    let mixer = oldState.mixer;
+    const clock = oldState.clock;
+    mixer.update(clock.getDelta() / 2.0);
+    
+
+
     // Merge the old state with the updated properties
     return {
         ...oldState,
-        playerPosition: new Vector3( 0, 0, positionScale * Math.sin( time * positionSpeed ) + positionOffset ),
-        playerRotation: new Euler( 0, 0, rotationScale * Math.sin( time * rotationSpeed ) )
+        // playerPosition: new Vector3( 0, 0, positionScale * Math.sin( time * positionSpeed ) + positionOffset ),
+        // playerRotation: new Euler( 0, 0, rotationScale * Math.sin( time * rotationSpeed ) ),
+        mixer: mixer,
+        clock: clock,
     };
 
 }
