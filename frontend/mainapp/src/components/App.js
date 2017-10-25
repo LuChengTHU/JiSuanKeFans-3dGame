@@ -3,6 +3,11 @@ import withRoot from './withRoot';
 import Nav from './Nav';
 import axios from 'axios';
 import { withStyles } from 'material-ui/styles';
+import DashBoard from './pages/DashBoard'
+import MapEditor from './pages/MapEditor'
+import {Route} from 'react-router-dom'
+
+
 const styles = theme => ({
     root: {
       flexGrow: 1,
@@ -23,6 +28,8 @@ class App extends Component {
         return (
             <div className={this.classes.root}>
                 <Nav/>
+                <Route exact path="/" component={DashBoard}/>
+                <Route exact path="/editor" component={MapEditor}/>
                 {this.props.children}
             </div>
         );
