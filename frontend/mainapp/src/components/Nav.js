@@ -9,6 +9,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
+import {withRouter} from 'react-router-dom'
 // import FormDialog from './Login.js';
 
 const styles = theme => ({
@@ -34,6 +35,7 @@ class Nav extends Component {
         this.classes = classes;
         this.state = {
             open: false,
+            links: props.links ? props.links : []
         }
     }
     render()
@@ -52,11 +54,13 @@ class Nav extends Component {
                 localStorage.getItem('user')
                 :''
                 }
+                <div>
+                    <Button color="contrast" onClick={() => {this.props.history.push('/editor');}}>Map Editor</Button>
+                </div>
                 <div className="login">
                 <Button color="contrast" onClick={(e) => {this.setState({open:true});}}>Login</Button>
                 {/* <FormDialog open={this.state.open}/> */}
                 </div>
-
                 </Toolbar>
             </AppBar>
             </div>
@@ -68,4 +72,4 @@ Nav.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Nav);
+export default withRouter(withStyles(styles)(Nav));
