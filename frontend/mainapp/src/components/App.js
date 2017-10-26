@@ -16,7 +16,6 @@ class App extends Component {
         axios.defaults.baseURL = 'http://localhost:8000/api/v0.1';
         axios.defaults.headers.common['Authorization'] = localStorage.getItem('token') || '';
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-        console.log(props.children);
     }
     render() 
     {
