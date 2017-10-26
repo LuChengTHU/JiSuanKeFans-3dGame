@@ -11,6 +11,8 @@ import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import LoginFormDialog from './pages/Login.js';
 import RegisterFormDialog from './pages/Register.js';
+import {withRouter} from 'react-router-dom'
+// import FormDialog from './Login.js';
 
 const styles = theme => ({
   root: {
@@ -36,6 +38,7 @@ class Nav extends Component {
         this.state = {
             loginOpen: false,
             registerOpen: false,
+            links: props.links ? props.links : []
         }
     }
     render()
@@ -50,6 +53,9 @@ class Nav extends Component {
                 <Typography type="title" color="inherit" className={this.classes.flex}>
                     Title
                 </Typography>
+                <div>
+                    <Button color="contrast" onClick={() => {this.props.history.push('/editor');}}>地图编辑器</Button>
+                </div>
                 {localStorage.getItem('token') ? 
                 <div className="profile">
                 {JSON.parse(localStorage.getItem('user'))['username']}
@@ -76,7 +82,6 @@ class Nav extends Component {
                 { <RegisterFormDialog open={this.state.registerOpen}/> }
                 </div>
                 }
-
                 </Toolbar>
             </AppBar>
             </div>
@@ -88,4 +93,4 @@ Nav.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Nav);
+export default withRouter(withStyles(styles)(Nav));
