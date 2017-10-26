@@ -10,6 +10,7 @@ import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import LoginFormDialog from './pages/Login.js';
+import RegisterFormDialog from './pages/Register.js';
 
 const styles = theme => ({
   root: {
@@ -33,7 +34,8 @@ class Nav extends Component {
         const { classes } = props;
         this.classes = classes;
         this.state = {
-            open: false,
+            loginOpen: false,
+            registerOpen: false,
         }
     }
     render()
@@ -57,13 +59,21 @@ class Nav extends Component {
                     window.location.reload();
                     }
                 }>
-                    Logout
+                    登出
                 </Button>
                 </div>
                 :
-                <div className="login">
-                <Button color="contrast" onClick={(e) => {this.setState({open:true});}}>Login</Button>
-                { <LoginFormDialog open={this.state.open}/> }
+                <div className="login-register">
+                <Button color="contrast" onClick={(e) => {
+                    this.setState({loginOpen:true, registerOpen:false});
+                    console.log('login');
+                    }}>登录</Button>
+                <Button color="contrast" onClick={(e) => {
+                    this.setState({registerOpen:true, loginOpen:false});
+                    console.log('register');
+                    }}>注册</Button>
+                { <LoginFormDialog open={this.state.loginOpen}/> }
+                { <RegisterFormDialog open={this.state.registerOpen}/> }
                 </div>
                 }
 

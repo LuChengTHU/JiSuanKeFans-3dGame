@@ -36,18 +36,19 @@ const styles = theme => ({
 })
 const MESSAGE = {
     0: 'Unknown error',
-    1: 'Success. Reloading...',
-    2: 'Password error',
-    3: 'User does not exist',
+    1: 'Success. Please confirm via the email then login.',
+    2: 'Email exists',
+    3: 'Data illegal',
 }
 
-class LoginFormDialog extends React.Component {
+class RegisterFormDialog extends React.Component {
   constructor(props) 
   {
     super(props);
     this.num_msg = 0;
     this.state = {
       open: props.open,
+      username: '',
       email: '',
       password: '',
       messages: []
@@ -79,19 +80,20 @@ class LoginFormDialog extends React.Component {
 
   handleRequestSubmit = (e) => {
     let payload={
+        "username":this.state.username,
         "email":this.state.email,
         "password":this.state.password
     }
     console.log(payload);
-    axios.post('token/', payload)
+    axios.post('user/', payload)
         .then((response) => {
             console.log(response);
             if(response.data.res_code !== null) {
                 this.addMessgae(MESSAGE[response.data.res_code]);
                 if (response.data.res_code === 1) {
-                    localStorage.token = response.data['token'];
-                    localStorage.user = JSON.stringify(response.data['user']);
-                    window.location.reload();
+                    // localStorage.token = response.data['token'];
+                    // localStorage.user = JSON.stringify(response.data['user']);
+                    // window.location.reload();
                 }
             }
         })
@@ -124,19 +126,8 @@ class LoginFormDialog extends React.Component {
   render() {
     return (
       <div>
-        {/* <Button onClick={this.handleClickOpen}>Open form dialog</Button> */}
-            {/* <Snackbar 
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                }}
-                message={this.state.message}
-                autoHideDuration={1000}
-                onRequestClose={()=>{this.setState({ message:  ''})}}
-                open={this.state.message !== ''}
-            /> */}
         <Dialog open={this.state.open} onRequestClose={this.handleRequestClose}>
-          <DialogTitle>Login</DialogTitle>
+          <DialogTitle>注册</DialogTitle>
           {this.state.messages.map((message) => {
             return <SnackbarContent key={message[1]} 
                 className={this.classes.snackbar}
@@ -150,6 +141,15 @@ class LoginFormDialog extends React.Component {
           })}
           <form onSubmit={this.handleRequestSubmit}>
           <DialogContent className={this.classes.dialogContent}>
+          <TextField
+            required={true}
+            margin="dense"
+            id="username"
+            label="用户名"
+            value={this.state.username}
+            fullWidth
+            onChange={this.handleInputChange('username')}
+          />
             <TextField
               required={true}
               margin="dense"
@@ -173,7 +173,7 @@ class LoginFormDialog extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button type={'submit'} color="primary">
-              登录
+              注册
             </Button>
             <Button onClick={this.handleRequestClose} color="primary">
               取消
@@ -186,4 +186,4 @@ class LoginFormDialog extends React.Component {
   }
 }
 
-export default withStyles(styles)(LoginFormDialog);
+export default withStyles(styles)(RegisterFormDialog);
