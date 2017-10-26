@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
-// import FormDialog from './Login.js';
+import LoginFormDialog from './pages/Login.js';
 
 const styles = theme => ({
   root: {
@@ -54,7 +54,7 @@ class Nav extends Component {
                 }
                 <div className="login">
                 <Button color="contrast" onClick={(e) => {this.setState({open:true});}}>Login</Button>
-                {/* <FormDialog open={this.state.open}/> */}
+                { <LoginFormDialog open={this.state.open}/> }
                 </div>
 
                 </Toolbar>
