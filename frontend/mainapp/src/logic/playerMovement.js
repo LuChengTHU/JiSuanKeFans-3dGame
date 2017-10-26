@@ -15,8 +15,10 @@ export default function playerMovement( oldState, time ) {
 
     let mixer = oldState.mixer;
     const clock = oldState.clock;
-    mixer.update(clock.getDelta() );
-    
+    let len = oldState.attackLength;
+    len = len + 1;
+    mixer.update(clock.getDelta());
+
 
 
     // Merge the old state with the updated properties
@@ -26,6 +28,7 @@ export default function playerMovement( oldState, time ) {
         // playerRotation: new Euler( 0, 0, rotationScale * Math.sin( time * rotationSpeed ) ),
         mixer: mixer,
         clock: clock,
+        attackLength:len
     };
 
 }

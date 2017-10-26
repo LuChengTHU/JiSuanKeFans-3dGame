@@ -52,7 +52,8 @@ export default class GameContainer extends Component {
                 this.setState({
                     knightMesh:mesh,
                     mixer:mixer,
-                    clock:new THREE.Clock()
+                    clock:new THREE.Clock(),
+                    attackLength:0
                 });
 
                 // Start the game loop when this component loads
