@@ -4,21 +4,14 @@ import React from 'react';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { SnackbarContent } from 'material-ui/Snackbar';
-import Snackbar from 'material-ui/Snackbar';
 import { withStyles } from 'material-ui/styles';
-import { red, purple } from 'material-ui/colors';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from 'material-ui-icons/Close';
 import Dialog, {
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from 'material-ui/Dialog';
 import axios from 'axios';
 
-const danger = red[500]; // #F44336
-const accent = purple['A200']; // #E040FB
 const styles = theme => ({
     snackbar: {
         margin: theme.spacing.unit,
@@ -45,21 +38,16 @@ class LoginFormDialog extends React.Component {
   constructor(props) 
   {
     super(props);
+    this.muiName = 'Dialog';
+    //Object.assign(this, {classes})
     this.num_msg = 0;
     this.state = {
-      open: props.open,
       email: '',
       password: '',
       messages: []
     };
-    const { classes } = props;
-    this.classes = classes;
     this.handleRequestSubmit = this.handleRequestSubmit.bind(this);
   }
-
-  handleRequestClose = () => {
-    this.setState({ open: false });
-  };
 
   addMessgae(msg)
   {
@@ -107,49 +95,34 @@ class LoginFormDialog extends React.Component {
         });
     e.preventDefault();
   };
+  myUpdate(newState) {
+      this.setState(newState);
+      console.log('myUpdate');
+  }
   handleInputChange = name => event => {
     this.setState({
       [name]: event.target.value,
     });
   };
 
-
-  componentWillReceiveProps(nextProps)
-  {
-    if (this.state.open !== nextProps.open) {
-        this.setState({ open: nextProps.open});
-    }
-  }
-
   render() {
+    const { classes, onRequestClose, ...other } = this.props;
     return (
-      <div>
-        {/* <Button onClick={this.handleClickOpen}>Open form dialog</Button> */}
-            {/* <Snackbar 
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                }}
-                message={this.state.message}
-                autoHideDuration={1000}
-                onRequestClose={()=>{this.setState({ message:  ''})}}
-                open={this.state.message !== ''}
-            /> */}
-        <Dialog open={this.state.open} onRequestClose={this.handleRequestClose}>
+        <Dialog {...other} onRequestClose={onRequestClose} >
           <DialogTitle>Login</DialogTitle>
           {this.state.messages.map((message) => {
             return <SnackbarContent key={message[1]} 
-                className={this.classes.snackbar}
+                className={classes.snackbar}
                 message={message[0]}
                 action={
-                    <Button className={this.classes.dialogContent.cancleButton} dense onClick={() => {this.removeMessage(message)} }>
+                    <Button className={classes.dialogContent.cancleButton} dense onClick={() => {this.removeMessage(message)} }>
                     关闭
                     </Button>
                 }
             />
           })}
           <form onSubmit={this.handleRequestSubmit}>
-          <DialogContent className={this.classes.dialogContent}>
+          <DialogContent className={classes.dialogContent}>
             <TextField
               required={true}
               margin="dense"
@@ -175,13 +148,12 @@ class LoginFormDialog extends React.Component {
             <Button type={'submit'} color="primary">
               登录
             </Button>
-            <Button onClick={this.handleRequestClose} color="primary">
+            <Button onClick={onRequestClose} color="primary">
               取消
             </Button>
           </DialogActions>
           </form>
         </Dialog>
-      </div>
     );
   }
 }
