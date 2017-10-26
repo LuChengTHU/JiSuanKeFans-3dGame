@@ -49,13 +49,23 @@ class Nav extends Component {
                     Title
                 </Typography>
                 {localStorage.getItem('token') ? 
-                localStorage.getItem('user')
-                :''
-                }
+                <div className="profile">
+                {JSON.parse(localStorage.getItem('user'))['username']}
+                <Button color="contrast" onClick={(e) => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    window.location.reload();
+                    }
+                }>
+                    Logout
+                </Button>
+                </div>
+                :
                 <div className="login">
                 <Button color="contrast" onClick={(e) => {this.setState({open:true});}}>Login</Button>
                 { <LoginFormDialog open={this.state.open}/> }
                 </div>
+                }
 
                 </Toolbar>
             </AppBar>
