@@ -1,9 +1,12 @@
 import React, { Component, PropTypes, } from 'react';
 import React3 from 'react-three-renderer';
-import { Vector3, Euler, Geometry } from 'three';
+
+import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
+
 import * as THREE from 'three';
 
 import Player from './Player';
+import MapBlock from './MapBlock';
 
 /**
  * Our main class to display the game. This contains only view code! It's very
@@ -23,20 +26,37 @@ export default class Game extends Component {
 
     componentDidMount() {
         const {knightMesh, playerPosition, playerRotation} = this.props;
-        knightMesh.position.set(0,0,0);
-        knightMesh.rotation.set(0,0,0);
+        let group = new THREE.Group();
+        knightMesh.position.x = playerPosition.x;
+        knightMesh.position.y = playerPosition.y;
+        knightMesh.position.z = playerPosition.z;
+        //knightMesh.rotation.set(0,0,0);
+        knightMesh.name = "knight";
         this.sceneRef.add(knightMesh);
+
+        this.setState({readyKnight:true})
+    }
+
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            readyKnight:false
+        };
     }
 
     render() {
-
         const {
-            width, height, cameraPosition, lookAt
+            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation
         } = this.props;
 
+        if(this.state.readyKnight) {
+            this.sceneRef.getObjectByName("knight").position.set(playerPosition.x, playerPosition.y, playerPosition.z);
+            this.sceneRef.getObjectByName("knight").rotation.set(playerRotation.x, playerRotation.y, playerRotation.z);
+        }
 
-
-        return <React3
+		// return <div> width={ width }, height={ height }
+                    // lookAt={ lookAt.x } </div>
+		let ans = <React3
             mainCamera="camera"
             width={ width }
             height={ height }
@@ -45,18 +65,30 @@ export default class Game extends Component {
             <resources>
                 {/*<texture*/}
                     {/*resourceId="robotImage"*/}
-                    {/*url={ require('../assets/sitepoint-robot-texture.jpg') }*/}
+                    {/*url={ require( '../assets/sitepoint-robot-texture.jpg' ) }*/}
                     {/*anisotropy={ 16 }*/}
                 {/*/>*/}
                 {/*<meshPhongMaterial*/}
                     {/*resourceId="robotTexture"*/}
-                    {/*side={ THREE.DoubleSide }*/}
+                    {/*side={ DoubleSide }*/}
                 {/*>*/}
                     {/*<textureResource*/}
                         {/*resourceId="robotImage"*/}
                     {/*/>*/}
                 {/*</meshPhongMaterial>*/}
-
+                <texture
+                    resourceId="grassImage"
+                    url={ require( '../assets/grass.jpg' ) }
+                    anisotropy={ 16 }
+                />
+                <meshPhongMaterial
+                    resourceId="grassTexture"
+                    side={ DoubleSide }
+                >
+                    <textureResource
+                        resourceId="grassImage"
+                    />
+                </meshPhongMaterial>
             </resources>
             <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
@@ -71,10 +103,14 @@ export default class Game extends Component {
                 <ambientLight
                     color={ 0xdddddd }
                 />
-
+				{ mapBlocks }
+                {/*<group ref={val => { this.playerGroupRef = val; }}>*/}
+                    {/*position={playerPosition}*/}
+                    {/*rotation={playerRotation}*/}
+                {/*</group>*/}
             </scene>
         </React3>;
-
+		return ans;
     }
 
 }

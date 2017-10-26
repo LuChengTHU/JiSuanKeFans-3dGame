@@ -22,7 +22,7 @@
     "DbgName" : "WHITE",
     "blending" : "NormalBlending",
     "colorDiffuse" : [0.6400000190734865, 0.6400000190734865, 0.6400000190734865],
-    "colorSpecular" : [0.1, 0.1, 0.1],
+    "colorSpecular" : [0.37434511778136503, 0.37434511778136503, 0.37434511778136503],
     "mapDiffuse" : "monster.jpg",
     "mapDiffuseWrap" : ["repeat", "repeat"],
     "depthTest" : true,

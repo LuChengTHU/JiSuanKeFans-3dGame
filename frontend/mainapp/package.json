@@ -4,8 +4,12 @@
   "private": true,
   "dependencies": {
     "autobind-decorator": "^2.1.0",
+    "axios": "^0.17.0",
     "cannon": "^0.6.2",
+    "material-ui": "^1.0.0-beta.17",
+    "material-ui-icons": "^1.0.0-beta.17",
     "react": "^15.6.1",
+    "react-async-script-loader": "^0.3.0",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.14",
     "react-three-renderer": "^3.2.1",
