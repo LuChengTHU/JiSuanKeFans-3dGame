@@ -35,7 +35,7 @@ export default class GameContainer extends Component {
 
         // Initial scene state
         this.state = {
-            cameraPosition: new THREE.Vector3( -3, 6, -3 ),
+            cameraPosition: new THREE.Vector3( -3, 4, -3 ),
             geometry: new THREE.Geometry(),
             lookAt: new THREE.Vector3( 3, 0, 3 ),
         };
@@ -75,7 +75,8 @@ export default class GameContainer extends Component {
 	setPlayerDirection(x, z)
 	{
 		this.setState(
-			{	playerDirection : new Vector3(x, 0, z),
+			{	
+				playerDirection : new Vector3(x, 0, z),
 			}
 		);
 	}
@@ -187,7 +188,6 @@ export default class GameContainer extends Component {
 		if(divObj)
 		{
 			width = divObj.clientWidth;
-			// height = divObj.clientHeight;
 			height = window.innerHeight * .8;
 		}
 
