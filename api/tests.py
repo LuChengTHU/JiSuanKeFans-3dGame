@@ -226,6 +226,7 @@ class BackendTestCase(TestCase):
             "init_ground_colors": [0,1],
             "init_pos": [0, 1],
             "init_hand_boxes": [0, 0],
+            "init_AI_infos": [{'id': 'first', 'pos': [0, 0], 'dir': 16}, {'id': 'second', 'pos': [1, 0], 'dir': 17}],
             "final_hand_boxes": [1, 1],
             "final_ground_colors": [1],
             "final_ground_boxes": [],
@@ -245,6 +246,7 @@ class BackendTestCase(TestCase):
         response = self.client.get(reverse('api:map', kwargs={'map_id': mid}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['map']['author']['id'], uid)
+        self.assertEqual(response.json()['map']['init_AI_infos'], map['init_AI_infos'])
 
         response = self.client.get(reverse('api:map_list'))
         self.assertEqual(response.status_code, 200)
