@@ -59,14 +59,14 @@ export default class GameContainer extends Component {
         window.THREE = THREE;
 
         let loader = new THREE.JSONLoader();
-        loader.load(`${process.env.PUBLIC_URL}/assets/knight.json`,
+        loader.load(`${process.env.PUBLIC_URL}/assets/texture.json`,
             (geometry, materials) => {
                 let material = materials[ 0 ];
                 material.emissive.set( 0x101010 );
                 material.skinning = true;
                 material.morphTargets = true;
                 let mesh = new THREE.SkinnedMesh( geometry, material );
-                mesh.scale.set( 0.1, 0.1, 0.1 );
+                mesh.scale.set( 0.01, 0.01, 0.01 );
                 let mixer = new THREE.AnimationMixer( mesh );
                 for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
                     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
