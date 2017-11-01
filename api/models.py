@@ -39,6 +39,8 @@ class Map(models.Model):
     height = models.IntegerField()
     width = models.IntegerField()
 
+    stage = models.IntegerField(default=None, blank=True, null=True, unique=True)
+
     # ------------ restrictions -------------
 
     n_max_hand_boxes = models.IntegerField()
