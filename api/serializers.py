@@ -81,7 +81,7 @@ class MapFullSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'n_max_hand_boxes', 'n_blockly', 'height', 'width',\
             'init_pos_x', 'init_pos_y', 'final_pos_x', 'final_pos_y', 'instr_set',\
             'init_ground_colors', 'init_ground_boxes', 'init_hand_boxes',\
-            'final_ground_colors', 'final_ground_boxes', 'final_hand_boxes', 'author')
+            'final_ground_colors', 'final_ground_boxes', 'final_hand_boxes', 'author', 'stage')
 
 
 
