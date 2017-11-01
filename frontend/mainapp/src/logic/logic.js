@@ -4,7 +4,7 @@ export default class Game {
 	 * height, width
 	 * nMaxHandBoxes
 	 * instrSet
-	 * {init, cur, final} {Pos, GroundColors, GroundBoxes, HandBoxes, Dir}
+	 * {init, cur, final} {Pos, GroundColors, GroundBoxes, HandBoxes, Dir, AiInfos}
 	 */
 	// map : null;
 
@@ -22,10 +22,25 @@ export default class Game {
 		Game.GameLeft  = 17;
 		Game.GameDown  = 18;
 		Game.GameRight = 19;
+		
 		// @TODO: Check whether the map is valid.
 		Game.map = map;
+		
 		window.ui.createMap(map.height, map.width);
 		window.ui.createPlayer(map.initPos[0], map.initPos[1]);
+		
+		Game.map.aiCallbacks = [];
+		for(let i = 0; i < map.initAiInfos.length; i++)
+		{
+			window.ui.addMonster(i, map.initAiInfos[i].pos[0], map.initAiInfos[i].pos[1]);
+			let dat = {};
+			Game.map.aiCallbacks.push(() =>
+			{
+				let data = dat;
+				return eval(map.initAiInfos[i].code);
+			});
+		}
+		Game.map.curAi = -1;
 		return true;
 	}
 
@@ -37,10 +52,21 @@ export default class Game {
 	static gameInit()
 	{
 		Game.map.curDir          = Game.map.initDir;
+		// @TODO: manual deep copy
 		Game.map.curPos          = Game.map.initPos.slice(0);
 		Game.map.curGroundColors = Game.map.initGroundColors.slice(0);
 		Game.map.curGroundBoxes  = Game.map.initGroundBoxes.slice(0);
 		Game.map.curHandBoxes    = Game.map.initHandBoxes.slice(0);
+		
+		Game.map.curAiInfos = [];
+		for(let i = 0; i < Game.map.initAiInfos.length; i++)
+			Game.map.curAiInfos.push({
+				id : Game.map.initAiInfos[i].id,
+				pos: Game.map.initAiInfos[i].pos.slice(0),
+				dir: Game.map.initAiInfos[i].dir,
+			});
+		
+		Game.map.curAi = -1;
 		
 		window.ui.createPlayer(Game.map.curPos[0], Game.map.curPos[1]);
 		if(Game.map.curDir === Game.GameUp)
@@ -60,71 +86,154 @@ export default class Game {
 	
 	static gameMove()
 	{
-		if(!Game.map.instrSet[11])
-			throw new Error('IllegalInstruction');
-		let dir = Game.map.curDir;
-		console.log(dir);
-		console.log(Game.GameUp);
-		let shouldCall = false;
-		if(dir === Game.GameUp)
+		if(Game.map.curAi === -1)
 		{
-			if(Game.map.curPos[0] > 0)
+			// Player playing
+			if(!Game.map.instrSet[11])
+				throw new Error('IllegalInstruction');
+			let dir = Game.map.curDir;
+			console.log(dir);
+			console.log(Game.GameUp);
+			let shouldCall = false;
+			if(dir === Game.GameUp)
 			{
-				Game.map.curPos[0]--;
-				shouldCall = true;
+				if(Game.map.curPos[0] > 0)
+				{
+					Game.map.curPos[0]--;
+					shouldCall = true;
+				}
 			}
-		}
-		else if(dir === Game.GameLeft)
-		{
-			if(Game.map.curPos[1] > 0)
+			else if(dir === Game.GameLeft)
 			{
-				Game.map.curPos[1]--;
-				shouldCall = true;
+				if(Game.map.curPos[1] > 0)
+				{
+					Game.map.curPos[1]--;
+					shouldCall = true;
+				}
 			}
-		}
-		else if(dir === Game.GameDown)
-		{
-			if(Game.map.curPos[0] < Game.map.height - 1)
+			else if(dir === Game.GameDown)
 			{
-				Game.map.curPos[0]++;
-				shouldCall = true;
+				if(Game.map.curPos[0] < Game.map.height - 1)
+				{
+					Game.map.curPos[0]++;
+					shouldCall = true;
+				}
 			}
-		}
-		else if(dir === Game.GameRight)
-		{
-			if(Game.map.curPos[1] < Game.map.width - 1)
+			else if(dir === Game.GameRight)
 			{
-				Game.map.curPos[1]++;
-				shouldCall = true;
+				if(Game.map.curPos[1] < Game.map.width - 1)
+				{
+					Game.map.curPos[1]++;
+					shouldCall = true;
+				}
 			}
+			else
+				throw new Error('IllegalState');
+			if(shouldCall)
+				window.ui.playerMoveForward();
+			Game.gameCallAfterPlayerMove();
 		}
 		else
-			throw new Error('IllegalState');
+		{
+			// AI playing
+			let id = Game.map.curAi;
+			let dir = Game.map.curAiInfos[id].dir;
+			console.log(id);
+			console.log(dir);
+			let shouldCall = false;
+			if(dir === Game.GameUp)
+			{
+				if(Game.map.curAiInfos[id].pos[0] > 0)
+				{
+					Game.map.curAiInfos[id].pos[0]--;
+					shouldCall = true;
+				}
+			}
+			else if(dir === Game.GameLeft)
+			{
+				if(Game.map.curAiInfos[id].pos[1] > 0)
+				{
+					Game.map.curAiInfos[id].pos[1]--;
+					shouldCall = true;
+				}
+			}
+			else if(dir === Game.GameDown)
+			{
+				if(Game.map.curAiInfos[id].pos[0] < Game.map.height - 1)
+				{
+					Game.map.curAiInfos[id].pos[0]++;
+					shouldCall = true;
+				}
+			}
+			else if(dir === Game.GameRight)
+			{
+				if(Game.map.curAiInfos[id].pos[1] < Game.map.width - 1)
+				{
+					Game.map.curAiInfos[id].pos[1]++;
+					shouldCall = true;
+				}
+			}
+			else
+				throw new Error('IllegalState');
+			if(shouldCall)
+				window.ui.monsterMoveForward(id);
+		}
+	}
+	
+	static gameCallAfterPlayerMove()
+	{
 		Game.gameCheckFinished();
-		if(shouldCall)
-			window.ui.playerMoveForward();
+		for(let i = 0; i < Game.map.aiCallbacks.length; ++i)
+		{
+			Game.map.curAi = i;
+			Game.map.aiCallbacks[i]();
+			Game.map.curAi = -1;
+		}
 	}
 
 	static gameTurn(way)
 	{
-		console.log(way);
-		console.log(Game.GameCW);
-		console.log(Game.map.instrSet[Game.GameCW]);
-		let callback = null;
-		if(way === Game.GameCW && Game.map.instrSet[Game.GameCW])
+		if(Game.map.curAi === -1)
 		{
-			Game.map.curDir = (Game.map.curDir + 1) % 4 + 16;
-			callback = window.ui.playerTurnCW;
-		}
-		else if(way === Game.GameCCW && Game.map.instrSet[Game.GameCCW])
-		{
-			Game.map.curDir = (Game.map.curDir + 3) % 4 + 16;
-			callback = window.ui.playerTurnCCW;
+			// Player playing
+			console.log(way);
+			console.log(Game.GameCW);
+			console.log(Game.map.instrSet[Game.GameCW]);
+			let callback = null;
+			if(way === Game.GameCW && Game.map.instrSet[Game.GameCW])
+			{
+				Game.map.curDir = (Game.map.curDir + 1) % 4 + 16;
+				callback = window.ui.playerTurnCW;
+			}
+			else if(way === Game.GameCCW && Game.map.instrSet[Game.GameCCW])
+			{
+				Game.map.curDir = (Game.map.curDir + 3) % 4 + 16;
+				callback = window.ui.playerTurnCCW;
+			}
+			else
+				throw new Error('IllegalInstruction');
+			callback();
+			Game.gameCallAfterPlayerMove();
 		}
 		else
-			throw new Error('IllegalInstruction');
-		Game.gameCheckFinished();
-		callback();
+		{
+			// AI playing
+			let id = Game.map.curAi;
+			let callback = null;
+			if(way === Game.GameCW)
+			{
+				Game.map.curAiInfos[id].dir = (Game.map.curAiInfos[id].dir + 1) % 4 + 16;
+				callback = window.ui.monsterTurnCW;
+			}
+			else if(way === Game.GameCCW)
+			{
+				Game.map.curAiInfos[id].dir = (Game.map.curAiInfos[id].dir + 3) % 4 + 16;
+				callback = window.ui.monsterTurnCCW;
+			}
+			else
+				throw new Error('IllegalInstruction');
+			callback(id);
+		}
 	}
 
 	/**

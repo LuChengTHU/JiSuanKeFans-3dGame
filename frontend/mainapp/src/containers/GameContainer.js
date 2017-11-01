@@ -52,7 +52,9 @@ export default class GameContainer extends Component {
 		this.playerTurnCW = this.playerTurnCW.bind(this);
 		this.playerTurnCCW = this.playerTurnCCW.bind(this);
 		this.addMonster = this.addMonster.bind(this);
-		this.addMonster = this.addMonster.bind(this);
+		this.monsterMoveForward = this.monsterMoveForward.bind(this);
+		this.monsterTurnCW = this.monsterTurnCW.bind(this);
+		this.monsterTurnCCW = this.monsterTurnCCW.bind(this);
     }
 	
 	addMonster(id, x, z)
@@ -88,13 +90,13 @@ export default class GameContainer extends Component {
  		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
  			if(ms[id].direction.x === 1)
- 				return ms[id].direction = new Vector3(0, 0, -1);
+ 				ms[id].direction = new Vector3(0, 0, -1);
  			else if(ms[id].direction.z === -1)
- 				return ms[id].direction = new Vector3(-1, 0, 0);
+ 				ms[id].direction = new Vector3(-1, 0, 0);
  			else if(ms[id].direction.x === -1)
- 				return ms[id].direction = new Vector3(0, 0, 1);
+ 				ms[id].direction = new Vector3(0, 0, 1);
  			else
- 				return ms[id].direction = new Vector3(1, 0, 0);
+ 				ms[id].direction = new Vector3(1, 0, 0);
  			return {monsters: ms};
  		});
 	}
@@ -104,13 +106,13 @@ export default class GameContainer extends Component {
  		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
  			if(ms[id].direction.x === 1)
- 				return ms[id].direction = new Vector3(0, 0, 1);
+ 				ms[id].direction = new Vector3(0, 0, 1);
  			else if(ms[id].direction.z === 1)
- 				return ms[id].direction = new Vector3(-1, 0, 0);
+ 				ms[id].direction = new Vector3(-1, 0, 0);
  			else if(ms[id].direction.x === -1)
- 				return ms[id].direction = new Vector3(0, 0, -1);
+ 				ms[id].direction = new Vector3(0, 0, -1);
  			else
- 				return ms[id].direction = new Vector3(1, 0, 0);
+ 				ms[id].direction = new Vector3(1, 0, 0);
  			return {monsters: ms};
  		});
 	}
