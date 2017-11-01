@@ -312,7 +312,53 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.json()['res_code'], 1)
         self.assertGreater(Map.objects.filter(id=mid).count(), 0, 'Map create failed!')
         
-    
+    def test_get_stage(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+            }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
+
+        # ---------- creating map ------------------
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+        
+        map = {
+            "init_ground_boxes": [0,0,0],
+            "title": "imgod-map",
+            "init_ground_colors": [0,1],
+            "init_pos": [0, 1],
+            "init_hand_boxes": [0, 0],
+            "final_hand_boxes": [1, 1],
+            "final_ground_colors": [1],
+            "final_ground_boxes": [],
+            "final_pos": [0, 1],
+            "n_blockly": 10,
+            "n_max_hand_boxes": 10,
+            "instr_set": [True, True, False],
+            "height": 10,
+            "width": 10,
+            "stage": 1,
+            }
+        response = self.create_map(map, token)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['res_code'], 1)
+        
+        # ---------- testing get first stage ------------------
+        response = self.client.get(reverse('api:stage'), data={'stage_id': 1})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['res_code'], 1)
+        self.assertEqual(response.json()['map']['stage'], 1)
+        
+        # ---------- testing get not existing stage ------------------
+        response = self.client.get(reverse('api:stage'), data={'stage_id': 0})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()['res_code'], 2)
+        
+        # TODO: Add permission tests
+
     def test_margins(self):
         from .views import with_record_fetch, with_pagination
         from .models import User
