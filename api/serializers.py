@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from api.models import Map, User
 import json
+import os
+import ac.settings as settings
 
 RATE_BRIEF = 0
 RATE_FULL = 1
@@ -84,6 +86,16 @@ class MapFullSerializer(serializers.ModelSerializer):
             'final_ground_colors', 'final_ground_boxes', 'final_hand_boxes',\
             'init_AI_infos', 'author', 'stage')
 
+
+class StageSerializer(MapFullSerializer):
+    def to_representation(self, obj):
+        data = super().to_representation(obj)
+        data = super().repr_inflate(data)
+        for ai_obj in data['init_AI_infos']:
+            name = ai_obj['id']
+            with open(os.path.join(settings.AI_URL, name, 'code.js')) as fin:
+                ai_obj['code'] = fin.read()
+        return data
 
 
 class TokenPostSerializer(serializers.Serializer):

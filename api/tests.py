@@ -6,11 +6,26 @@ from rest_framework.test import APIRequestFactory
 from rest_framework.serializers import Serializer
 from rest_framework.authentication import TokenAuthentication
 from api.models import Map
+from ac import settings
+import os
+import tempfile
+from contextlib import contextmanager
+import shutil
 
 # Create your tests here.
 factory = APIRequestFactory()
+@contextmanager
+def create_temporal_AI(prefix, code):
+    path = tempfile.mkdtemp(dir=settings.AI_URL, prefix=prefix)
+    with open(os.path.join(path, 'code.js'), 'w') as fout:
+        fout.write(code)
+    yield os.path.split(path)[-1]
+    shutil.rmtree(path)
 
 class BackendTestCase(TestCase):
+    def setUp(self):
+        print("In method ============================================> ", self._testMethodName)
+
     def create_user(self, new_user):
         # ---------- creating new user ------------------
         c_date = now().date()
@@ -18,7 +33,7 @@ class BackendTestCase(TestCase):
         response = self.client.post(reverse('api:user_list'), \
             data=new_user)
         return response, c_date
-    
+
     def fetch_user(self, uid):
         # ---------- fetching user information ------------------
         # get the information of the newly created user
@@ -267,7 +282,7 @@ class BackendTestCase(TestCase):
         response = self.client.get(reverse('api:map_list'))
         self.assertEqual(response.status_code, 404)
     
-    def test_map_stage(self):
+    def test_map_stage_field(self):
         new_user = {
             'email' : 'test@test.org',
             'username' : 'test_user',
@@ -279,40 +294,43 @@ class BackendTestCase(TestCase):
 
         # ---------- creating map ------------------
         token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
-        
-        map = {
-            "init_ground_boxes": [0,0,0],
-            "title": "imgod-map",
-            "init_ground_colors": [0,1],
-            "init_pos": [0, 1],
-            "init_hand_boxes": [0, 0],
-            "final_hand_boxes": [1, 1],
-            "final_ground_colors": [1],
-            "final_ground_boxes": [],
-            "final_pos": [0, 1],
-            "n_blockly": 10,
-            "n_max_hand_boxes": 10,
-            "instr_set": [True, True, False],
-            "height": 10,
-            "width": 10,
-            "stage": 1,
-            }
-        response = self.create_map(map, token)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['res_code'], 1)
-        response = self.create_map(map, token)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['res_code'], 2)
-        del map["stage"]
-        response = self.create_map(map, token)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['res_code'], 1)
-        map["height"] = 5
-        response = self.create_map(map, token)
-        mid = response.json()['map_id']
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['res_code'], 1)
-        self.assertGreater(Map.objects.filter(id=mid).count(), 0, 'Map create failed!')
+        code1 = "console.log('Naive.');"
+        code2 = "console.log('Simple.');"
+        with create_temporal_AI('test', code1) as name1, create_temporal_AI('test', code2) as name2:
+            map = {
+                "init_ground_boxes": [0,0,0],
+                "title": "imgod-map",
+                "init_ground_colors": [0,1],
+                "init_AI_infos": [{'id': name1, 'pos': [0, 0], 'dir': 16}, {'id': name2, 'pos': [1, 0], 'dir': 17}],
+                "init_pos": [0, 1],
+                "init_hand_boxes": [0, 0],
+                "final_hand_boxes": [1, 1],
+                "final_ground_colors": [1],
+                "final_ground_boxes": [],
+                "final_pos": [0, 1],
+                "n_blockly": 10,
+                "n_max_hand_boxes": 10,
+                "instr_set": [True, True, False],
+                "height": 10,
+                "width": 10,
+                "stage": 1,
+                }
+            response = self.create_map(map, token)
+            self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.json()['res_code'], 1)
+            response = self.create_map(map, token)
+            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.json()['res_code'], 2)
+            del map["stage"]
+            response = self.create_map(map, token)
+            self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.json()['res_code'], 1)
+            map["height"] = 5
+            response = self.create_map(map, token)
+            mid = response.json()['map_id']
+            self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.json()['res_code'], 1)
+            self.assertGreater(Map.objects.filter(id=mid).count(), 0, 'Map create failed!')
         
     def test_get_stage(self):
         new_user = {
@@ -326,40 +344,48 @@ class BackendTestCase(TestCase):
 
         # ---------- creating map ------------------
         token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
-        
-        map = {
-            "init_ground_boxes": [0,0,0],
-            "title": "imgod-map",
-            "init_ground_colors": [0,1],
-            "init_pos": [0, 1],
-            "init_hand_boxes": [0, 0],
-            "final_hand_boxes": [1, 1],
-            "final_ground_colors": [1],
-            "final_ground_boxes": [],
-            "final_pos": [0, 1],
-            "n_blockly": 10,
-            "n_max_hand_boxes": 10,
-            "instr_set": [True, True, False],
-            "height": 10,
-            "width": 10,
-            "stage": 1,
-            }
-        response = self.create_map(map, token)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['res_code'], 1)
-        
-        # ---------- testing get first stage ------------------
-        response = self.client.get(reverse('api:stage'), data={'stage_id': 1})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['res_code'], 1)
-        self.assertEqual(response.json()['map']['stage'], 1)
-        
-        # ---------- testing get not existing stage ------------------
-        response = self.client.get(reverse('api:stage'), data={'stage_id': 0})
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['res_code'], 2)
-        
-        # TODO: Add permission tests
+        code1 = "console.log('Naive.');"
+        code2 = "console.log('Simple.');"
+        with create_temporal_AI('test', code1) as name1, create_temporal_AI('test', code2) as name2:
+            map = {
+                "init_ground_boxes": [0,0,0],
+                "title": "imgod-map",
+                "init_ground_colors": [0,1],
+                "init_AI_infos": [{'id': name1, 'pos': [0, 0], 'dir': 16}, {'id': name2, 'pos': [1, 0], 'dir': 17}],
+                "init_pos": [0, 1],
+                "init_hand_boxes": [0, 0],
+                "final_hand_boxes": [1, 1],
+                "final_ground_colors": [1],
+                "final_ground_boxes": [],
+                "final_pos": [0, 1],
+                "n_blockly": 10,
+                "n_max_hand_boxes": 10,
+                "instr_set": [True, True, False],
+                "height": 10,
+                "width": 10,
+                "stage": 1,
+                }
+            response = self.create_map(map, token)
+            self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.json()['res_code'], 1)
+            
+            # ---------- testing for getting the first stage ------------------
+            response = self.client.get(reverse('api:stage', kwargs={'stage_id': 1}))
+            print(response.json()['map'])
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()['res_code'], 1)
+            self.assertEqual(response.json()['map']['stage'], 1)
+            self.assertEqual(response.json()['map']['init_AI_infos'][0]['id'], name1)
+            self.assertEqual(response.json()['map']['init_AI_infos'][0]['code'], code1)
+            self.assertEqual(response.json()['map']['init_AI_infos'][1]['id'], name2)
+            self.assertEqual(response.json()['map']['init_AI_infos'][1]['code'], code2)
+            
+            # ---------- testing for getting nonexistent stage ------------------
+            response = self.client.get(reverse('api:stage', kwargs={'stage_id': 0}))
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.json()['res_code'], 2)
+            
+            # TODO: Add permission tests
 
     def test_margins(self):
         from .views import with_record_fetch, with_pagination

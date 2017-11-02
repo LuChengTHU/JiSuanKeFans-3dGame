@@ -13,8 +13,9 @@ from django.utils.timezone import now
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
-   RATE_BRIEF, RATE_FULL, RATE_CREATE
+   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer
 import json
+import traceback
 
 from .authenticaters import CsrfExemptSessionAuthentication
 
@@ -265,11 +266,13 @@ class StageView(APIView):
             # TODO: permission
         except:
             # not found
+            traceback.print_exc()
             return Response({}, status=status.HTTP_404_NOT_FOUND), 2
         try:
             data = StageSerializer(map).data
         except:
+            traceback.print_exc()
             return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
         return Response({'map' : data}), 1
 
-stage_view = StageView
+stage_view = StageView.as_view()

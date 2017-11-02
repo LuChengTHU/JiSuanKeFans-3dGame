@@ -9,6 +9,6 @@ urlpatterns = [
     url(r'^user/$', user_list_view, name='user_list'),
     url(r'^user/(?P<user_id>[0-9]+)/$', user_view, name='user'),
     url(r'^map/(?P<map_id>[0-9]+)/$', map_view, name='map'),
-    url(r'^stage/(?P<stage_id>[0-9]+)/$', stage_view, name='map'),
+    url(r'^stage/(?P<stage_id>[0-9]+)/$', stage_view, name='stage'),
     url(r'^map/$', map_list_view, name='map_list')
 ]
