@@ -13,8 +13,9 @@ from django.utils.timezone import now
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
-   RATE_BRIEF, RATE_FULL, RATE_CREATE
+   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer
 import json
+import traceback
 
 from .authenticaters import CsrfExemptSessionAuthentication
 
@@ -243,7 +244,7 @@ class MapListView(APIView):
         try:
             serializer = MapFullSerializer(map, data=MapFullSerializer.repr_deflate(request.data['map']))
         except Exception as e:
-            print(e)
+            print('In MapListView::post', e)
             return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
         if serializer.is_valid():
             try:
@@ -252,7 +253,26 @@ class MapListView(APIView):
                 return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
 
             return Response({'map_id': map.id}, status=status.HTTP_201_CREATED), 1
-        print(serializer.errors)
+        print('In MapListView::post', serializer.errors)
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
 map_list_view = MapListView.as_view()
+
+class StageView(APIView):
+    @with_res_code
+    def get(self, request, stage_id = None):
+        try:
+            map = Map.objects.get(stage=stage_id)
+            # TODO: permission
+        except:
+            # not found
+            traceback.print_exc()
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+        try:
+            data = StageSerializer(map).data
+        except:
+            traceback.print_exc()
+            return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
+        return Response({'map' : data}), 1
+
+stage_view = StageView.as_view()

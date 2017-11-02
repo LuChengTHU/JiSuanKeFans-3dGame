@@ -152,3 +152,5 @@ AUTH_USER_MODEL = 'api.User'
 REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
+
+AI_URL = os.path.join(BASE_DIR, 'frontend', 'mainapp', 'public', 'ai')
