@@ -102,3 +102,5 @@ pip-selfcheck.json
 
 .vs/
 .vscode/
+
+frontend/

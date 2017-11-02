@@ -17,9 +17,9 @@ import playerMovement from '../logic/playerMovement';
  */
 export default class GameContainer extends Component {
 
-    constructor() {
+    constructor(props) {
 
-        super();
+        super(props);
 		window.ui = this;
 		window.Game = Logic.default;
 		window.blocklyCallback = () => {};
@@ -50,6 +50,9 @@ export default class GameContainer extends Component {
 		this.playerMoveForward = this.playerMoveForward.bind(this);
 		this.playerTurnCW = this.playerTurnCW.bind(this);
 		this.playerTurnCCW = this.playerTurnCCW.bind(this);
+
+		// window.Game.gameSetMap(props['map']); 
+		// props.map.then((returnVal)=> window.map=returnVal.map);
     }
 	
 	createMap(height, width)

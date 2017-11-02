@@ -3,33 +3,65 @@ import {TextField, Button, Grid} from 'material-ui'
 import React from 'react'
 import {Component} from 'react'
 import createReactClass from 'create-react-class'
+import {fetch_map, create_map, modify_map} from '../../interfaces/Map'
 
 const MapEditor = createReactClass({
     inputValue: '{}', 
     getInitialState: function(){
+        // const INIT_MAP = { // initial map
+        //     height: 6,
+        //     width: 9,
+        //     nMaxHandBoxes: 4,
+        //     instrSet: [true, true, true],
+        //     initPos: [1, 1],
+        //     finalPos: [1, 2],
+        //     initGroundColors: [[0, 0, 0], [0, 0, 0]],
+        //     finalGroundColors: null,
+        //     initGroundBoxes: [[null, null, null], [null, null, null]],
+        //     finalGroundBoxes: null,
+        //     initHandBoxes: [],
+        //     finalHandBoxes: [],
+        //     initDir:16
+        // };
         const INIT_MAP = { // initial map
+            title: 'Untitled',
             height: 6,
             width: 9,
-            nMaxHandBoxes: 4,
-            instrSet: [true, true, true],
-            initPos: [1, 1],
-            finalPos: [1, 2],
-            initGroundColors: [[0, 0, 0], [0, 0, 0]],
-            finalGroundColors: null,
-            initGroundBoxes: [[null, null, null], [null, null, null]],
-            finalGroundBoxes: null,
-            initHandBoxes: [],
-            finalHandBoxes: [],
-            initDir:16
+            n_max_hand_boxes: 4,
+            n_blockly: 10,
+            instr_set: [true, true, true],
+            init_pos: [1, 1],
+            final_pos: [1, 2],
+            init_ground_colors: [[0, 0, 0], [0, 0, 0]],
+            final_ground_colors: null,
+            init_ground_boxes: [[null, null, null], [null, null, null]],
+            final_ground_boxes: null,
+            init_hand_boxes: [],
+            final_hand_boxes: [],
+            init_dir:16
         };
-        this.inputValue = JSON.stringify(INIT_MAP, null, 4);
-        return {map: INIT_MAP};
+
+        let map = INIT_MAP;
+        window.map = map;
+        if('map_id' in this.props.match.params){
+            this.map_id = this.props.match.params['map_id'];
+            fetch_map(this.map_id).then(()=>{if('map' in window){
+                map = window.map;
+                this.inputValue = JSON.stringify(map, null, 4);
+                this.forceUpdate();
+            }});
+        } else{
+            this.map_id = -1;
+        }
+        this.inputValue = JSON.stringify(map, null, 4);
+        return {};
     },
     render: function(){
-        const gameContainer = <GameContainer/>
-        this.inputValue = JSON.stringify(this.state.map, null, 4);
+        const gameContainer = <GameContainer/>;
+        this.inputValue = JSON.stringify(window.map, null, 4);
+        console.log(this.inputValue);
         this.inputBox = <TextField onChange={(event) => {this.inputValue = event.target.value}}
-            defaultValue={this.inputValue} contentEditable={true} 
+            defaultValue={this.inputValue} contentEditable={true} value={this.inputValue}
                 multiline={true} fullWidth={true} rows={30} rowsMax={30}/>;
         return (
             <Grid container spacing={25} justify='center'>
@@ -37,6 +69,7 @@ const MapEditor = createReactClass({
             <div id={'gameContainer'}>
             {gameContainer}</div>
             <Button onClick={() => this.updateMap()}>Update</Button>
+            <Button onClick={() => this.submitMap()}>Submit</Button>
             </Grid>
             <Grid item xs={12} sm={6}>
             {this.inputBox}
@@ -46,11 +79,20 @@ const MapEditor = createReactClass({
     },
     updateMap: function(){
         let new_map = JSON.parse(this.inputValue);
+        console.log(new_map);
+        window.map = new_map;
         window.Game.gameSetMap(new_map);
-        this.setState({map: new_map});
     },
     setMap: function(map){
-        this.setState({map: map});
+        window.map = map;
+        window.gameSetMap(map);
+    },
+    submitMap: function(){
+        if(this.map_id == -1){
+            create_map(this.state.map);
+        } else{
+            modify_map(this.map_id, window.map);
+        }
     }
 });
 

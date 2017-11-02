@@ -19,7 +19,7 @@ class App extends Component {
         super(props);
         this.classes = props.classes;
         axios.defaults.baseURL = 'http://localhost:8000/api/v0.1';
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem('token') || '';
+        axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token') || '';
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     }
     render() 
@@ -27,8 +27,9 @@ class App extends Component {
         return (
             <div className={this.classes.root}>
                 <Nav/>
-                <Route exact path="/" component={DashBoard}/>
-                <Route exact path="/editor" component={MapEditor}/>
+                <Route exact path="/game/:map_id/" component={DashBoard}/>
+                <Route exact path="/editor/:map_id/" component={MapEditor}/>
+                <Route exact path="/editor/" component={MapEditor}/>
                 {this.props.children}
             </div>
         );
