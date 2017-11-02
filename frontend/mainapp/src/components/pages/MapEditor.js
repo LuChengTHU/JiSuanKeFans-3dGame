@@ -6,7 +6,6 @@ import createReactClass from 'create-react-class'
 import {fetch_map, create_map, modify_map} from '../../interfaces/Map'
 
 const MapEditor = createReactClass({
-    inputValue: '{}', 
     getInitialState: function(){
         // const INIT_MAP = { // initial map
         //     height: 6,
@@ -47,22 +46,21 @@ const MapEditor = createReactClass({
             this.map_id = this.props.match.params['map_id'];
             fetch_map(this.map_id).then(()=>{if('map' in window){
                 map = window.map;
-                this.inputValue = JSON.stringify(map, null, 4);
-                this.forceUpdate();
+                this.setState({inputText: JSON.stringify(map, null, 4)});
             }});
         } else{
             this.map_id = -1;
         }
-        this.inputValue = JSON.stringify(map, null, 4);
-        return {};
+        return {inputText: JSON.stringify(map, null, 4)};
+    },
+    handleTextChange: function(event){
+        this.setState({inputText: event.target.value});
     },
     render: function(){
         const gameContainer = <GameContainer/>;
-        this.inputValue = JSON.stringify(window.map, null, 4);
-        console.log(this.inputValue);
-        this.inputBox = <TextField onChange={(event) => {this.inputValue = event.target.value}}
-            defaultValue={this.inputValue} contentEditable={true} value={this.inputValue}
-                multiline={true} fullWidth={true} rows={30} rowsMax={30}/>;
+        this.inputBox = <TextField onChange={this.handleTextChange}
+            value={this.state.inputText} 
+            multiline={true} fullWidth={true} rows={30} rowsMax={30}/>;
         return (
             <Grid container spacing={25} justify='center'>
             <Grid item xs={12} sm={6} >
@@ -78,7 +76,7 @@ const MapEditor = createReactClass({
         );
     },
     updateMap: function(){
-        let new_map = JSON.parse(this.inputValue);
+        let new_map = JSON.parse(this.state.inputText);
         console.log(new_map);
         window.map = new_map;
         window.Game.gameSetMap(new_map);

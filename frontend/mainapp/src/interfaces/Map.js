@@ -23,6 +23,7 @@ export function fetch_map(map_id){
         .then(function(response){
             if(response.data.res_code == 1){
                 window.map = response.data.map;
+                delete window.map.author;
             } else
                 console.log('ERROR ' + response.data.res_code);
         }).catch(function(error){
