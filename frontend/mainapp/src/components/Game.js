@@ -5,6 +5,7 @@ import * as THREE from 'three';
 
 import Player from './Player';
 import MapBlock from './MapBlock';
+import Monster from './Monster';
 
 
 /**
@@ -30,13 +31,17 @@ export default class Game extends Component {
         const {
             width, height, cameraPosition, geometry, lookAt, playerPosition,
             playerRotation,
-			mapBlocks
+			mapBlocks,
+			monsters
         } = this.props;
 
         const { faces, vertices, faceVertexUvs, } = geometry;
-
-		// return <div> width={ width }, height={ height }
-                    // lookAt={ lookAt.x } </div>
+		
+		let ms = [];
+		for(let i = 0; i < monsters.length; ++i)
+		{
+			ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
+		}
 		let ans = <React3
             mainCamera="camera"
             width={ width }
@@ -91,13 +96,13 @@ export default class Game extends Component {
                     color={ 0xdddddd }
                 />
 				{ mapBlocks }
+				{ ms }
 				<Player
 					position={playerPosition}
 					rotation={playerRotation}
 				/>
             </scene>
         </React3>;
-		// console.log(ans);
 		return ans;
     }
 

@@ -13,6 +13,7 @@ export function fetch_map(map_id){
         init_ground_colors: [[0, 0, 0], [0, 0, 0]],
         final_ground_colors: null,
         init_ground_boxes: [[null, null, null], [null, null, null]],
+        init_AI_infos: [],
         final_ground_boxes: null,
         init_hand_boxes: [],
         final_hand_boxes: [],
