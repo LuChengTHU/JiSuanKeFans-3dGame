@@ -22,18 +22,6 @@
     -->
     <title>React App</title>
 	<script>
-	function cw()
-	{
-		ui.playerTurnCW();
-	}
-	function ccw()
-	{
-		ui.playerTurnCCW();
-	}
-	function forward()
-	{
-		ui.playerMoveForward();
-	}
 	function cli()
 	{
 		var map = new Object();
@@ -52,6 +40,21 @@
 		map.initHandBoxes = [];
 		map.finalHandBoxes = null;
 		map.initDir = 16;
+		map.initAiInfos = [];
+		map.initAiInfos.push(
+		{
+			id: "aiName0",
+			pos: [2, 5],
+			dir: 16,
+			code: "console.log('I am AI0');if(typeof(data.a)==='undefined')data.a=0;++data.a;console.log(data.a);if(data.a===2){Game.gameMove();data.a=0;}else Game.gameTurn(Game.GameCW);"
+		});
+		map.initAiInfos.push(
+		{
+			id: "aiName1",
+			pos: [3, 6],
+			dir: 16,
+			code: "console.log('I am AI1');if(typeof(data.a)==='undefined')data.a=0;++data.a;console.log(data.a);if(data.a===2){Game.gameMove();data.a=0;}else Game.gameTurn(Game.GameCCW);"
+		});
 		Game.gameSetMap(map);
 	}
 	</script>
@@ -61,9 +64,6 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
-	<!-- <button type="button" className="btn btn-info" onClick="cw()">cw</button> -->
-	<!-- <button type="button" className="btn btn-info" onClick="ccw()">ccw</button> -->
-	<!-- <button type="button" className="btn btn-info" onClick="forward()">forward</button> -->
 	<button type="button" className="btn btn-info" onClick="cli()">Init</button>
     <!--
       This HTML file is a template.

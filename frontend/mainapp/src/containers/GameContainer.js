@@ -38,6 +38,7 @@ export default class GameContainer extends Component {
             cameraPosition: new THREE.Vector3( -3, 6, -3 ),
             geometry: new THREE.Geometry(),
             lookAt: new THREE.Vector3( 3, 0, 3 ),
+			monsters: [],
         };
 
         loadModel(  '../assets/sitepoint-robot.json'  ).then(geometry =>
@@ -50,7 +51,73 @@ export default class GameContainer extends Component {
 		this.playerMoveForward = this.playerMoveForward.bind(this);
 		this.playerTurnCW = this.playerTurnCW.bind(this);
 		this.playerTurnCCW = this.playerTurnCCW.bind(this);
+		this.addMonster = this.addMonster.bind(this);
+		this.monsterMoveForward = this.monsterMoveForward.bind(this);
+		this.monsterTurnCW = this.monsterTurnCW.bind(this);
+		this.monsterTurnCCW = this.monsterTurnCCW.bind(this);
     }
+	
+	addMonster(id, x, z)
+	{
+		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+			if(id >= ms.length)
+				ms.length = id + 1;
+			ms[id] =
+			{
+				position: new Vector3(x, 0.5, z),
+				direction: new Vector3(1, 0, 0),
+				rotation: new Euler(),
+			};
+			return {monsters: ms};
+		});
+	}
+	
+	monsterMoveForward(id)
+	{
+ 		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+ 			ms[id].animateForward = true;
+ 			return {monsters: ms};
+ 		});
+		window.blocklyShouldRun = false;
+	}
+	
+	monsterTurnCCW(id)
+	{
+ 		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+ 			ms[id].animateCCW = true;
+ 			if(ms[id].direction.x === 1)
+ 				ms[id].direction = new Vector3(0, 0, -1);
+ 			else if(ms[id].direction.z === -1)
+ 				ms[id].direction = new Vector3(-1, 0, 0);
+ 			else if(ms[id].direction.x === -1)
+ 				ms[id].direction = new Vector3(0, 0, 1);
+ 			else
+ 				ms[id].direction = new Vector3(1, 0, 0);
+ 			return {monsters: ms};
+ 		});
+		window.blocklyShouldRun = false;
+	}
+	
+	monsterTurnCW(id)
+	{
+		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+ 			ms[id].animateCW = true;
+ 			if(ms[id].direction.x === 1)
+ 				ms[id].direction = new Vector3(0, 0, 1);
+ 			else if(ms[id].direction.z === 1)
+ 				ms[id].direction = new Vector3(-1, 0, 0);
+ 			else if(ms[id].direction.x === -1)
+ 				ms[id].direction = new Vector3(0, 0, -1);
+ 			else
+ 				ms[id].direction = new Vector3(1, 0, 0);
+			return {monsters: ms};
+		});
+		window.blocklyShouldRun = false;
+	}
 	
 	createMap(height, width)
 	{
@@ -58,7 +125,7 @@ export default class GameContainer extends Component {
 		for(let i = 0; i < height; ++i)
 			for(let j = 0; j < width; ++j)
 				bs.push(<MapBlock x={i} z={j}/>);
-		this.setState({mapBlocks: bs});
+		this.setState({mapBlocks: bs, monsters: []});
 	}
 	
 	createPlayer(x, z)
@@ -192,7 +259,8 @@ export default class GameContainer extends Component {
 		}
 
         const {
-            cameraPosition, geometry, lookAt, playerPosition, playerRotation, mapBlocks
+            cameraPosition, geometry, lookAt, playerPosition, playerRotation, mapBlocks,
+			monsters
         } = this.state;
 
         // Pass the data <Game /> needs to render. Note we don't show the game
@@ -209,6 +277,7 @@ export default class GameContainer extends Component {
 					playerPosition={ playerPosition }
 					playerRotation={ playerRotation }
 					mapBlocks={ mapBlocks }
+					monsters={ monsters }
 				/> : 'Loading' }
 			</div>
 		</div>;
