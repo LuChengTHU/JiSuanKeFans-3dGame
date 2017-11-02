@@ -35,7 +35,7 @@ export default class GameContainer extends Component {
 
         // Initial scene state
         this.state = {
-            cameraPosition: new THREE.Vector3( -3, 6, -3 ),
+            cameraPosition: new THREE.Vector3( -3, 4, -3 ),
             geometry: new THREE.Geometry(),
             lookAt: new THREE.Vector3( 3, 0, 3 ),
         };
