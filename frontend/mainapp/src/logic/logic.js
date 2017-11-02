@@ -92,8 +92,6 @@ export default class Game {
 			if(!Game.map.instrSet[11])
 				throw new Error('IllegalInstruction');
 			let dir = Game.map.curDir;
-			console.log(dir);
-			console.log(Game.GameUp);
 			let shouldCall = false;
 			if(dir === Game.GameUp)
 			{
@@ -196,9 +194,6 @@ export default class Game {
 		if(Game.map.curAi === -1)
 		{
 			// Player playing
-			console.log(way);
-			console.log(Game.GameCW);
-			console.log(Game.map.instrSet[Game.GameCW]);
 			let callback = null;
 			if(way === Game.GameCW && Game.map.instrSet[Game.GameCW])
 			{
@@ -276,10 +271,4 @@ export default class Game {
 	{
 		return Object.prototype.toString.call(o) === '[object Array]';
 	}
-    // static gameTurn(x) {
-        // console.log('gameTurn'+x);        
-    // }
-    // static gameMove()  {
-        // console.log('gameMove');        
-    // }
 }

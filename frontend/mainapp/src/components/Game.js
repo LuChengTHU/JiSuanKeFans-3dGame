@@ -42,9 +42,6 @@ export default class Game extends Component {
 		{
 			ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
 		}
-
-		// return <div> width={ width }, height={ height }
-                    // lookAt={ lookAt.x } </div>
 		let ans = <React3
             mainCamera="camera"
             width={ width }
@@ -106,7 +103,6 @@ export default class Game extends Component {
 				/>
             </scene>
         </React3>;
-		// console.log(ans);
 		return ans;
     }
 
