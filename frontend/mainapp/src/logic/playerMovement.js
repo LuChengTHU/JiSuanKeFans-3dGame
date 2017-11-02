@@ -81,7 +81,10 @@ export default function playerMovement( oldState, time ) {
 
 
     state.attackLength += 1;
-    state.mixer.update(state.clock.getDelta());
+    // if(state.attackLength < 43) {
+     //    state.mixer.update(0.02);
+	// }
+	state.mixer.update(state.clock.getDelta())
 
 
 	return state;

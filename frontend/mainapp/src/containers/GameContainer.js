@@ -59,7 +59,7 @@ export default class GameContainer extends Component {
         window.THREE = THREE;
 
         let loader = new THREE.JSONLoader();
-        loader.load(`${process.env.PUBLIC_URL}/assets/texture.json`,
+        loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi.json`,
             (geometry, materials) => {
                 let material = materials[ 0 ];
                 material.emissive.set( 0x101010 );
@@ -68,11 +68,14 @@ export default class GameContainer extends Component {
                 let mesh = new THREE.SkinnedMesh( geometry, material );
                 mesh.scale.set( 0.01, 0.01, 0.01 );
                 let mixer = new THREE.AnimationMixer( mesh );
-                for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
-                    let action = mixer.clipAction( mesh.geometry.animations[ i ] );
-                    if ( i === 1 ) action.timeScale = 0.05;
-                    action.play();
-                }
+                // for ( let i = 0; i < mesh.geometry.animations.length - 3; i ++ ) {
+                //     console.log(mesh.geometry.animations[ i ])
+                //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
+                //     action.play();
+                // }
+                let action = mixer.clipAction( mesh.geometry.animations[ 0 ] );
+                action.play();
+                console.log(action)
                 this.setState({
                     knightMesh:mesh,
                     mixer:mixer,
