@@ -77,18 +77,17 @@ export default class GameContainer extends Component {
 	{
  		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
-			let tmp = new Vector3(0, 0, 0);
-			tmp.add(ms[id].position);
-			tmp.add(ms[id].direction);
- 			ms[id].position = tmp;
+ 			ms[id].animateForward = true;
  			return {monsters: ms};
  		});
+		window.blocklyShouldRun = false;
 	}
 	
 	monsterTurnCCW(id)
 	{
  		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
+ 			ms[id].animateCCW = true;
  			if(ms[id].direction.x === 1)
  				ms[id].direction = new Vector3(0, 0, -1);
  			else if(ms[id].direction.z === -1)
@@ -99,12 +98,14 @@ export default class GameContainer extends Component {
  				ms[id].direction = new Vector3(1, 0, 0);
  			return {monsters: ms};
  		});
+		window.blocklyShouldRun = false;
 	}
 	
 	monsterTurnCW(id)
 	{
- 		this.setState((prevState, props) => {
+		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
+ 			ms[id].animateCW = true;
  			if(ms[id].direction.x === 1)
  				ms[id].direction = new Vector3(0, 0, 1);
  			else if(ms[id].direction.z === 1)
@@ -113,8 +114,9 @@ export default class GameContainer extends Component {
  				ms[id].direction = new Vector3(0, 0, -1);
  			else
  				ms[id].direction = new Vector3(1, 0, 0);
- 			return {monsters: ms};
- 		});
+			return {monsters: ms};
+		});
+		window.blocklyShouldRun = false;
 	}
 	
 	createMap(height, width)

@@ -37,8 +37,6 @@ export default function playerMovement( oldState, time ) {
 	// Player Animate CW or CCW
 	if(state.playerAnimateCW || state.playerAnimateCCW)
 	{
-		console.assert(!state.playerAnimateCW || !state.playerAnimateCCW);
-		console.log(state.playerRotation);
 		state.playerAnimateTurnStart = state.playerRotation.clone();
 		if(state.playerAnimateCW)
 			state.playerAnimateTurnDiff = -Math.PI / 2;
@@ -70,6 +68,71 @@ export default function playerMovement( oldState, time ) {
 	}
 	if(state.playerAnimateTurning)
 		++animationCount;
+	// Monster Animate Forward
+	for(let i = 0; i < state.monsters.length; i++)
+	{
+		if(state.monsters[i].animateForward)
+		{
+			state.monsters[i].animateForwardStart = state.monsters[i].position.clone();
+			let tmp = state.monsters[i].position.clone();
+			tmp.add(state.monsters[i].direction);
+			state.monsters[i].animateForwardStop = tmp;
+			state.monsters[i].animateForwardCurrent = 0;
+			state.monsters[i].animateForwardTotal = 20;
+			state.monsters[i].animateForwarding = true;
+			
+			state.monsters[i].animateForward = false;
+		}
+		if(state.monsters[i].animateForwarding)
+		{
+			if(state.monsters[i].animateForwardCurrent >= state.monsters[i].animateForwardTotal)
+			{
+				state.monsters[i].animateForwarding = false;
+				state.monsters[i].position = state.monsters[i].animateForwardStop;
+			}
+			else
+				state.monsters[i].position = state.monsters[i].direction.clone().multiplyScalar(++state.monsters[i].animateForwardCurrent / state.monsters[i].animateForwardTotal).add(state.monsters[i].animateForwardStart);
+		}
+		if(state.monsters[i].animateForwarding)
+			++animationCount;
+	}
+	// Monster Animate CW or CCW
+	for(let i = 0; i < state.monsters.length; i++)
+	{
+		if(state.monsters[i].animateCW || state.monsters[i].animateCCW)
+		{
+			state.monsters[i].animateTurnStart = state.monsters[i].rotation.clone();
+			if(state.monsters[i].animateCW)
+				state.monsters[i].animateTurnDiff = -Math.PI / 2;
+			else
+				state.monsters[i].animateTurnDiff = Math.PI / 2;
+			let tmp = state.monsters[i].rotation.clone();
+			tmp.y += state.monsters[i].animateTurnDiff;
+			state.monsters[i].animateTurnStop = tmp;
+			state.monsters[i].animateTurnCurrent = 0;
+			state.monsters[i].animateTurnTotal = 20;
+			state.monsters[i].animateTurning = true;
+			
+			state.monsters[i].animateCW = false;
+			state.monsters[i].animateCCW = false;
+		}
+		if(state.monsters[i].animateTurning)
+		{
+			if(state.monsters[i].animateTurnCurrent >= state.monsters[i].animateTurnTotal)
+			{
+				state.monsters[i].animateTurning = false;
+				state.monsters[i].rotation = state.monsters[i].animateTurnStop;
+			}
+			else
+			{
+				let tmp = state.monsters[i].animateTurnStart.clone();
+				tmp.y += state.monsters[i].animateTurnDiff * ++state.monsters[i].animateTurnCurrent / state.monsters[i].animateTurnTotal;
+				state.monsters[i].rotation = tmp;
+			}
+		}
+		if(state.monsters[i].animateTurning)
+			++animationCount;
+	}
 	window.blocklyShouldRun = (animationCount === 0);
 	return state;
 }
