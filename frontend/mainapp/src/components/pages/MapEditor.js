@@ -29,6 +29,7 @@ const MapEditor = createReactClass({
             n_max_hand_boxes: 4,
             n_blockly: 10,
             instr_set: [true, true, true],
+            init_AI_infos: [],
             init_pos: [1, 1],
             final_pos: [1, 2],
             init_ground_colors: [[0, 0, 0], [0, 0, 0]],
@@ -87,7 +88,7 @@ const MapEditor = createReactClass({
     },
     submitMap: function(){
         if(this.map_id == -1){
-            create_map(this.state.map);
+            create_map(window.map);
         } else{
             modify_map(this.map_id, window.map);
         }

@@ -244,12 +244,13 @@ class MapListView(APIView):
         try:
             serializer = MapFullSerializer(map, data=MapFullSerializer.repr_deflate(request.data['map']))
         except Exception as e:
-            print('In MapListView::post', e)
+            traceback.print_exc()
             return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
         if serializer.is_valid():
             try:
                 map = serializer.save()
             except:
+                traceback.print_exc()
                 return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
 
             return Response({'map_id': map.id}, status=status.HTTP_201_CREATED), 1
