@@ -17,9 +17,9 @@ import playerMovement from '../logic/playerMovement';
  */
 export default class GameContainer extends Component {
 
-    constructor() {
+    constructor(props) {
 
-        super();
+        super(props);
 		window.ui = this;
 		window.Game = Logic.default;
 		window.blocklyCallback = () => {};

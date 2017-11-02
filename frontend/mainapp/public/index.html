@@ -24,37 +24,23 @@
 	<script>
 	function cli()
 	{
-		var map = new Object();
-		map.height = 6;
-		map.width = 9;
-		map.nMaxHandBoxes = 4;
-		map.instrSet = new Array(100);
-		for(var i = 0; i < 100; i++)
-			map.instrSet[i] = true;
-		map.initPos = [1, 1];
-		map.finalPos = [1, 2];
-		map.initGroundColors = [[0, 0, 0], [0, 0, 0]];
-		map.finalGroundColors = null;
-		map.initGroundBoxes = [[null, null, null], [null, null, null]];
-		map.finalGroundBoxes = null;
-		map.initHandBoxes = [];
-		map.finalHandBoxes = null;
-		map.initDir = 16;
-		map.initAiInfos = [];
-		map.initAiInfos.push(
-		{
-			id: "aiName0",
-			pos: [2, 5],
-			dir: 16,
-			code: "console.log('I am AI0');if(typeof(data.a)==='undefined')data.a=0;++data.a;console.log(data.a);if(data.a===2){Game.gameMove();data.a=0;}else Game.gameTurn(Game.GameCW);"
-		});
-		map.initAiInfos.push(
-		{
-			id: "aiName1",
-			pos: [3, 6],
-			dir: 16,
-			code: "console.log('I am AI1');if(typeof(data.a)==='undefined')data.a=0;++data.a;console.log(data.a);if(data.a===2){Game.gameMove();data.a=0;}else Game.gameTurn(Game.GameCCW);"
-		});
+		// var map = new Object();
+		// map.height = 6;
+		// map.width = 9;
+		// map.nMaxHandBoxes = 4;
+		// map.instrSet = new Array(100);
+		// for(var i = 0; i < 100; i++)
+		// 	map.instrSet[i] = true;
+		// map.initPos = [1, 1];
+		// map.finalPos = [1, 2];
+		// map.initGroundColors = [[0, 0, 0], [0, 0, 0]];
+		// map.finalGroundColors = null;
+		// map.initGroundBoxes = [[null, null, null], [null, null, null]];
+		// map.finalGroundBoxes = null;
+		// map.initHandBoxes = [];
+		// map.finalHandBoxes = null;
+		// map.initDir = 16;
+		const map = window.map;
 		Game.gameSetMap(map);
 	}
 	</script>
@@ -74,6 +60,9 @@
 
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+		-->
+		<!-- <script> -->
+			<!-- cli(); -->
+		<!-- </script> -->
   </body>
 </html>
