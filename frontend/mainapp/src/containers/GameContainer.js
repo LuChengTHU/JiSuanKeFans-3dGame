@@ -17,7 +17,7 @@ import playerMovement from '../logic/playerMovement';
  */
 export default class GameContainer extends Component {
 
-    constructor() {
+    constructor(props) {
 
         super();
 		window.ui = this;
@@ -50,6 +50,9 @@ export default class GameContainer extends Component {
 		this.playerMoveForward = this.playerMoveForward.bind(this);
 		this.playerTurnCW = this.playerTurnCW.bind(this);
 		this.playerTurnCCW = this.playerTurnCCW.bind(this);
+
+		// window.Game.gameSetMap(props['map']); 
+		window.map = props['map'];
     }
 	
 	createMap(height, width)

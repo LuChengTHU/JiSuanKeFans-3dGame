@@ -49,7 +49,7 @@ class LoginFormDialog extends React.Component {
     this.handleRequestSubmit = this.handleRequestSubmit.bind(this);
   }
 
-  addMessgae(msg)
+  addMessage(msg)
   {
     this.setState((prevState, props) => {
         prevState.messages.push([msg, this.num_msg++]);
@@ -75,7 +75,7 @@ class LoginFormDialog extends React.Component {
         .then((response) => {
             console.log(response);
             if(response.data.res_code !== null) {
-                this.addMessgae(MESSAGE[response.data.res_code]);
+                this.addMessage(MESSAGE[response.data.res_code]);
                 if (response.data.res_code === 1) {
                     localStorage.token = response.data['token'];
                     localStorage.user = JSON.stringify(response.data['user']);
@@ -87,9 +87,9 @@ class LoginFormDialog extends React.Component {
             console.log(error)
             if (error.response !== undefined && error.response.data !== undefined && 
                 error.response.data.res_code !== undefined) {
-                this.addMessgae(MESSAGE[error.response.data.res_code]);
+                this.addMessage(MESSAGE[error.response.data.res_code]);
             } else {
-                this.addMessgae(error.toString());
+                this.addMessage(error.toString());
             }
 
         });
