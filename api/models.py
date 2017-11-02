@@ -58,6 +58,8 @@ class Map(models.Model):
     init_pos_x = models.IntegerField()
     init_pos_y = models.IntegerField()
 
+    init_dir = models.IntegerField(default=16)
+
     init_hand_boxes = models.TextField()
 
     # ------------ final states -------------
@@ -71,3 +73,4 @@ class Map(models.Model):
     final_pos_y = models.IntegerField(default=None, blank=True, null=True)
     final_hand_boxes = models.TextField(default=None, blank=True, null=True)
 
+    final_dir = models.IntegerField(default=None, blank=True, null=True)

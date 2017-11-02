@@ -10,6 +10,7 @@ export function fetch_map(map_id){
         instr_set: [true, true, true],
         init_pos: [1, 1],
         final_pos: [1, 2],
+        init_dir: 16,
         init_ground_colors: [[0, 0, 0], [0, 0, 0]],
         final_ground_colors: null,
         init_ground_boxes: [[null, null, null], [null, null, null]],
@@ -17,7 +18,7 @@ export function fetch_map(map_id){
         final_ground_boxes: null,
         init_hand_boxes: [],
         final_hand_boxes: [],
-        init_dir:16
+        final_dir: null
     };
     window.map = INIT_MAP;
     return axios.get('map/' + map_id + '/')
