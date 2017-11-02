@@ -27,8 +27,9 @@ class App extends Component {
         return (
             <div className={this.classes.root}>
                 <Nav/>
-                <Route exact path="/" component={DashBoard}/>
-                <Route exact path="/editor" component={MapEditor}/>
+                <Route exact path="/game/:map_id/" component={DashBoard}/>
+                <Route exact path="/editor/:map_id/" component={MapEditor}/>
+                <Route exact path="/editor/" component={MapEditor}/>
                 {this.props.children}
             </div>
         );

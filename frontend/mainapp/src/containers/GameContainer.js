@@ -19,7 +19,7 @@ export default class GameContainer extends Component {
 
     constructor(props) {
 
-        super();
+        super(props);
 		window.ui = this;
 		window.Game = Logic.default;
 		window.blocklyCallback = () => {};
@@ -52,7 +52,7 @@ export default class GameContainer extends Component {
 		this.playerTurnCCW = this.playerTurnCCW.bind(this);
 
 		// window.Game.gameSetMap(props['map']); 
-		window.map = props['map'];
+		// props.map.then((returnVal)=> window.map=returnVal.map);
     }
 	
 	createMap(height, width)

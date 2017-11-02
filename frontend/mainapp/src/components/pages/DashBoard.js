@@ -26,7 +26,8 @@ class DashBoard extends Component {
     }
     render()
     {
-        const gameContainer = <GameContainer map={fetch_map(1)}/>;
+        const gameContainer = <GameContainer/>;
+        fetch_map(this.props.match.params.map_id);
 
         //TODO
         // window.Game.gameSetMap(fetch_map(1));

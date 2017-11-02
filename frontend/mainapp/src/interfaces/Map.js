@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export function fetch_map(no){
+export function fetch_map(map_id){
     const INIT_MAP = { // initial map
         title: 'Untitled',
         height: 6,
@@ -18,16 +18,16 @@ export function fetch_map(no){
         final_hand_boxes: [],
         init_dir:16
     };
-    let map = INIT_MAP;
-    axios.get('map/' + no)
+    window.map = INIT_MAP;
+    return axios.get('map/' + map_id + '/')
         .then(function(response){
             if(response.data.res_code == 1){
-                map = response.data.map;
-            }
+                window.map = response.data.map;
+            } else
+                console.log('ERROR ' + response.data.res_code);
         }).catch(function(error){
             console.log(error); // only for testing
         });
-    return map;
 }
 
 export function create_map(map){
@@ -43,4 +43,15 @@ export function create_map(map){
 
         });
     return map_id;
+}
+
+export function modify_map(map_id, map){
+    axios.put('map/' + map_id + '/', {new_map_info: map})
+        .then(function(response){
+            if(response.data.res_code == 1){
+                console.log('Succeeded!');
+            }
+        }).catch(function(error){
+
+        });
 }
