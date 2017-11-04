@@ -59,6 +59,10 @@ class BlocklyContainer extends Component {
                     interpreter.createNativeFunction(() => {
                         return Game.gameInit();     
                     }));
+                interpreter.setProperty(scope, "gameAttack",
+                    interpreter.createNativeFunction(() => {
+                        return Game.gameAttack();     
+                    }));
                 var alertWrapper = function(text) {
                     text = text ? text.toString() : '';
                     return alert(text);
@@ -110,6 +114,7 @@ class BlocklyContainer extends Component {
             <xml id="toolbox" style={{display: "none"}}>
                 <block type="game_move"></block>
                 <block type="game_turn"></block>
+                <block type="game_attack"></block>
                 <block type="controls_if"></block>
                 <block type="controls_repeat_ext"></block>
                 <block type="logic_compare"></block>

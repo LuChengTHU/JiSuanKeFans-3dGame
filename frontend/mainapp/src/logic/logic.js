@@ -173,4 +173,8 @@ export default class Game {
     // static gameMove()  {
         // console.log('gameMove');        
     // }
+	static gameAttack()
+	{
+		console.log('gameAtack()');
+	}
 }
