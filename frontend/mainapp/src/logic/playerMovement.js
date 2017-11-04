@@ -81,11 +81,9 @@ export default function playerMovement( oldState, time ) {
 
 
     state.attackLength += 1;
-    // if(state.attackLength < 43) {
-     //    state.mixer.update(0.02);
-	// }
-	state.mixer.update(state.clock.getDelta())
-
+	state.mixer.update(state.clock.getDelta());
+    // let action = state.mixer.existingAction( state.knightMesh.geometry.animations[ 0 ] );
+    // action._update(state.clock.getDelta())
 
 	return state;
 

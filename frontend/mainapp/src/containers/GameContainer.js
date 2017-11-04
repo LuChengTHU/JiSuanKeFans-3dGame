@@ -50,6 +50,45 @@ export default class GameContainer extends Component {
 
     }
 
+    setWeight = ( action, weight ) => {
+        action.enabled = true;
+        action.setEffectiveTimeScale( 1 );
+        action.setEffectiveWeight( weight );
+    };
+
+    prepareCrossFade = (startAction, endAction, duration) => {
+        let oldState = this.state;
+        oldState.actions.forEach( function (action) {
+            action.paused = false;
+        });
+
+        // If the current action is 'idle' (duration 4 sec), execute the crossfade immediately;
+        // else wait until the current action has finished its current loop
+        if ( oldState.currentAction === oldState.actions[0] ) {
+            // Not only the start action, but also the end action must get a weight of 1 before fading
+            // (concerning the start action this is already guaranteed in this place)
+            this.setWeight( endAction, 1 );
+            endAction.time = 0;
+            // Crossfade with warping - you can also try without warping by setting the third parameter to false
+            startAction.crossFadeTo( endAction, duration, true );
+        } else {
+            oldState.mixer.addEventListener( 'loop', onLoopFinished );
+            let that = this;
+            function onLoopFinished( event ) {
+                if ( event.action === startAction ) {
+                    oldState.mixer.removeEventListener( 'loop', onLoopFinished );
+                    that.setWeight( endAction, 1 );
+                    endAction.time = 0;
+                    // Crossfade with warping - you can also try without warping by setting the third parameter to false
+                    startAction.crossFadeTo( endAction, duration, true );
+                }
+            }
+        }
+
+        this.setState( oldState );
+    };
+
+
     componentDidMount() {
 
         // Track if we're mounted so game loop doesn't tick after unmount
@@ -69,18 +108,26 @@ export default class GameContainer extends Component {
                 mesh.scale.set( 0.01, 0.01, 0.01 );
                 let mixer = new THREE.AnimationMixer( mesh );
                 // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
-                //     console.log(mesh.geometry.animations[ i ])
                 //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
                 //     action.play();
                 // }
-                let action = mixer.clipAction( mesh.geometry.animations[ 0 ] );
-                action.play();
-                console.log(action)
+                let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
+                let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
+                this.setWeight(moveAction, 1);
+                this.setWeight(attackAction, 0);
+                let actions = [ moveAction, attackAction];
+
+                actions.forEach( function ( action ) {
+                    action.play();
+                } );
+
                 this.setState({
                     knightMesh:mesh,
                     mixer:mixer,
                     clock:new THREE.Clock(),
-                    attackLength:0
+                    attackLength:0,
+                    actions: actions,
+                    currentAction: moveAction
                 });
 
                 // Start the game loop when this component loads
