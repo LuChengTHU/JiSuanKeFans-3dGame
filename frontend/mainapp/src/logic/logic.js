@@ -176,5 +176,7 @@ export default class Game {
 	static gameAttack()
 	{
 		console.log('gameAtack()');
+        Game.gameCheckFinished();
+        window.ui.playerAttack();
 	}
 }

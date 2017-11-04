@@ -62,28 +62,44 @@ export default class GameContainer extends Component {
             action.paused = false;
         });
 
-        // If the current action is 'idle' (duration 4 sec), execute the crossfade immediately;
-        // else wait until the current action has finished its current loop
-        if ( oldState.currentAction === oldState.actions[0] ) {
-            // Not only the start action, but also the end action must get a weight of 1 before fading
-            // (concerning the start action this is already guaranteed in this place)
-            this.setWeight( endAction, 1 );
-            endAction.time = 0;
-            // Crossfade with warping - you can also try without warping by setting the third parameter to false
-            startAction.crossFadeTo( endAction, duration, true );
-        } else {
-            oldState.mixer.addEventListener( 'loop', onLoopFinished );
-            let that = this;
-            function onLoopFinished( event ) {
-                if ( event.action === startAction ) {
-                    oldState.mixer.removeEventListener( 'loop', onLoopFinished );
-                    that.setWeight( endAction, 1 );
-                    endAction.time = 0;
-                    // Crossfade with warping - you can also try without warping by setting the third parameter to false
-                    startAction.crossFadeTo( endAction, duration, true );
-                }
+        // // If the current action is 'idle' (duration 4 sec), execute the crossfade immediately;
+        // // else wait until the current action has finished its current loop
+        // if ( oldState.currentAction === oldState.actions[0] ) {
+        //     // Not only the start action, but also the end action must get a weight of 1 before fading
+        //     // (concerning the start action this is already guaranteed in this place)
+        //     this.setWeight( endAction, 1 );
+        //     endAction.time = 0;
+        //     // Crossfade with warping - you can also try without warping by setting the third parameter to false
+        //     startAction.crossFadeTo( endAction, duration, true );
+        // } else {
+
+        let that = this;
+        function onLoopFinished( event ) {
+            if ( event.action === startAction ) {
+                oldState.mixer.removeEventListener( 'loop', onLoopFinished );
+                that.setWeight( endAction, 1 );
+                endAction.time = 0;
+                // Crossfade with warping - you can also try without warping by setting the third parameter to false
+                startAction.crossFadeTo( endAction, duration, true );
+                // if ( startAction === oldState.actions[1] ) {
+                //     oldState.playerAnimateAttacking = false;
+                // }
+                oldState.currentAction = endAction;
+                that.setState(oldState);
             }
         }
+
+        function onEndLoopFinished( event ) {
+            if (event.action === endAction ) {
+                // if ( startAction === oldState.actions[1] ) {
+                //     oldState.playerAnimateAttacking = false;
+                // }
+                oldState.mixer.removeEventListener( 'loop', onEndLoopFinished );
+                that.setState(oldState);
+            }
+        }
+        oldState.mixer.addEventListener( 'loop', onLoopFinished );
+        oldState.mixer.addEventListener( 'loop', onEndLoopFinished );
 
         this.setState( oldState );
     };
@@ -113,6 +129,7 @@ export default class GameContainer extends Component {
                 // }
                 let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
                 let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
+                //attackAction.setLoop(THREE.LoopOnce, 0);
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
                 let actions = [ moveAction, attackAction];
@@ -186,6 +203,7 @@ export default class GameContainer extends Component {
 		});
 		this.setState({playerAnimateCW: true});
 		window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[0], 0);
 	}
 	
 	playerTurnCCW()
@@ -202,13 +220,22 @@ export default class GameContainer extends Component {
 		});
 		this.setState({playerAnimateCCW: true});
 		window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[0], 0);
 	}
 	
 	playerMoveForward()
 	{
 		this.setState({playerAnimateForward: true});
 		window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[0], 0);
 	}
+
+    playerAttack()
+    {
+        this.setState({playerAnimateAttacking: true});
+        window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[1], 0);
+    }
     
     requestGameLoop = () => {
     
