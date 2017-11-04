@@ -197,7 +197,11 @@ export default class GameContainer extends Component {
         // Note we can pass our JSON file paths to webpack!
         // loadModel( require( '../assets/sitepoint-robot.json' ) ).then(geometry =>
             // this.setState({ geometry })
-        // );
+		// );
+		const container = this.refs.container;
+		container.addEventListener('mousedown', this.onGameMouseDown, false);
+		container.addEventListener('touchstart', this.onGameTouchStart, false);
+		document.addEventListener('touchmove', this.onGameTouchMove, false);
     
         // Start the game loop when this component loads
         this.requestGameLoop();
@@ -206,10 +210,42 @@ export default class GameContainer extends Component {
     
     componentWillUnmount() {
     
-        this.mounted = false;
+		this.mounted = false;
+		
+		const container = this.refs.container;
+		container.removeEventListener('mousedown', this.onGameMouseDown, false);
+		container.removeEventListener('touchstart', this.onGameTouchStart, false);
+		container.removeEven
+
         this.cancelGameLoop();
     
-    }
+	}
+
+	// Mouse Down
+	onGameMouseDown = (event) => {
+		event.preventDefault();
+
+		document.addEventListener('mousemove', this.onGameMouseMove, false);
+		document.addEventListener('mouseup', this.onGameMouseUp, false);
+		document.addEventListener('mouseout', this.onGameMouseOut, false);
+
+		/*
+			.. to add codes
+			maintain the position of Mouse
+		*/
+	}
+	
+	onGameMouseUp = () => {
+		
+	};
+
+	onGameMouseDown = () => {
+	
+	};
+
+	onGameMouseUp
+
+
     
     
     requestGameLoop = () => {
