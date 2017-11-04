@@ -90,7 +90,7 @@ export default class Game extends Component {
                     near={ 0.1 }
                     far={ 1000 }
                     position={ cameraPosition }
-                    lookAt={ playerPosition }
+                    lookAt={ lookAt }
                 />
                 <ambientLight
                     color={ 0xdddddd }
