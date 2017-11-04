@@ -35,9 +35,9 @@ export default class GameContainer extends Component {
 
         // Initial scene state
         this.state = {
-            cameraPosition: new THREE.Vector3( -3, 4, -3 ),
+            cameraPosition: new THREE.Vector3( -2, 4, -2 ),
             geometry: new THREE.Geometry(),
-            lookAt: new THREE.Vector3( 3, 0, 3 ),
+            lookAt: new THREE.Vector3( 0, 0, 0 ),
 			monsters: [],
         };
 
@@ -146,6 +146,22 @@ export default class GameContainer extends Component {
 			}
 		);
 	}
+
+	setCameraPosition = (x, y, z) => {
+		this.setState(
+			{
+				cameraPosition : new Vector3(x, y, z),
+			}
+		);
+	}
+
+	setLookAt = (x, y, z) => {
+		this.setState(
+			{
+				lookAt : new Vector3(x, y, z),
+			}
+		);
+	}
 	
 	playerTurnCW()
 	{
@@ -197,7 +213,12 @@ export default class GameContainer extends Component {
         // Note we can pass our JSON file paths to webpack!
         // loadModel( require( '../assets/sitepoint-robot.json' ) ).then(geometry =>
             // this.setState({ geometry })
-        // );
+		// );
+
+		document.addEventListener('mousedown', this.onGameMouseDown, false);
+		// document.addEventListener('mousemove', this.onGameMouseMove, false);
+		// document.addEventListener('mouseup', this.onGameMouseUp, false);
+		// document.addEventListener('mouseout', this.onGameMouseOut, false);
     
         // Start the game loop when this component loads
         this.requestGameLoop();
@@ -206,23 +227,91 @@ export default class GameContainer extends Component {
     
     componentWillUnmount() {
     
-        this.mounted = false;
+		this.mounted = false;
+		
+		document.removeEventListener('mousedown', this.onGameMouseDown, false);
+		document.removeEventListener('mousemove', this.onGameMouseMove, false);
+		document.removeEventListener('mouseup', this.onGameMouseUp, false);
+		document.removeEventListener('mouseout', this.onGameMouseOut, false);
+
         this.cancelGameLoop();
     
-    }
-    
-    
-    requestGameLoop = () => {
-    
-        this.reqAnimId = window.requestAnimationFrame( this.gameLoop );
-    
-    }
-    
-    cancelGameLoop = () => {
-    
-        window.cancelAnimationFrame( this.reqAnimId );
-    
-    }
+	}
+
+	requestGameLoop = () => {
+		
+		this.reqAnimId = window.requestAnimationFrame( this.gameLoop );
+		
+	}
+
+	// Mouse Down
+	onGameMouseDown = (event) => {
+		event.preventDefault();
+
+		document.addEventListener('mousemove', this.onGameMouseMove, false);
+		document.addEventListener('mouseup', this.onGameMouseUp, false);
+		document.addEventListener('mouseout', this.onGameMouseOut, false);
+
+		/*
+			.. to add codes
+			record the initial position of mouse
+		*/
+		this.mouseXOnMouseDown = event.clientX;
+		this.mouseYOnMouseDown = event.clientY;
+
+		this.cameraXOnMouseDown = this.state.cameraPosition.x;
+		this.cameraYOnMouseDown = this.state.cameraPosition.y;
+		this.cameraZOnMouseDown = this.state.cameraPosition.z;
+
+		this.lookAtXOnMouseDown = this.state.lookAt.x;
+		this.lookAtYOnMouseDown = this.state.lookAt.y;
+		this.lookAtZOnMouseDown = this.state.lookAt.z;
+	}
+	
+	// Mouse Move
+	onGameMouseMove = (event) => {
+		/*
+			.. to add codes
+		*/
+		this.mouseX = event.clientX;
+		this.mouseY = event.clientY;
+
+		var DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.002;
+		var DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.002;
+		var SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
+		var SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
+		
+		//var SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
+		//SightX = 1. * SightX / SightLen;
+		//SightZ = 1. * SightZ / SightLen;
+		var vSightX = SightZ;
+		var vSightZ = -SightX;
+
+		this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
+		this.cameraY = this.cameraYOnMouseDown;
+		this.cameraZ = this.cameraZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+
+		this.lookAtX = this.lookAtXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
+		this.lookAtY = this.lookAtYOnMouseDown;
+		this.lookAtZ = this.lookAtZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+
+		this.setCameraPosition(this.cameraX, this.cameraY, this.cameraZ);
+		this.setLookAt(this.lookAtX, this.lookAtY, this.lookAtZ);
+	}
+
+	// Mouse Up
+	onGameMouseUp = () => {
+		document.removeEventListener('mousemove', this.onGameMouseMove, false);
+		document.removeEventListener('mouseup', this.onGameMouseUp, false);
+		document.removeEventListener('mouseout', this.onGameMouseOut, false);	
+	}
+
+	// Mouse Out
+	onGameMouseOut = () => {
+		document.removeEventListener('mousemove', this.onGameMouseMove, false);
+		document.removeEventListener('mouseup', this.onDocumentMouseUp, false);
+		document.removeEventListener('mouseout', this.onGameMouseOut, false);
+	};
     
     // Our game loop, which is managed as the window's requestAnimationFrame
     // callback
@@ -261,7 +350,10 @@ export default class GameContainer extends Component {
         const {
             cameraPosition, geometry, lookAt, playerPosition, playerRotation, mapBlocks,
 			monsters
-        } = this.state;
+		} = this.state;
+		
+		console.log(cameraPosition);
+		console.log(lookAt);
 
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
