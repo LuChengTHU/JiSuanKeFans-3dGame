@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly && click callback correctly 1`] = `
+<withStyles(Dialog)
+  onRequestClose={[Function]}
+  open={true}
+>
+  <withStyles(DialogTitle)>
+    title
+  </withStyles(DialogTitle)>
+  <withStyles(DialogContent) />
+  <withStyles(DialogActions)>
+    <withStyles(Button)
+      color="primary"
+      id="confirm"
+      onClick={[Function]}
+    >
+      confirm
+    </withStyles(Button)>
+    <withStyles(Button)
+      color="primary"
+      id="cancel"
+      onClick={[Function]}
+    >
+      close
+    </withStyles(Button)>
+  </withStyles(DialogActions)>
+</withStyles(Dialog)>
+`;

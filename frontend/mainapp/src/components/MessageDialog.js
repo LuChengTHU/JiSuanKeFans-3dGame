@@ -24,20 +24,21 @@ class MessageDialog extends React.Component {
   }
 
   render() {
-    const { classes, onRequestClose, closeText, onRequestConfirm, confirmText, title, ...other } = this.props;
+    const { classes, onRequestClose, closeText, onRequestConfirm, confirmText, title, content, ...other } = this.props;
     let confirmButton = null, closeButton = null;
-    if (onRequestConfirm) confirmButton =
-        <Button onClick={onRequestConfirm} color="primary">
+    confirmButton =
+        <Button id={'confirm'} onClick={onRequestConfirm} color="primary">
             { confirmText }
         </Button>
     closeButton =
-        <Button onClick={onRequestClose} color="primary">
+        <Button id={'cancel'} onClick={onRequestClose} color="primary">
             { closeText }
         </Button>
     return (
         <Dialog {...other} onRequestClose={onRequestClose} >
           <DialogTitle>{ title }</DialogTitle>
           <DialogContent>
+            { this.children }
           </DialogContent>
           <DialogActions>
             { confirmButton }
@@ -50,8 +51,10 @@ class MessageDialog extends React.Component {
 
 MessageDialog.propTypes = {
     title: PropTypes.string.isRequired,
-    closeText: PropTypes.string.isRequired,
-    onRequestClose: PropTypes.func.isRequired,
+    closeText: PropTypes.string,
+    onRequestClose: PropTypes.func,
+    confirmText: PropTypes.string,
+    onRequestConfirm: PropTypes.func,
 };
 
 export default withStyles(styles)(MessageDialog);
