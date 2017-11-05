@@ -24,7 +24,7 @@ class MessageDialog extends React.Component {
   }
 
   render() {
-    const { classes, onRequestClose, closeText, onRequestConfirm, confirmText, title, content, ...other } = this.props;
+    const { classes, onRequestClose, closeText, onRequestConfirm, confirmText, title, ...other } = this.props;
     let confirmButton = null, closeButton = null;
     confirmButton =
         <Button id={'confirm'} onClick={onRequestConfirm} color="primary">
@@ -38,7 +38,7 @@ class MessageDialog extends React.Component {
         <Dialog {...other} onRequestClose={onRequestClose} >
           <DialogTitle>{ title }</DialogTitle>
           <DialogContent>
-            { this.children }
+            { this.props.children }
           </DialogContent>
           <DialogActions>
             { confirmButton }

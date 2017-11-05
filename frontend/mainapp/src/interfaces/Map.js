@@ -28,6 +28,7 @@ export function fetch_map(map_id){
                 delete window.map.author;
             } else
                 console.log('ERROR ' + response.data.res_code);
+            return response;
         }).catch(function(error){
             console.log(error); // only for testing
         });

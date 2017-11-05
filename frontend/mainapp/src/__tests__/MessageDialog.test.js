@@ -18,7 +18,13 @@ const setup = () => {
     open:true,
     title:'title'
   }
-  const wrapper = shallow(<MessageDialog {...props} />).dive()
+  const wrapper = shallow(
+    <MessageDialog {...props} >
+      <div>
+        content
+      </div>
+    </MessageDialog>
+  ).dive()
   return {
     props,
     wrapper

@@ -8,7 +8,11 @@ exports[`renders correctly && click callback correctly 1`] = `
   <withStyles(DialogTitle)>
     title
   </withStyles(DialogTitle)>
-  <withStyles(DialogContent) />
+  <withStyles(DialogContent)>
+    <div>
+      content
+    </div>
+  </withStyles(DialogContent)>
   <withStyles(DialogActions)>
     <withStyles(Button)
       color="primary"
