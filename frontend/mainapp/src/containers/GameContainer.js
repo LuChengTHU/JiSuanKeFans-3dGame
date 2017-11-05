@@ -215,7 +215,8 @@ export default class GameContainer extends Component {
             // this.setState({ geometry })
 		// );
 
-		document.addEventListener('mousedown', this.onGameMouseDown, false);
+		const container = this.refs.container;
+		container.addEventListener('mousedown', this.onGameMouseDown, false);
 		// document.addEventListener('mousemove', this.onGameMouseMove, false);
 		// document.addEventListener('mouseup', this.onGameMouseUp, false);
 		// document.addEventListener('mouseout', this.onGameMouseOut, false);
@@ -229,7 +230,8 @@ export default class GameContainer extends Component {
     
 		this.mounted = false;
 		
-		document.removeEventListener('mousedown', this.onGameMouseDown, false);
+		const container = this.refs.container;
+		container.removeEventListener('mousedown', this.onGameMouseDown, false);
 		document.removeEventListener('mousemove', this.onGameMouseMove, false);
 		document.removeEventListener('mouseup', this.onGameMouseUp, false);
 		document.removeEventListener('mouseout', this.onGameMouseOut, false);
@@ -241,6 +243,12 @@ export default class GameContainer extends Component {
 	requestGameLoop = () => {
 		
 		this.reqAnimId = window.requestAnimationFrame( this.gameLoop );
+		
+	}
+	
+	cancelGameLoop = () => {
+		
+		window.cancelAnimationFrame( this.reqAnimId );
 		
 	}
 
@@ -358,7 +366,7 @@ export default class GameContainer extends Component {
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
         // a loading  screen, or even a 3d scene without geometry in it
-        return <div>
+        return <div ref="container">
 			<div>
 				{ geometry ? <Game
 					width={ width }
