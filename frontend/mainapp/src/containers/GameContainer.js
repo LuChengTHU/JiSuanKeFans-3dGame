@@ -1,15 +1,15 @@
 import React, { Component, PropTypes} from 'react';
 import * as THREE from 'three';
+
 import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
 
 import Game from '../components/Game';
 import MapBlock from '../components/MapBlock';
 import * as Logic from '../logic/logic';
 
-import { loadModel, } from '../utils/utils';
-
 // Load our simple functions that manage scene/game state
 import playerMovement from '../logic/playerMovement';
+
 
 /**
  * Our "container" component. See https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.jwywi6ltw
@@ -35,27 +35,63 @@ export default class GameContainer extends Component {
 
         // Initial scene state
         this.state = {
+            playerPosition: new Vector3( 0, 0, 0 ),
+            playerRotation: new Euler( 0, -Math.PI / 2, 0 ),
             cameraPosition: new THREE.Vector3( -2, 4, -2 ),
-            geometry: new THREE.Geometry(),
             lookAt: new THREE.Vector3( 0, 0, 0 ),
-			monsters: [],
+			monsters: []
         };
 
-        loadModel(  '../assets/sitepoint-robot.json'  ).then(geometry =>
-            this.setState({ geometry })
-        );
+        this.createMap = this.createMap.bind(this);
+        this.setPlayerDirection = this.setPlayerDirection.bind(this);
+        this.createPlayer = this.createPlayer.bind(this);
+        this.playerMoveForward = this.playerMoveForward.bind(this);
+        this.playerTurnCW = this.playerTurnCW.bind(this);
+        this.playerTurnCCW = this.playerTurnCCW.bind(this);
+        this.playerAttack = this.playerAttack.bind(this);
+        this.addMonster = this.addMonster.bind(this);
+        this.monsterMoveForward = this.monsterMoveForward.bind(this);
+        this.monsterTurnCW = this.monsterTurnCW.bind(this);
+        this.monsterTurnCCW = this.monsterTurnCCW.bind(this);
 
-		this.createMap = this.createMap.bind(this);
-		this.setPlayerDirection = this.setPlayerDirection.bind(this);
-		this.createPlayer = this.createPlayer.bind(this);
-		this.playerMoveForward = this.playerMoveForward.bind(this);
-		this.playerTurnCW = this.playerTurnCW.bind(this);
-		this.playerTurnCCW = this.playerTurnCCW.bind(this);
-		this.addMonster = this.addMonster.bind(this);
-		this.monsterMoveForward = this.monsterMoveForward.bind(this);
-		this.monsterTurnCW = this.monsterTurnCW.bind(this);
-		this.monsterTurnCCW = this.monsterTurnCCW.bind(this);
     }
+
+    setWeight = ( action, weight ) => {
+        action.enabled = true;
+        action.setEffectiveTimeScale( 1 );
+        action.setEffectiveWeight( weight );
+    };
+
+    prepareCrossFade = (startAction, endAction, duration) => {
+        let oldState = this.state;
+        oldState.actions.forEach( function (action) {
+            action.paused = false;
+        });
+
+
+        oldState.mixer.addEventListener('loop', onEndLoopFinished);
+        this.setWeight(endAction, 1);
+        endAction.time = 0;
+        // Crossfade with warping - you can also try without warping by setting the third parameter to false
+        startAction.crossFadeTo(endAction, duration, true);
+        oldState.currentAction = endAction;
+        this.setState(oldState);
+
+        let that = this;
+
+        function onEndLoopFinished(event) {
+            if (event.action === endAction) {
+                if (endAction === oldState.actions[1]) {
+                    oldState.playerAnimateAttacking = false;
+                    oldState.mixer.removeEventListener('loop', onEndLoopFinished);
+                    that.setState(oldState);
+                    that.prepareCrossFade(endAction, oldState.actions[0], duration);
+                }
+            }
+        }
+
+    };
+
 	
 	addMonster(id, x, z)
 	{
@@ -134,7 +170,7 @@ export default class GameContainer extends Component {
 			{
 				playerPosition : new Vector3(x, 1, z),
 				playerTargetPosition : new Vector3(x, 1, z),
-				playerRotation : new Euler(),
+				playerRotation : new Euler(0, -Math.PI / 2, 0),
 			}
 		);
 	}
@@ -153,7 +189,7 @@ export default class GameContainer extends Component {
 				cameraPosition : new Vector3(x, y, z),
 			}
 		);
-	}
+	};
 
 	setLookAt = (x, y, z) => {
 		this.setState(
@@ -161,7 +197,7 @@ export default class GameContainer extends Component {
 				lookAt : new Vector3(x, y, z),
 			}
 		);
-	}
+	};
 	
 	playerTurnCW()
 	{
@@ -177,6 +213,7 @@ export default class GameContainer extends Component {
 		});
 		this.setState({playerAnimateCW: true});
 		window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[0], 0);
 	}
 	
 	playerTurnCCW()
@@ -193,13 +230,31 @@ export default class GameContainer extends Component {
 		});
 		this.setState({playerAnimateCCW: true});
 		window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[0], 0);
 	}
 	
 	playerMoveForward()
 	{
 		this.setState({playerAnimateForward: true});
 		window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[0], 0);
 	}
+
+
+    playerAttack()
+    {
+        this.setState({playerAnimateAttacking: true});
+        window.blocklyShouldRun = false;
+        this.prepareCrossFade(this.state.currentAction, this.state.actions[1], 0);
+    }
+
+    
+    cancelGameLoop = () => {
+    
+        window.cancelAnimationFrame( this.reqAnimId );
+
+    };
+
     
     componentDidMount() {
     
@@ -220,9 +275,44 @@ export default class GameContainer extends Component {
 		// document.addEventListener('mousemove', this.onGameMouseMove, false);
 		// document.addEventListener('mouseup', this.onGameMouseUp, false);
 		// document.addEventListener('mouseout', this.onGameMouseOut, false);
-    
-        // Start the game loop when this component loads
-        this.requestGameLoop();
+
+        let loader = new THREE.JSONLoader();
+        loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
+            (geometry, materials) => {
+                let material = materials[ 0 ];
+                material.emissive.set( 0x101010 );
+                material.skinning = true;
+                material.morphTargets = true;
+                let mesh = new THREE.SkinnedMesh( geometry, material );
+                mesh.scale.set( 0.01, 0.01, 0.01 );
+                let mixer = new THREE.AnimationMixer( mesh );
+                // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
+                //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
+                //     action.play();
+                // }
+                let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
+                let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
+                //attackAction.setLoop(THREE.LoopOnce, 0);
+                this.setWeight(moveAction, 1);
+                this.setWeight(attackAction, 0);
+                let actions = [ moveAction, attackAction];
+
+                actions.forEach( function ( action ) {
+                    action.play();
+                } );
+
+                this.setState({
+                    knightMesh:mesh,
+                    mixer:mixer,
+                    clock:new THREE.Clock(),
+                    actions: actions,
+                    currentAction: moveAction
+                });
+
+                // Start the game loop when this component loads
+                this.requestGameLoop();
+
+            });
     
     }
     
@@ -274,7 +364,7 @@ export default class GameContainer extends Component {
 		this.lookAtXOnMouseDown = this.state.lookAt.x;
 		this.lookAtYOnMouseDown = this.state.lookAt.y;
 		this.lookAtZOnMouseDown = this.state.lookAt.z;
-	}
+	};
 	
 	// Mouse Move
 	onGameMouseMove = (event) => {
@@ -284,16 +374,16 @@ export default class GameContainer extends Component {
 		this.mouseX = event.clientX;
 		this.mouseY = event.clientY;
 
-		var DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.002;
-		var DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.002;
-		var SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
-		var SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
+		let DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.002;
+		let DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.002;
+		let SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
+		let SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
 		
 		//var SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
 		//SightX = 1. * SightX / SightLen;
 		//SightZ = 1. * SightZ / SightLen;
-		var vSightX = SightZ;
-		var vSightZ = -SightX;
+		let vSightX = SightZ;
+		let vSightZ = -SightX;
 
 		this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
 		this.cameraY = this.cameraYOnMouseDown;
@@ -305,14 +395,14 @@ export default class GameContainer extends Component {
 
 		this.setCameraPosition(this.cameraX, this.cameraY, this.cameraZ);
 		this.setLookAt(this.lookAtX, this.lookAtY, this.lookAtZ);
-	}
+	};
 
 	// Mouse Up
 	onGameMouseUp = () => {
 		document.removeEventListener('mousemove', this.onGameMouseMove, false);
 		document.removeEventListener('mouseup', this.onGameMouseUp, false);
 		document.removeEventListener('mouseout', this.onGameMouseOut, false);	
-	}
+	};
 
 	// Mouse Out
 	onGameMouseOut = () => {
@@ -320,6 +410,7 @@ export default class GameContainer extends Component {
 		document.removeEventListener('mouseup', this.onDocumentMouseUp, false);
 		document.removeEventListener('mouseout', this.onGameMouseOut, false);
 	};
+
     
     // Our game loop, which is managed as the window's requestAnimationFrame
     // callback
@@ -337,11 +428,14 @@ export default class GameContainer extends Component {
         // example is held in local container state. It could be moved into
         // a redux/flux store and udpated once per game loop.
         const newState = playerMovement( oldState, time );
-    
+        if(!this.state.playerAnimateAttacking) {
+            newState.playerAnimateAttacking = false;
+        }
         this.setState( newState );
 		if(newState.ready)
 			window.blocklyCallback();
-    }
+    };
+
 
     render() {
 
@@ -356,32 +450,33 @@ export default class GameContainer extends Component {
 		}
 
         const {
-            cameraPosition, geometry, lookAt, playerPosition, playerRotation, mapBlocks,
-			monsters
-		} = this.state;
+
+            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters
+        } = this.state;
+
 		
 		console.log(cameraPosition);
 		console.log(lookAt);
+
 
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
 			<div>
-				{ geometry ? <Game
+				{ knightMesh ? <Game
 					width={ width }
 					height={ height }
 					cameraPosition={ cameraPosition }
 					lookAt={ lookAt }
-					geometry={ geometry }
 					playerPosition={ playerPosition }
 					playerRotation={ playerRotation }
 					mapBlocks={ mapBlocks }
+                    knightMesh={ knightMesh }
 					monsters={ monsters }
 				/> : 'Loading' }
 			</div>
 		</div>;
-
     }
 
 }

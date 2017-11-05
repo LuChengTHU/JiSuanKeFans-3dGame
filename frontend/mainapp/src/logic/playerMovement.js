@@ -1,4 +1,4 @@
-import THREE, { Vector3, Euler, } from 'three';
+import { Vector3, Euler, } from 'three';
 
 /**
  * We can manage our game state in a series of small, easy to reason about
@@ -6,7 +6,6 @@ import THREE, { Vector3, Euler, } from 'three';
  **/
 export default function playerMovement( oldState, time ) {
 
-    // Merge the old state with the updated properties
 	let state = { ...oldState };
 	let animationCount = 0;
 	// Player Animate Forward
@@ -68,6 +67,14 @@ export default function playerMovement( oldState, time ) {
 	}
 	if(state.playerAnimateTurning)
 		++animationCount;
+
+	// console.log(animationCount);
+
+    if(state.playerAnimateAttacking) {
+        console.log('continue');
+	    ++animationCount;
+    }
+
 	// Monster Animate Forward
 	for(let i = 0; i < state.monsters.length; i++)
 	{
@@ -133,6 +140,13 @@ export default function playerMovement( oldState, time ) {
 		if(state.monsters[i].animateTurning)
 			++animationCount;
 	}
+
 	window.blocklyShouldRun = (animationCount === 0);
+
+	state.mixer.update(state.clock.getDelta());
+    // let action = state.mixer.existingAction( state.knightMesh.geometry.animations[ 0 ] );
+    // action._update(state.clock.getDelta())
+
 	return state;
+
 }

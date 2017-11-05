@@ -271,4 +271,19 @@ export default class Game {
 	{
 		return Object.prototype.toString.call(o) === '[object Array]';
 	}
+
+    // static gameTurn(x) {
+        // console.log('gameTurn'+x);        
+    // }
+    // static gameMove()  {
+        // console.log('gameMove');        
+    // }
+	static gameAttack()
+	{
+		console.log('gameAtack()');
+        Game.gameCheckFinished();
+        window.ui.playerAttack();
+	}
 }
+
+
