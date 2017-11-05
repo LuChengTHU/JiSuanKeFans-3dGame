@@ -4,7 +4,7 @@ export default class Game {
 	 * height, width
 	 * nMaxHandBoxes
 	 * instr_set
-	 * {init, cur, final} {Pos, GroundColors, GroundBoxes, HandBoxes, Dir, AiInfos, Hp}
+	 * {init, cur, final} {Pos, GroundColors, GroundBoxes, HandBoxes, Dir, AiInfos, Hp, Attack}
 	 */
 	// map : null;
 
@@ -56,14 +56,18 @@ export default class Game {
 		Game.map.cur_ground_colors = Game.map.init_ground_colors.slice(0);
 		Game.map.cur_ground_boxes  = Game.map.init_ground_boxes.slice(0);
 		Game.map.cur_hand_boxes    = Game.map.init_hand_boxes.slice(0);
+		Game.map.cur_hp            = Game.map.init_hp;
+		Game.map.cur_attack        = Game.map.init_attack;
 		
 		// @TODO: manual deep copy
 		Game.map.cur_ai_infos = [];
 		for(let i = 0; i < Game.map.init_ai_infos.length; i++)
 			Game.map.cur_ai_infos.push({
-				id : Game.map.init_ai_infos[i].id,
-				pos: Game.map.init_ai_infos[i].pos.slice(0),
-				dir: Game.map.init_ai_infos[i].dir,
+				id     : Game.map.init_ai_infos[i].id,
+				pos    : Game.map.init_ai_infos[i].pos.slice(0),
+				dir    : Game.map.init_ai_infos[i].dir,
+				hp     : Game.map.init_ai_infos[i].hp,
+				attack : Game.map.init_ai_infos[i].attack,
 			});
 		
 		Game.map.cur_ai = -1;
@@ -186,6 +190,21 @@ export default class Game {
 			Game.map.cur_ai = i;
 			Game.map.ai_callbacks[i]();
 			Game.map.cur_ai = -1;
+		}
+	}
+	
+	static gameAttack()
+	{
+		if(Game.map.cur_ai === -1)
+		{
+			// Player playing
+			// @TODO: Detect who is in front, and decrease hp
+			Game.gameCallAfterPlayerMove();
+		}
+		else
+		{
+			// AI playing
+			// @TODO: Detect who is in front, and decrease hp
 		}
 	}
 
