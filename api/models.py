@@ -39,6 +39,8 @@ class Map(models.Model):
     height = models.IntegerField()
     width = models.IntegerField()
 
+    stage = models.IntegerField(default=None, blank=True, null=True, unique=True)
+
     # ------------ restrictions -------------
 
     n_max_hand_boxes = models.IntegerField()
@@ -47,6 +49,7 @@ class Map(models.Model):
 
     # ------------ initial states -------------
     init_ground_colors = models.TextField() 
+    init_AI_infos = models.TextField(default="[]")
     # temporary solution: storing all arrays using json strings
     # TODO: find a more efficient solution 
     init_ground_boxes = models.TextField()
@@ -54,6 +57,8 @@ class Map(models.Model):
     # initial position
     init_pos_x = models.IntegerField()
     init_pos_y = models.IntegerField()
+
+    init_dir = models.IntegerField(default=16)
 
     init_hand_boxes = models.TextField()
 
@@ -68,3 +73,4 @@ class Map(models.Model):
     final_pos_y = models.IntegerField(default=None, blank=True, null=True)
     final_hand_boxes = models.TextField(default=None, blank=True, null=True)
 
+    final_dir = models.IntegerField(default=None, blank=True, null=True)

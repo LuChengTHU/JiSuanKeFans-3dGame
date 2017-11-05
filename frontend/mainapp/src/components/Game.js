@@ -7,6 +7,7 @@ import * as THREE from 'three';
 
 import Player from './Player';
 import MapBlock from './MapBlock';
+import Monster from './Monster';
 
 /**
  * Our main class to display the game. This contains only view code! It's very
@@ -46,7 +47,7 @@ export default class Game extends Component {
 
     render() {
         const {
-            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation
+            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters
         } = this.props;
 
         if(this.state.readyKnight) {
@@ -56,6 +57,15 @@ export default class Game extends Component {
 
 		// return <div> width={ width }, height={ height }
                     // lookAt={ lookAt.x } </div>
+
+		
+		let ms = [];
+		for(let i = 0; i < monsters.length; ++i)
+		{
+			ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
+		}
+
+
 		let ans = <React3
             mainCamera="camera"
             width={ width }
@@ -104,10 +114,14 @@ export default class Game extends Component {
                     color={ 0xdddddd }
                 />
 				{ mapBlocks }
+
                 {/*<group ref={val => { this.playerGroupRef = val; }}>*/}
                     {/*position={playerPosition}*/}
                     {/*rotation={playerRotation}*/}
                 {/*</group>*/}
+
+				{ ms }
+
             </scene>
         </React3>;
 		return ans;

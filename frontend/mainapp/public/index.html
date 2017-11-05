@@ -22,36 +22,25 @@
     -->
     <title>React App</title>
 	<script>
-	function cw()
-	{
-		ui.playerTurnCW();
-	}
-	function ccw()
-	{
-		ui.playerTurnCCW();
-	}
-	function forward()
-	{
-		ui.playerMoveForward();
-	}
 	function cli()
 	{
-		var map = new Object();
-		map.height = 6;
-		map.width = 9;
-		map.nMaxHandBoxes = 4;
-		map.instrSet = new Array(100);
-		for(var i = 0; i < 100; i++)
-			map.instrSet[i] = true;
-		map.initPos = [1, 1];
-		map.finalPos = [1, 2];
-		map.initGroundColors = [[0, 0, 0], [0, 0, 0]];
-		map.finalGroundColors = null;
-		map.initGroundBoxes = [[null, null, null], [null, null, null]];
-		map.finalGroundBoxes = null;
-		map.initHandBoxes = [];
-		map.finalHandBoxes = null;
-		map.initDir = 16;
+		// var map = new Object();
+		// map.height = 6;
+		// map.width = 9;
+		// map.nMaxHandBoxes = 4;
+		// map.instrSet = new Array(100);
+		// for(var i = 0; i < 100; i++)
+		// 	map.instrSet[i] = true;
+		// map.initPos = [1, 1];
+		// map.finalPos = [1, 2];
+		// map.initGroundColors = [[0, 0, 0], [0, 0, 0]];
+		// map.finalGroundColors = null;
+		// map.initGroundBoxes = [[null, null, null], [null, null, null]];
+		// map.finalGroundBoxes = null;
+		// map.initHandBoxes = [];
+		// map.finalHandBoxes = null;
+		// map.initDir = 16;
+		const map = window.map;
 		Game.gameSetMap(map);
 	}
 	</script>
@@ -61,10 +50,7 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
-	<!-- <button type="button" className="btn btn-info" onClick="cw()">cw</button> -->
-	<!-- <button type="button" className="btn btn-info" onClick="ccw()">ccw</button> -->
-	<!-- <button type="button" className="btn btn-info" onClick="forward()">forward</button> -->
-	<!-- <button type="button" className="btn btn-info" onClick="cli()">Init</button> -->
+	<button type="button" className="btn btn-info" onClick="cli()">Init</button>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -74,6 +60,9 @@
 
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+		-->
+		<!-- <script> -->
+			<!-- cli(); -->
+		<!-- </script> -->
   </body>
 </html>

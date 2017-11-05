@@ -9,6 +9,9 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
+import LoginFormDialog from './pages/Login.js';
+import RegisterFormDialog from './pages/Register.js';
+import {withRouter} from 'react-router-dom'
 // import FormDialog from './Login.js';
 
 const styles = theme => ({
@@ -33,8 +36,16 @@ class Nav extends Component {
         const { classes } = props;
         this.classes = classes;
         this.state = {
-            open: false,
+            loginOpen: false,
+            registerOpen: false,
+            links: props.links ? props.links : []
         }
+    }
+    handleClick = (name, value) => () => {
+        console.log('setState',name,value,this)
+        this.setState({
+            [name]: value
+        })
     }
     render()
     {
@@ -48,15 +59,32 @@ class Nav extends Component {
                 <Typography type="title" color="inherit" className={this.classes.flex}>
                     Title
                 </Typography>
-                {localStorage.getItem('token') ? 
-                localStorage.getItem('user')
-                :''
-                }
-                <div className="login">
-                <Button color="contrast" onClick={(e) => {this.setState({open:true});}}>Login</Button>
-                {/* <FormDialog open={this.state.open}/> */}
+                <div>
+                    <Button color="contrast" onClick={() => {
+                        this.setState({loginOpen:false, registerOpen:false});
+                        this.props.history.push('/editor');}}>地图编辑器</Button>
                 </div>
-
+                {localStorage.getItem('token') 
+                ? 
+                    <div className="profile">
+                    {JSON.parse(localStorage.getItem('user'))['username']}
+                    <Button color="contrast" onClick={(e) => {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        window.location.reload();
+                        }
+                    }>
+                        登出
+                    </Button>
+                    </div>
+                :
+                    <div className="login-register">
+                    <Button color="contrast" onClick={this.handleClick('loginOpen', true)}>登录</Button>
+                    <Button color="contrast" onClick={this.handleClick('registerOpen', true)}>注册</Button>
+                    { <LoginFormDialog open={this.state.loginOpen} onRequestClose={this.handleClick('loginOpen', false)}/> }
+                    { <RegisterFormDialog open={this.state.registerOpen} onRequestClose={this.handleClick('registerOpen', false)}/> }
+                    </div>
+                }
                 </Toolbar>
             </AppBar>
             </div>
@@ -68,4 +96,4 @@ Nav.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Nav);
+export default withRouter(withStyles(styles)(Nav));

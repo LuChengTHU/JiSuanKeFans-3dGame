@@ -10,6 +10,7 @@ import Nav from '../Nav';
 import axios from 'axios';
 import GameContainer from '../../containers/GameContainer';
 import BlocklyContainer from '../../containers/BlocklyContainer';
+import {fetch_map} from '../../interfaces/Map'
 
 const styles = theme => ({
   root: {
@@ -25,12 +26,18 @@ class DashBoard extends Component {
     }
     render()
     {
+        const gameContainer = <GameContainer/>;
+        fetch_map(this.props.match.params.map_id);
+
+        //TODO
+        // window.Game.gameSetMap(fetch_map(1));
+   
         return (
             <div className={this.classes.root}>
                 <Grid container spacing={25} justify='center'>
                 <Grid item xs={12} sm={6} >
 				<div id={'gameContainer'}>
-                <GameContainer />
+                    {gameContainer}    
 				</div>
                 </Grid>
                 <Grid item xs={12} sm={6}>

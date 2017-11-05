@@ -102,3 +102,7 @@ pip-selfcheck.json
 
 .vs/
 .vscode/
+
+frontend/
+templates/
+node_modules/

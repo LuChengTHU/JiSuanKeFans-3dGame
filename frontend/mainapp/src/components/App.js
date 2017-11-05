@@ -3,6 +3,11 @@ import withRoot from './withRoot';
 import Nav from './Nav';
 import axios from 'axios';
 import { withStyles } from 'material-ui/styles';
+import DashBoard from './pages/DashBoard'
+import MapEditor from './pages/MapEditor'
+import {Route} from 'react-router-dom'
+
+
 const styles = theme => ({
     root: {
       flexGrow: 1,
@@ -14,15 +19,17 @@ class App extends Component {
         super(props);
         this.classes = props.classes;
         axios.defaults.baseURL = 'http://localhost:8000/api/v0.1';
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem('token') || '';
+        axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token') || '';
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-        console.log(props.children);
     }
     render() 
     {
         return (
             <div className={this.classes.root}>
                 <Nav/>
+                <Route exact path="/game/:map_id/" component={DashBoard}/>
+                <Route exact path="/editor/:map_id/" component={MapEditor}/>
+                <Route exact path="/editor/" component={MapEditor}/>
                 {this.props.children}
             </div>
         );
