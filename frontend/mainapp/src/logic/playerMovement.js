@@ -78,9 +78,10 @@ export default function playerMovement( oldState, time ) {
 		++animationCount;
 	// console.log(animationCount);
 
-    // if(state.playerAnimateAttacking) {
-	 //    ++animationCount;
-    // }
+    if(state.playerAnimateAttacking) {
+        console.log('continue')
+	    ++animationCount;
+    }
 	window.blocklyShouldRun = (animationCount === 0);
 
 
