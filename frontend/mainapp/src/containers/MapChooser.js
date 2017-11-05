@@ -21,7 +21,8 @@ const MapChooser = createReactClass(
                     Loading...
                 </div>);
             }
-            const maplink_list = this.state.mapList.map((map) => <MapLink map={map}/>);
+            const maplink_list = this.state.mapList.map((map) => <MapLink map={map}
+                onClick={() => this.props.onClick(map)}/>);
             return (<div>{maplink_list}</div>);
         }
     }

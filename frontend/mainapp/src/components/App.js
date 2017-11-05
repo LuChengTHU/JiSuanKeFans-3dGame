@@ -8,7 +8,7 @@ import MapEditor from './pages/MapEditor'
 import {Route} from 'react-router-dom'
 import MapChooser from '../containers/MapChooser'
 import createReactClass from 'create-react-class'
-
+import {createHashHistory} from 'history'
 
 const styles = theme => ({
     root: {
@@ -28,10 +28,9 @@ const MapListView = createReactClass({
                     return new Promise((resolve) => resolve(list));
                 });
             }
-        }}/>;
+        }} onClick={ (map) => this.props.history.push('/editor/' + map.id)}/>;
     }
 });
-    
 
 class App extends Component {
     constructor(props)

@@ -374,6 +374,10 @@ export default class GameContainer extends Component {
 			</div>
 		</div>;
 
-    }
+	}
+	
+	cancelGameLoop = () => {
+		window.cancelAnimationFrame(this.gameLoop);
+	}
 
 }
