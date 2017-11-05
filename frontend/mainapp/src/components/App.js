@@ -6,6 +6,8 @@ import { withStyles } from 'material-ui/styles';
 import DashBoard from './pages/DashBoard'
 import MapEditor from './pages/MapEditor'
 import {Route} from 'react-router-dom'
+import MapChooser from '../containers/MapChooser'
+import createReactClass from 'create-react-class'
 
 
 const styles = theme => ({
@@ -13,6 +15,24 @@ const styles = theme => ({
       flexGrow: 1,
     },
   });
+
+
+//for testing only
+const MapListView = createReactClass({
+    render: function(){
+        return <MapChooser mapFetcher={ {fetch: (page_no)=>
+            {
+                return axios.get('map/?pageNo=' + page_no).then(function(response){
+                    return response.data.list;
+                }).then(function(list){
+                    return new Promise((resolve) => resolve(list));
+                });
+            }
+        }}/>;
+    }
+});
+    
+
 class App extends Component {
     constructor(props)
     {
@@ -30,6 +50,8 @@ class App extends Component {
                 <Route exact path="/game/:map_id/" component={DashBoard}/>
                 <Route exact path="/editor/:map_id/" component={MapEditor}/>
                 <Route exact path="/editor/" component={MapEditor}/>
+                <Route exact path="/maps/" component={MapListView}/>
+                {/* for testing only*/}
                 {this.props.children}
             </div>
         );
