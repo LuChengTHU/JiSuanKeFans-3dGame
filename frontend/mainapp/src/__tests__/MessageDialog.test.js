@@ -9,15 +9,7 @@ import createContext from '../styles/createContext';
 import toJson from 'enzyme-to-json';
 configure({ adapter: new Adapter() });
 const context = createContext();
-const setup = () => {
-  const props = {
-    onRequestClose: jest.fn(),
-    onRequestConfirm: jest.fn(),
-    closeText:'close',
-    confirmText:'confirm',
-    open:true,
-    title:'title'
-  }
+const setup = (props) => {
   const wrapper = shallow(
     <MessageDialog {...props} >
       <div>
@@ -30,16 +22,57 @@ const setup = () => {
     wrapper
   }
 }
+describe('components/MessageDialog', () => {
+  
+  test('renders correctly && click callback correctly', () => {
+    let props = {
+      onRequestClose: jest.fn(),
+      onRequestConfirm: jest.fn(),
+      closeText:'close',
+      confirmText:'confirm',
+      open:true,
+      title:'title'
+    }
+    const {wrapper} = setup(props);
+    expect(wrapper).toMatchSnapshot();
 
-test('renders correctly && click callback correctly', () => {
-  const {wrapper, props} = setup();
-  expect(wrapper).toMatchSnapshot();
+    wrapper.find('#cancel').simulate('click');
+    expect(props.onRequestClose).toHaveBeenCalledTimes(1)
+    expect(props.onRequestConfirm).toHaveBeenCalledTimes(0)
 
-  wrapper.find('#cancel').simulate('click');
-  expect(props.onRequestClose).toHaveBeenCalledTimes(1)
-  expect(props.onRequestConfirm).toHaveBeenCalledTimes(0)
+    wrapper.find('#confirm').simulate('click');
+    expect(props.onRequestClose).toHaveBeenCalledTimes(1)
+    expect(props.onRequestConfirm).toHaveBeenCalledTimes(1)
+  });
 
-  wrapper.find('#confirm').simulate('click');
-  expect(props.onRequestClose).toHaveBeenCalledTimes(1)
-  expect(props.onRequestConfirm).toHaveBeenCalledTimes(1)
+  test('renders without close correctly', () => {
+    let props = {
+      onRequestConfirm: jest.fn(),
+      confirmText:'confirm',
+      open:true,
+      title:'title'
+    }
+    const {wrapper} = setup(props);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  test('renders without confirm correctly', () => {
+    let props = {
+      onRequestClose: jest.fn(),
+      closeText:'close',
+      open:true,
+      title:'title'
+    }
+    const {wrapper} = setup(props);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  test('renders without confirm nor close correctly', () => {
+    let props = {
+      open:true,
+      title:'title'
+    }
+    const {wrapper} = setup(props);
+    expect(wrapper).toMatchSnapshot();
+  });
 });

@@ -26,11 +26,11 @@ class MessageDialog extends React.Component {
   render() {
     const { classes, onRequestClose, closeText, onRequestConfirm, confirmText, title, ...other } = this.props;
     let confirmButton = null, closeButton = null;
-    confirmButton =
+    if (onRequestConfirm) confirmButton =
         <Button id={'confirm'} onClick={onRequestConfirm} color="primary">
             { confirmText }
         </Button>
-    closeButton =
+    if (onRequestClose) closeButton =
         <Button id={'cancel'} onClick={onRequestClose} color="primary">
             { closeText }
         </Button>

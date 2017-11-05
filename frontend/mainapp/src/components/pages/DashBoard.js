@@ -26,7 +26,7 @@ class DashBoard extends Component {
         super(props);
         this.classes = props.classes;
         this.state = {
-            welcomeOpen: false,
+            welcomeOpen: true,
             welcomeMsg: null,
             map: null,
         }
@@ -38,7 +38,6 @@ class DashBoard extends Component {
                 // TODO: Error message
             }
         });
-        this.state.map = window.map;
     }
     handleClick = (name, value) => () => {
         console.log('setState',name,value,this)
@@ -49,8 +48,10 @@ class DashBoard extends Component {
     render()
     {
         const gameContainer = <GameContainer/>;
-        const welcomeMsg = (this.state.map === null || !('welcome_msg' in this.state.map))
-            ? '无' : this.state.map['welcome_msg'];
+        let welcomeMsg;
+        if (this.state.map === null) welcomeMsg = '加载中...';
+        else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';
+        else welcomeMsg = this.state.map['welcome_msg'];
         console.log(welcomeMsg)
 
         //TODO
