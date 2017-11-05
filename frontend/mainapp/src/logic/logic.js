@@ -59,9 +59,18 @@ export default class Game {
 		Game.map.cur_hp            = Game.map.init_hp;
 		Game.map.cur_attack        = Game.map.init_attack;
 		
+		Game.map.grids = [];
+		for(let i = 0; i < Game.map.height; ++i)
+			Game.map.grids[i] = [];
+		for(let i = 0; i < Game.map.height; ++i)
+			for(let j = 0; j < Game.map.width; ++j)
+				Game.map.grids[i][j] = null;
+		Game.map[Game.map.cur_pos[0]][Game.map.cur_pos[1]] = -1;
+		
 		// @TODO: manual deep copy
 		Game.map.cur_ai_infos = [];
 		for(let i = 0; i < Game.map.init_ai_infos.length; i++)
+		{
 			Game.map.cur_ai_infos.push({
 				id     : Game.map.init_ai_infos[i].id,
 				pos    : Game.map.init_ai_infos[i].pos.slice(0),
@@ -69,7 +78,8 @@ export default class Game {
 				hp     : Game.map.init_ai_infos[i].hp,
 				attack : Game.map.init_ai_infos[i].attack,
 			});
-		
+			Game.map[Game.map.cur_ai_infos[i].pos[0]][Game.map.cur_ai_infos[i].pos[1]] = i;
+		}
 		Game.map.cur_ai = -1;
 		
 		window.ui.createPlayer(Game.map.cur_pos[0], Game.map.cur_pos[1]);
@@ -97,9 +107,11 @@ export default class Game {
 			console.log(dir);
 			console.log(Game.GameUp);
 			let shouldCall = false;
+			console.assert(Game.map[Game.map.cur_pos[0]][Game.map.cur_pos[1]] === -1);
+			Game.map[Game.map.cur_pos[0]][Game.map.cur_pos[1]] = 0;
 			if(dir === Game.GameUp)
 			{
-				if(Game.map.cur_pos[0] > 0)
+				if(Game.map.cur_pos[0] > 0 && Game.map[Game.map.cur_pos[0] - 1][Game.map.cur_pos[1]] === null)
 				{
 					Game.map.cur_pos[0]--;
 					shouldCall = true;
@@ -107,7 +119,7 @@ export default class Game {
 			}
 			else if(dir === Game.GameLeft)
 			{
-				if(Game.map.cur_pos[1] > 0)
+				if(Game.map.cur_pos[1] > 0 && Game.map[Game.map.cur_pos[0]][Game.map.cur_pos[1] - 1] === null)
 				{
 					Game.map.cur_pos[1]--;
 					shouldCall = true;
@@ -115,7 +127,7 @@ export default class Game {
 			}
 			else if(dir === Game.GameDown)
 			{
-				if(Game.map.cur_pos[0] < Game.map.height - 1)
+				if(Game.map.cur_pos[0] < Game.map.height - 1 && Game.map[Game.map.cur_pos[0] + 1][Game.map.cur_pos[1]] === null)
 				{
 					Game.map.cur_pos[0]++;
 					shouldCall = true;
@@ -123,7 +135,7 @@ export default class Game {
 			}
 			else if(dir === Game.GameRight)
 			{
-				if(Game.map.cur_pos[1] < Game.map.width - 1)
+				if(Game.map.cur_pos[1] < Game.map.width - 1 && Game.map[Game.map.cur_pos[0]][Game.map.cur_pos[1] + 1] === null)
 				{
 					Game.map.cur_pos[1]++;
 					shouldCall = true;
@@ -131,6 +143,7 @@ export default class Game {
 			}
 			else
 				throw new Error('IllegalState');
+			Game.map[Game.map.cur_pos[0]][Game.map.cur_pos[1]] = -1;
 			if(shouldCall)
 				window.ui.playerMoveForward();
 			Game.gameCallAfterPlayerMove();
@@ -143,15 +156,17 @@ export default class Game {
 			console.log(id);
 			console.log(dir);
 			let shouldCall = false;
+			console.assert(Game.map[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1]] === id);
+			Game.map[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1]] = null;
 			if(dir === Game.GameUp)
 			{
-				if(Game.map.cur_ai_infos[id].pos[0] > 0)
+				if(Game.map.cur_ai_infos[id].pos[0] > 0 && Game.map[Game.map.cur_ai_infos[id].pos[0] - 1][Game.map.cur_ai_infos[id].pos[1]] === null)
 				{
 					Game.map.cur_ai_infos[id].pos[0]--;
 					shouldCall = true;
 				}
 			}
-			else if(dir === Game.GameLeft)
+			else if(dir === Game.GameLeft && Game.map[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] - 1] === null)
 			{
 				if(Game.map.cur_ai_infos[id].pos[1] > 0)
 				{
@@ -159,7 +174,7 @@ export default class Game {
 					shouldCall = true;
 				}
 			}
-			else if(dir === Game.GameDown)
+			else if(dir === Game.GameDown && Game.map[Game.map.cur_ai_infos[id].pos[0] + 1][Game.map.cur_ai_infos[id].pos[1]] === null)
 			{
 				if(Game.map.cur_ai_infos[id].pos[0] < Game.map.height - 1)
 				{
@@ -167,7 +182,7 @@ export default class Game {
 					shouldCall = true;
 				}
 			}
-			else if(dir === Game.GameRight)
+			else if(dir === Game.GameRight && Game.map[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] + 1] === null)
 			{
 				if(Game.map.cur_ai_infos[id].pos[1] < Game.map.width - 1)
 				{
@@ -177,6 +192,7 @@ export default class Game {
 			}
 			else
 				throw new Error('IllegalState');
+			Game.map[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1]] = id;
 			if(shouldCall)
 				window.ui.monsterMoveForward(id);
 		}

@@ -142,7 +142,8 @@ export default class GameContainer extends Component {
 	setPlayerDirection(x, z)
 	{
 		this.setState(
-			{	playerDirection : new Vector3(x, 0, z),
+			{
+				playerDirection : new Vector3(x, 0, z),
 			}
 		);
 	}
