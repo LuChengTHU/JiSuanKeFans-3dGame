@@ -6,6 +6,7 @@ import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
 import * as THREE from 'three';
 
 import Player from './Player';
+import Bar from './Bar';
 import MapBlock from './MapBlock';
 import Monster from './Monster';
 
@@ -114,6 +115,11 @@ export default class Game extends Component {
                     color={ 0xdddddd }
                 />
 				{ mapBlocks }
+				<Bar
+					position = {new Vector3(3, 5, 3)}
+					curValue = {0.5}
+					maxValue = {1}
+				/>
 
                 {/*<group ref={val => { this.playerGroupRef = val; }}>*/}
                     {/*position={playerPosition}*/}
