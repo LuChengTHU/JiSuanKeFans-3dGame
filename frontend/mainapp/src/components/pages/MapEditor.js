@@ -1,4 +1,4 @@
-import GameContainer from '../../containers/GameContainer'
+import EditorGameContainer from '../../containers/EditorGameContainer'
 import {TextField, Button, Grid} from 'material-ui'
 import React from 'react'
 import {Component} from 'react'
@@ -65,7 +65,7 @@ const MapEditor = createReactClass({
         return (
             <Grid container spacing={25} justify='center'>
             <Grid item xs={12} sm={6} >
-            <div id={'gameContainer'}>
+            <div id={'editorGameContainer'}>
             {gameContainer}</div>
             <Button onClick={() => this.updateMap()}>Update</Button>
             <Button onClick={() => this.submitMap()}>Submit</Button>

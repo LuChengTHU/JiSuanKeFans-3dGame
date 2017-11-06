@@ -455,8 +455,8 @@ export default class GameContainer extends Component {
         } = this.state;
 
 		
-		console.log(cameraPosition);
-		console.log(lookAt);
+		// console.log(cameraPosition);
+		// console.log(lookAt);
 
 
         // Pass the data <Game /> needs to render. Note we don't show the game
