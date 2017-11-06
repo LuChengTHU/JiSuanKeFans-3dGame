@@ -203,6 +203,8 @@ export default class Game {
 		Game.gameCheckFinished();
 		for(let i = 0; i < Game.map.ai_callbacks.length; ++i)
 		{
+			if(Game.map.cur_ai_infos[id].hp <= 0)
+				continue;
 			Game.map.cur_ai = i;
 			Game.map.ai_callbacks[i]();
 			Game.map.cur_ai = -1;
@@ -231,7 +233,19 @@ export default class Game {
 		else
 		{
 			// AI playing
-			// @TODO: Detect who is in front, and decrease hp
+			let id = Game.map.cur_ai;
+			let dir = Game.map.cur_ai_infos[id].dir;
+			let target = null;
+			if(dir === Game.GameUp && Game.map.cur_ai_infos[id].pos[0] > 0)
+				target = Game.map.grids[Game.map.cur_ai_infos[id].pos[0] - 1][Game.map.cur_ai_infos[id].pos[1]];
+			if(dir === Game.GameLeft && Game.map.cur_ai_infos[id].pos[1] > 0)
+				target = Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] - 1];
+			if(dir === Game.GameDown && Game.map.cur_ai_infos[id].pos[0] < Game.map.height - 1)
+				target = Game.map.grids[Game.map.cur_ai_infos[id].pos[0] + 1][Game.map.cur_ai_infos[id].pos[1]];
+			if(dir === Game.GameRight && Game.map.cur_ai_infos[id].pos[1] < Game.map.width - 1)
+				target = Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] + 1];
+			if(target !== null)
+				Game.gameDealDamage(id, target, Game.map.cur_ai_infos[id].attack);
 		}
 	}
 	
