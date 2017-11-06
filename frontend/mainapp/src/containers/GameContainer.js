@@ -168,8 +168,8 @@ export default class GameContainer extends Component {
 	{
 		this.setState(
 			{
-				playerPosition : new Vector3(x, 1, z),
-				playerTargetPosition : new Vector3(x, 1, z),
+				playerPosition : new Vector3(x, 0, z),
+				playerTargetPosition : new Vector3(x, 0, z),
 				playerRotation : new Euler(0, -Math.PI / 2, 0),
 			}
 		);
@@ -182,6 +182,15 @@ export default class GameContainer extends Component {
 				playerDirection : new Vector3(x, 0, z),
 			}
 		);
+	}
+	
+	setMonsterDirection(id, x, z)
+	{
+		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+			ms[id].direction = new Vector3(x, 0, z);
+			return {monsters: ms};
+		});
 	}
 
 	setCameraPosition = (x, y, z) => {
@@ -456,8 +465,8 @@ export default class GameContainer extends Component {
         } = this.state;
 
 		
-		console.log(cameraPosition);
-		console.log(lookAt);
+		// console.log(cameraPosition);
+		// console.log(lookAt);
 
 
         // Pass the data <Game /> needs to render. Note we don't show the game

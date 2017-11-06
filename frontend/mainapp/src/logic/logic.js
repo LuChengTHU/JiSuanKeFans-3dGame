@@ -29,18 +29,8 @@ export default class Game {
 		window.ui.createMap(map.height, map.width);
 		window.ui.createPlayer(map.init_pos[0], map.init_pos[1]);
 		
-		Game.map.ai_callbacks = [];
 		for(let i = 0; i < map.init_AI_infos.length; i++)
-		{
 			window.ui.addMonster(i, map.init_AI_infos[i].pos[0], map.init_AI_infos[i].pos[1]);
-			let dat = {};
-			Game.map.ai_callbacks.push(() =>
-			{
-				let data = dat;
-				return eval(map.init_AI_infos[i].code);
-			});
-		}
-		Game.map.cur_ai = -1;
 		return true;
 	}
 
@@ -91,6 +81,26 @@ export default class Game {
 			window.ui.setPlayerDirection(1, 0);
 		if(Game.map.cur_dir === Game.GameRight)
 			window.ui.setPlayerDirection(0, 1);
+		
+		Game.map.ai_callbacks = [];
+		for(let i = 0; i < Game.map.init_AI_infos.length; i++)
+		{
+			window.ui.addMonster(i, Game.map.init_AI_infos[i].pos[0], Game.map.init_AI_infos[i].pos[1]);
+			if(Game.map.init_AI_infos[i].dir === Game.GameUp)
+				window.ui.setMonsterDirection(i, -1, 0);
+			if(Game.map.init_AI_infos[i].dir === Game.GameLeft)
+				window.ui.setMonsterDirection(i, 0, -1);
+			if(Game.map.init_AI_infos[i].dir === Game.GameDown)
+				window.ui.setMonsterDirection(i, 1, 0);
+			if(Game.map.init_AI_infos[i].dir === Game.GameRight)
+				window.ui.setMonsterDirection(i, 0, 1);
+			let dat = {};
+			Game.map.ai_callbacks.push(() =>
+			{
+				let data = dat;
+				return eval(Game.map.init_AI_infos[i].code);
+			});
+		}
 	}
 
 	/*
@@ -166,25 +176,25 @@ export default class Game {
 					shouldCall = true;
 				}
 			}
-			else if(dir === Game.GameLeft && Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] - 1] === null)
+			else if(dir === Game.GameLeft)
 			{
-				if(Game.map.cur_ai_infos[id].pos[1] > 0)
+				if(Game.map.cur_ai_infos[id].pos[1] > 0 && Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] - 1] === null)
 				{
 					Game.map.cur_ai_infos[id].pos[1]--;
 					shouldCall = true;
 				}
 			}
-			else if(dir === Game.GameDown && Game.map.grids[Game.map.cur_ai_infos[id].pos[0] + 1][Game.map.cur_ai_infos[id].pos[1]] === null)
+			else if(dir === Game.GameDown)
 			{
-				if(Game.map.cur_ai_infos[id].pos[0] < Game.map.height - 1)
+				if(Game.map.cur_ai_infos[id].pos[0] < Game.map.height - 1 && Game.map.grids[Game.map.cur_ai_infos[id].pos[0] + 1][Game.map.cur_ai_infos[id].pos[1]] === null)
 				{
 					Game.map.cur_ai_infos[id].pos[0]++;
 					shouldCall = true;
 				}
 			}
-			else if(dir === Game.GameRight && Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] + 1] === null)
+			else if(dir === Game.GameRight)
 			{
-				if(Game.map.cur_ai_infos[id].pos[1] < Game.map.width - 1)
+				if(Game.map.cur_ai_infos[id].pos[1] < Game.map.width - 1 && Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1] + 1] === null)
 				{
 					Game.map.cur_ai_infos[id].pos[1]++;
 					shouldCall = true;
@@ -200,6 +210,7 @@ export default class Game {
 	
 	static gameCallAfterPlayerMove()
 	{
+		console.log(Game.map.grids);
 		Game.gameCheckFinished();
 		for(let i = 0; i < Game.map.ai_callbacks.length; ++i)
 		{
@@ -226,6 +237,7 @@ export default class Game {
 				target = Game.map.grids[Game.map.cur_pos[0] + 1][Game.map.cur_pos[1]];
 			if(dir === Game.GameRight && Game.map.cur_pos[1] < Game.map.width - 1)
 				target = Game.map.grids[Game.map.cur_pos[0]][Game.map.cur_pos[1] + 1];
+			console.log(target);
 			if(target !== null)
 				Game.gameDealDamage(-1, target, Game.map.cur_attack);
 			window.ui.playerAttack();
