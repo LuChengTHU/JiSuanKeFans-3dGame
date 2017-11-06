@@ -203,7 +203,7 @@ export default class Game {
 		Game.gameCheckFinished();
 		for(let i = 0; i < Game.map.ai_callbacks.length; ++i)
 		{
-			if(Game.map.cur_ai_infos[id].hp <= 0)
+			if(Game.map.cur_ai_infos[i].hp <= 0)
 				continue;
 			Game.map.cur_ai = i;
 			Game.map.ai_callbacks[i]();
@@ -228,6 +228,7 @@ export default class Game {
 				target = Game.map.grids[Game.map.cur_pos[0]][Game.map.cur_pos[1] + 1];
 			if(target !== null)
 				Game.gameDealDamage(-1, target, Game.map.cur_attack);
+			window.ui.playerAttack();
 			Game.gameCallAfterPlayerMove();
 		}
 		else
@@ -346,19 +347,6 @@ export default class Game {
 	static isArray(o)
 	{
 		return Object.prototype.toString.call(o) === '[object Array]';
-	}
-
-    // static gameTurn(x) {
-        // console.log('gameTurn'+x);        
-    // }
-    // static gameMove()  {
-        // console.log('gameMove');        
-    // }
-	static gameAttack()
-	{
-		console.log('gameAtack()');
-        Game.gameCheckFinished();
-        window.ui.playerAttack();
 	}
 }
 
