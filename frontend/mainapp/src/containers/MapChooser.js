@@ -1,6 +1,17 @@
 import createReactClass from 'create-react-class'
 import React from 'react'
 import MapLink from '../components/MapLink'
+import {GridList} from 'material-ui/GridList'
+import {withStyles} from 'material-ui/styles'
+
+const styles = function(theme){
+    return {
+        map_chooser:{
+            height: 300,
+            width: 800
+        }
+    };
+};
 
 const MapChooser = createReactClass(
     {
@@ -21,12 +32,14 @@ const MapChooser = createReactClass(
                     Loading...
                 </div>);
             }
-            const maplink_list = this.state.mapList.map((map) => <MapLink map={map}
-                onClick={() => this.props.onClick(map)}/>);
-            return (<div>{maplink_list}</div>);
+            // const maplink_list = 
+            return (<GridList cols={2} cellHeight={140} spacing={3} className={this.props.classes.map_chooser}>
+                {this.state.mapList.map((map) => <MapLink key={map.id} map={map}
+                onClick={() => this.props.onClick(map)}/>)}</GridList>);
+            // return (<div>{maplink_list}</div>);
         }
     }
 );
 
 
-export default MapChooser;
+export default withStyles(styles)(MapChooser);
