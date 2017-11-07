@@ -10,15 +10,16 @@ import LaunchIcon from 'material-ui-icons/Launch'
 const styles = function(theme){
     return {
         tile_paper: theme.mixins.gutters({
+            backgroundImage: '/assets/map_thumbnail.png'
+        }),
+        grid_list_tile: {
+            margin: 10,
             position: 'relative',
             float: 'left',
             minHeight: '100px',
             minWidth: '300px',
             overflow: 'hidden',
             height: '100% !important',
-        }),
-        grid_list_tile: {
-            margin: 10
         }
     };
 };
@@ -27,10 +28,8 @@ const styles = function(theme){
 const MapLink = createReactClass({
     render: function(){
         return (<GridListTile className={this.props.classes.grid_list_tile} key={this.props.key}>
-                <div className={this.props.classes.tile_paper} elevation={3}>
-                    <Typography type="headline" align="center">
-                        {this.props.map.height} x {this.props.map.width}
-                    </Typography>
+                <div className={this.props.classes.tile_paper}>
+                    <img src="/assets/map_thumbnail.png" height={200}/>
                 </div>
                 <GridListTileBar title={this.props.map.title} 
                     subtitle={"by " + this.props.map.author.username}

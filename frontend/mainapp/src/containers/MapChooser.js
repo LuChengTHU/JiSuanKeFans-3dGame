@@ -44,19 +44,21 @@ const MapChooser = createReactClass(
             }
             return (
                 <div>
-                    <Grid container spacing={10}>
+                    <Grid container spacing={8}>
                         <Grid item xs={12}>
                             <GridList cols={2} cellHeight={140} spacing={3} className={this.props.classes.map_chooser}>
                                 {this.state.mapList.map((map) => <MapLink key={map.id} map={map}
                                 onClick={() => this.props.onClick(map)}/>)}
                             </GridList>
                         </Grid>
-                        <Grid container xs={12} justify="space-between">
-                            <Grid item xs={12} sm={1}>
-                                <Button className={this.props.classes.nav_button} onClick={this.goToPrev} disabled={!this.state.hasPrev}>&larr;</Button>
-                            </Grid>
-                            <Grid item xs={12} sm={1}>
-                                <Button className={this.props.classes.nav_button} onClick={this.goToNext} disabled={!this.state.hasNext}>&rarr;</Button>
+                        <Grid item xs={12}>
+                            <Grid container spacing={8} justify="center">
+                                <Grid item xs={12} sm={1}>
+                                    <Button className={this.props.classes.nav_button} onClick={this.goToPrev} disabled={!this.state.hasPrev}>&larr;</Button>
+                                </Grid>
+                                <Grid item xs={12} sm={1}>
+                                    <Button className={this.props.classes.nav_button} onClick={this.goToNext} disabled={!this.state.hasNext}>&rarr;</Button>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
