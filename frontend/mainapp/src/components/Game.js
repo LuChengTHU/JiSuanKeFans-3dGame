@@ -1,17 +1,20 @@
 import React, { Component, PropTypes, } from 'react';
 import React3 from 'react-three-renderer';
+
 import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
+
 import * as THREE from 'three';
 
 import Player from './Player';
+import Bar from './Bar';
 import MapBlock from './MapBlock';
 import Monster from './Monster';
-
 
 /**
  * Our main class to display the game. This contains only view code! It's very
  * easy to reason about
  */
+
 export default class Game extends Component {
 
     static propTypes = {
@@ -19,29 +22,57 @@ export default class Game extends Component {
         height: PropTypes.number.isRequired,
         cameraPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         lookAt: PropTypes.instanceOf( Vector3 ).isRequired,
-        geometry: PropTypes.instanceOf( Geometry ).isRequired,
         playerPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         playerRotation: PropTypes.instanceOf( Euler ).isRequired,
+    };
+
+    componentDidMount() {
+        const {knightMesh, playerPosition, playerRotation} = this.props;
+        let group = new THREE.Group();
+        knightMesh.position.x = playerPosition.x;
+        knightMesh.position.y = playerPosition.y;
+        knightMesh.position.z = playerPosition.z;
+        //knightMesh.rotation.set(0,0,0);
+        knightMesh.name = "knight";
+        this.sceneRef.add(knightMesh);
+
+        this.setState({readyKnight:true})
     }
+
     constructor(props, context) {
         super(props, context);
+        this.state = {
+            readyKnight:false
+        };
     }
 
     render() {
         const {
-            width, height, cameraPosition, geometry, lookAt, playerPosition,
-            playerRotation,
-			mapBlocks,
-			monsters
+            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp, playerMaxHp
         } = this.props;
 
-        const { faces, vertices, faceVertexUvs, } = geometry;
+        if(this.state.readyKnight) {
+            this.sceneRef.getObjectByName("knight").position.set(playerPosition.x, playerPosition.y, playerPosition.z);
+            this.sceneRef.getObjectByName("knight").rotation.set(playerRotation.x, playerRotation.y, playerRotation.z);
+        }
+
+		// return <div> width={ width }, height={ height }
+                    // lookAt={ lookAt.x } </div>
+
 		
 		let ms = [];
+		let mbar = [];
 		for(let i = 0; i < monsters.length; ++i)
-		{
-			ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
-		}
+			if(monsters[i].hp <= 0)
+			{
+				ms.push(null); mbar.push(null);
+			}
+			else
+			{
+				ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
+				mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp}/>);
+			}
+
 		let ans = <React3
             mainCamera="camera"
             width={ width }
@@ -75,14 +106,8 @@ export default class Game extends Component {
                         resourceId="grassImage"
                     />
                 </meshPhongMaterial>
-                <geometry
-                    resourceId="robotGeometry"
-                    faces={ faces }
-                    vertices={ vertices }
-                    faceVertexUvs={ faceVertexUvs }
-                />
             </resources>
-            <scene>
+            <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
                     name="camera"
                     fov={ 75 }
@@ -96,11 +121,14 @@ export default class Game extends Component {
                     color={ 0xdddddd }
                 />
 				{ mapBlocks }
-				{ ms }
-				<Player
-					position={playerPosition}
-					rotation={playerRotation}
+				<Bar
+					position = {playerPosition}
+					curValue = {playerHp}
+					maxValue = {playerMaxHp}
 				/>
+				{ ms }
+				{mbar}
+
             </scene>
         </React3>;
 		return ans;

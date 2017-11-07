@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components/MessageDialog renders correctly && click callback correctly 1`] = `
+<withStyles(Dialog)
+  onRequestClose={[Function]}
+  open={true}
+>
+  <withStyles(DialogTitle)>
+    title
+  </withStyles(DialogTitle)>
+  <withStyles(DialogContent)>
+    <div>
+      content
+    </div>
+  </withStyles(DialogContent)>
+  <withStyles(DialogActions)>
+    <withStyles(Button)
+      color="primary"
+      id="confirm"
+      onClick={[Function]}
+    >
+      confirm
+    </withStyles(Button)>
+    <withStyles(Button)
+      color="primary"
+      id="cancel"
+      onClick={[Function]}
+    >
+      close
+    </withStyles(Button)>
+  </withStyles(DialogActions)>
+</withStyles(Dialog)>
+`;
+
+exports[`components/MessageDialog renders without close correctly 1`] = `
+<withStyles(Dialog)
+  open={true}
+>
+  <withStyles(DialogTitle)>
+    title
+  </withStyles(DialogTitle)>
+  <withStyles(DialogContent)>
+    <div>
+      content
+    </div>
+  </withStyles(DialogContent)>
+  <withStyles(DialogActions)>
+    <withStyles(Button)
+      color="primary"
+      id="confirm"
+      onClick={[Function]}
+    >
+      confirm
+    </withStyles(Button)>
+  </withStyles(DialogActions)>
+</withStyles(Dialog)>
+`;
+
+exports[`components/MessageDialog renders without confirm correctly 1`] = `
+<withStyles(Dialog)
+  onRequestClose={[Function]}
+  open={true}
+>
+  <withStyles(DialogTitle)>
+    title
+  </withStyles(DialogTitle)>
+  <withStyles(DialogContent)>
+    <div>
+      content
+    </div>
+  </withStyles(DialogContent)>
+  <withStyles(DialogActions)>
+    <withStyles(Button)
+      color="primary"
+      id="cancel"
+      onClick={[Function]}
+    >
+      close
+    </withStyles(Button)>
+  </withStyles(DialogActions)>
+</withStyles(Dialog)>
+`;
+
+exports[`components/MessageDialog renders without confirm nor close correctly 1`] = `
+<withStyles(Dialog)
+  open={true}
+>
+  <withStyles(DialogTitle)>
+    title
+  </withStyles(DialogTitle)>
+  <withStyles(DialogContent)>
+    <div>
+      content
+    </div>
+  </withStyles(DialogContent)>
+  <withStyles(DialogActions) />
+</withStyles(Dialog)>
+`;
