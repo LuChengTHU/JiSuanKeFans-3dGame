@@ -4,12 +4,18 @@ import MapLink from '../components/MapLink'
 import {GridList} from 'material-ui/GridList'
 import {withStyles} from 'material-ui/styles'
 import Button from 'material-ui/Button'
+import Grid from 'material-ui/Grid'
 
 const styles = function(theme){
     return {
         map_chooser:{
-            height: 300,
-            width: 800
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            overflow: 'hidden'
+        },
+        nav_button: {
+            width: '100%'
         }
     };
 };
@@ -38,12 +44,22 @@ const MapChooser = createReactClass(
             }
             return (
                 <div>
-                    <GridList cols={2} cellHeight={140} spacing={3} className={this.props.classes.map_chooser}>
-                        {this.state.mapList.map((map) => <MapLink key={map.id} map={map}
-                        onClick={() => this.props.onClick(map)}/>)}
-                    </GridList>
-                    <span><Button onClick={this.goToPrev} disabled={!this.state.hasPrev}>&larr;</Button></span>
-                    <span><Button onClick={this.goToNext} disabled={!this.state.hasNext}>&rarr;</Button></span>
+                    <Grid container spacing={10}>
+                        <Grid item xs={12}>
+                            <GridList cols={2} cellHeight={140} spacing={3} className={this.props.classes.map_chooser}>
+                                {this.state.mapList.map((map) => <MapLink key={map.id} map={map}
+                                onClick={() => this.props.onClick(map)}/>)}
+                            </GridList>
+                        </Grid>
+                        <Grid container xs={12} justify="space-between">
+                            <Grid item xs={12} sm={1}>
+                                <Button className={this.props.classes.nav_button} onClick={this.goToPrev} disabled={!this.state.hasPrev}>&larr;</Button>
+                            </Grid>
+                            <Grid item xs={12} sm={1}>
+                                <Button className={this.props.classes.nav_button} onClick={this.goToNext} disabled={!this.state.hasNext}>&rarr;</Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </div>
                 );
         },
