@@ -1,9 +1,10 @@
 import datetime
 import base64
 
+
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import views, status
@@ -227,6 +228,7 @@ map_view = MapView.as_view()
 
 class MapListView(APIView):
     authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     # create a new map
     @with_pagination(serializer_class=MapBriefSerializer)

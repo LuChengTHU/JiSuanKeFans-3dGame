@@ -37,7 +37,8 @@ class App extends Component {
         super(props);
         this.classes = props.classes;
         axios.defaults.baseURL = 'http://localhost:8000/api/v0.1';
-        axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token') || '';
+        if(localStorage.getItem('token'))
+            axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token');
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     }
     render() 
