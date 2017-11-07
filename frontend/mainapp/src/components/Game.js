@@ -61,11 +61,17 @@ export default class Game extends Component {
 
 		
 		let ms = [];
+		let mbar = [];
 		for(let i = 0; i < monsters.length; ++i)
-		{
-			ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
-		}
-
+			if(monsters[i].hp <= 0)
+			{
+				ms.push(null); mbar.push(null);
+			}
+			else
+			{
+				ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
+				mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp}/>);
+			}
 
 		let ans = <React3
             mainCamera="camera"
@@ -116,17 +122,12 @@ export default class Game extends Component {
                 />
 				{ mapBlocks }
 				<Bar
-					position = {new Vector3(playerPosition.x, 2, playerPosition.z)}
+					position = {playerPosition}
 					curValue = {playerHp}
 					maxValue = {playerMaxHp}
 				/>
-
-                {/*<group ref={val => { this.playerGroupRef = val; }}>*/}
-                    {/*position={playerPosition}*/}
-                    {/*rotation={playerRotation}*/}
-                {/*</group>*/}
-
 				{ ms }
+				{mbar}
 
             </scene>
         </React3>;

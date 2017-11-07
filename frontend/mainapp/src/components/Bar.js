@@ -15,7 +15,7 @@ export default class Bar extends Component {
         } = this.props;
 		
 		return <group
-			position={ position }
+			position={ new Vector3(position.x, 2, position.z) }
 			rotation={ this.rotation }
 		>
 			<mesh>

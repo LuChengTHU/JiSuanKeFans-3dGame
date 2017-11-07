@@ -94,7 +94,7 @@ export default class GameContainer extends Component {
     };
 
 	
-	addMonster(id, x, z)
+	addMonster(id, x, z, maxHp)
 	{
 		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
@@ -105,7 +105,19 @@ export default class GameContainer extends Component {
 				position: new Vector3(x, 0.5, z),
 				direction: new Vector3(1, 0, 0),
 				rotation: new Euler(),
+				maxHp: maxHp,
+				hp: maxHp,
 			};
+			return {monsters: ms};
+		});
+	}
+	
+	setMonsterHp(id, hp)
+	{
+		if(hp < 0) hp = 0;
+		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+			ms[id].hp = hp;
 			return {monsters: ms};
 		});
 	}

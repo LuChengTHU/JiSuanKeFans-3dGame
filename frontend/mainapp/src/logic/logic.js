@@ -30,7 +30,7 @@ export default class Game {
 		window.ui.createPlayer(map.init_pos[0], map.init_pos[1], map.init_hp);
 		
 		for(let i = 0; i < map.init_AI_infos.length; i++)
-			window.ui.addMonster(i, map.init_AI_infos[i].pos[0], map.init_AI_infos[i].pos[1]);
+			window.ui.addMonster(i, map.init_AI_infos[i].pos[0], map.init_AI_infos[i].pos[1], map.init_AI_infos[i].hp);
 		return true;
 	}
 
@@ -85,7 +85,7 @@ export default class Game {
 		Game.map.ai_callbacks = [];
 		for(let i = 0; i < Game.map.init_AI_infos.length; i++)
 		{
-			window.ui.addMonster(i, Game.map.init_AI_infos[i].pos[0], Game.map.init_AI_infos[i].pos[1]);
+			window.ui.addMonster(i, Game.map.init_AI_infos[i].pos[0], Game.map.init_AI_infos[i].pos[1], Game.map.init_AI_infos[i].hp);
 			if(Game.map.init_AI_infos[i].dir === Game.GameUp)
 				window.ui.setMonsterDirection(i, -1, 0);
 			if(Game.map.init_AI_infos[i].dir === Game.GameLeft)
@@ -274,6 +274,7 @@ export default class Game {
 		else
 		{
 			Game.map.cur_ai_infos[target].hp -= attack;
+			window.ui.setMonsterHp(target, Game.map.cur_ai_infos[target].hp);
 			if(Game.map.cur_ai_infos[target].hp <= 0)
 				Game.map.grids[Game.map.cur_ai_infos[target].pos[0]][Game.map.cur_ai_infos[target].pos[1]] = null;
 		}
