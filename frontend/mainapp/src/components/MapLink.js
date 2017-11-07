@@ -23,8 +23,6 @@ const styles = function(theme){
 
 const MapLink = createReactClass({
     render: function(){
-        // return (<GridTile key={this.props.key} title={this.props.map.title}>
-            // </GridTile>);
         return (<GridListTile className={this.props.classes.grid_list_tile} key={this.props.key}>
                 <Paper className={this.props.classes.tile_paper} elevation={3}>
                     <Typography type="headline" align="center">

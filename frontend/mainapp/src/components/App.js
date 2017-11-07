@@ -23,10 +23,9 @@ const MapListView = createReactClass({
         return <MapChooser mapFetcher={ {fetch: (page_no)=>
             {
                 return axios.get('map/?pageNo=' + page_no).then(function(response){
-                    return response.data.list;
-                }).then(function(list){
-                    return new Promise((resolve) => resolve(list));
-                });
+                    return {map_list: response.data.list, has_prev: response.data.has_prev, 
+                        has_next: response.data.has_next};
+                    });
             }
         }} onClick={ (map) => this.props.history.push('/editor/' + map.id)}/>;
     }
