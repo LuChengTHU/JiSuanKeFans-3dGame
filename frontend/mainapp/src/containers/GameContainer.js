@@ -53,6 +53,7 @@ export default class GameContainer extends Component {
         this.monsterMoveForward = this.monsterMoveForward.bind(this);
         this.monsterTurnCW = this.monsterTurnCW.bind(this);
         this.monsterTurnCCW = this.monsterTurnCCW.bind(this);
+        this.setPlayerHp = this.setPlayerHp.bind(this);
 
     }
 
@@ -93,7 +94,7 @@ export default class GameContainer extends Component {
     };
 
 	
-	addMonster(id, x, z)
+	addMonster(id, x, z, maxHp)
 	{
 		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
@@ -104,7 +105,19 @@ export default class GameContainer extends Component {
 				position: new Vector3(x, 0.5, z),
 				direction: new Vector3(1, 0, 0),
 				rotation: new Euler(),
+				maxHp: maxHp,
+				hp: maxHp,
 			};
+			return {monsters: ms};
+		});
+	}
+	
+	setMonsterHp(id, hp)
+	{
+		if(hp < 0) hp = 0;
+		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+			ms[id].hp = hp;
 			return {monsters: ms};
 		});
 	}
@@ -164,15 +177,23 @@ export default class GameContainer extends Component {
 		this.setState({mapBlocks: bs, monsters: []});
 	}
 	
-	createPlayer(x, z)
+	createPlayer(x, z, maxHp)
 	{
 		this.setState(
 			{
-				playerPosition : new Vector3(x, 1, z),
-				playerTargetPosition : new Vector3(x, 1, z),
+				playerPosition : new Vector3(x, 0, z),
+				playerTargetPosition : new Vector3(x, 0, z),
 				playerRotation : new Euler(0, -Math.PI / 2, 0),
+				playerMaxHp : maxHp,
+				playerHp : maxHp,
 			}
 		);
+	}
+	
+	setPlayerHp(hp)
+	{
+		if(hp < 0) hp = 0;
+		this.setState({playerHp: hp});
 	}
 	
 	setPlayerDirection(x, z)
@@ -182,6 +203,15 @@ export default class GameContainer extends Component {
 				playerDirection : new Vector3(x, 0, z),
 			}
 		);
+	}
+	
+	setMonsterDirection(id, x, z)
+	{
+		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+			ms[id].direction = new Vector3(x, 0, z);
+			return {monsters: ms};
+		});
 	}
 
 	setCameraPosition = (x, y, z) => {
@@ -452,12 +482,12 @@ export default class GameContainer extends Component {
 
         const {
 
-            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters
+            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp
         } = this.state;
 
 		
-		console.log(cameraPosition);
-		console.log(lookAt);
+		// console.log(cameraPosition);
+		// console.log(lookAt);
 
 
         // Pass the data <Game /> needs to render. Note we don't show the game
@@ -475,6 +505,8 @@ export default class GameContainer extends Component {
 					mapBlocks={ mapBlocks }
                     knightMesh={ knightMesh }
 					monsters={ monsters }
+					playerHp={playerHp}
+					playerMaxHp={playerMaxHp}
 				/> : 'Loading' }
 			</div>
 		</div>;

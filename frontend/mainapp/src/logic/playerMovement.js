@@ -71,7 +71,7 @@ export default function playerMovement( oldState, time ) {
 	// console.log(animationCount);
 
     if(state.playerAnimateAttacking) {
-        console.log('continue');
+        // console.log('continue');
 	    ++animationCount;
     }
 
