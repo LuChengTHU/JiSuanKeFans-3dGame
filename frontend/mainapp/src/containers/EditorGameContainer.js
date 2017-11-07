@@ -20,8 +20,8 @@ export default class EditorGameContainer extends Component {
         this.state = {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, 0, 0 ),
-            cameraPosition: new THREE.Vector3( 5, 5, 4.9999 ),
-            lookAt: new THREE.Vector3( 5, 0, 5 ),
+            cameraPosition: new THREE.Vector3( 2.5999999, 5, 4.07 ),
+            lookAt: new THREE.Vector3( 2.60, 0, 4.07 ),
             monsters: []
         };
     }
@@ -39,8 +39,8 @@ export default class EditorGameContainer extends Component {
 	{
 		this.setState(
 			{
-				playerPosition : new Vector3(x, 1, z),
-				playerTargetPosition : new Vector3(x, 1, z),
+				playerPosition : new Vector3(x, 0, z),
+				playerTargetPosition : new Vector3(x, 0, z),
 				playerRotation : new Euler(0, -Math.PI / 2, 0),
 			}
 		);
@@ -77,8 +77,8 @@ export default class EditorGameContainer extends Component {
             cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters
         } = this.state;
 
-        console.log(cameraPosition);
-        console.log(lookAt);
+        // console.log(cameraPosition);
+        // console.log(lookAt);
 
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
@@ -116,6 +116,7 @@ export default class EditorGameContainer extends Component {
     
             const container = this.refs.container;
             container.addEventListener('mousedown', this.onGameMouseDown, false);
+            //container.addEventListener('click', this.onGameMouseClick, false);
     
             let loader = new THREE.JSONLoader();
             loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
@@ -181,6 +182,8 @@ export default class EditorGameContainer extends Component {
             document.addEventListener('mouseup', this.onGameMouseUp, false);
             document.addEventListener('mouseout', this.onGameMouseOut, false);
 
+            this.dragging = false;
+
             /*
                 .. to add codes
                 record the initial position of mouse
@@ -223,24 +226,41 @@ export default class EditorGameContainer extends Component {
             this.lookAtX = this.lookAtXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
             this.lookAtY = this.lookAtYOnMouseDown;
             this.lookAtZ = this.lookAtZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+
+            this.dragging = true;
     
             // this.setCameraPosition(this.cameraX, this.cameraY, this.cameraZ);
             // this.setLookAt(this.lookAtX, this.lookAtY, this.lookAtZ);
 
-            this.setState(
-                {
-                    cameraPosition : new Vector3(this.cameraX, this.cameraY, this.cameraZ),
-                    lookAt : new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ),
-                }
-            );
+            // this.setState(
+            //     {
+            //         cameraPosition : new Vector3(this.cameraX, this.cameraY, this.cameraZ),
+            //         lookAt : new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ),
+            //     }
+            // );
         };
     
         // Mouse Up
-        onGameMouseUp = () => {
+        onGameMouseUp = (event) => {
             document.removeEventListener('mousemove', this.onGameMouseMove, false);
             document.removeEventListener('mouseup', this.onGameMouseUp, false);
             document.removeEventListener('mouseout', this.onGameMouseOut, false);	
 
+            console.log(event.clientX, event.clientY);
+
+            if (!this.dragging) {
+                // Clicked
+                let gridX = parseInt((event.clientX - 110) / 45.4);
+                let gridY = parseInt((317 - event.clientY) / 45.4);
+
+                console.log(gridX, gridY);
+
+                this.setState(
+                    {
+                        playerPosition : new Vector3(gridY, 0, gridX),
+                    }
+                );
+            }
             /* 
                 ... to add codes
                 place a person
