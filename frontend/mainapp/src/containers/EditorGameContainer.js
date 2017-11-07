@@ -19,12 +19,48 @@ export default class EditorGameContainer extends Component {
         // Initial scene state
         this.state = {
             playerPosition: new Vector3( 0, 0, 0 ),
-            playerRotation: new Euler( 0, -Math.PI / 2, 0 ),
-            cameraPosition: new THREE.Vector3( 5, 5, -3 ),
+            playerRotation: new Euler( 0, 0, 0 ),
+            cameraPosition: new THREE.Vector3( 5, 5, 4.9999 ),
             lookAt: new THREE.Vector3( 5, 0, 5 ),
             monsters: []
         };
     }
+
+    createMap(height, width)
+	{
+		let bs = [];
+		for(let i = 0; i < height; ++i)
+			for(let j = 0; j < width; ++j)
+				bs.push(<MapBlock x={i} z={j}/>);
+		this.setState({mapBlocks: bs, monsters: []});
+	}
+	
+	createPlayer(x, z)
+	{
+		this.setState(
+			{
+				playerPosition : new Vector3(x, 1, z),
+				playerTargetPosition : new Vector3(x, 1, z),
+				playerRotation : new Euler(0, -Math.PI / 2, 0),
+			}
+		);
+	}
+	
+	setPlayerDirection(x, z)
+	{
+		this.setState(
+			{	
+                playerDirection : new Vector3(x, 0, z),
+			}
+		);
+    }
+    
+    setWeight = ( action, weight ) => {
+        action.enabled = true;
+        action.setEffectiveTimeScale( 1 );
+        action.setEffectiveWeight( weight );
+    };
+
 
     render() {
 
@@ -38,9 +74,11 @@ export default class EditorGameContainer extends Component {
         }
 
         const {
-
             cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters
         } = this.state;
+
+        console.log(cameraPosition);
+        console.log(lookAt);
 
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
@@ -78,9 +116,6 @@ export default class EditorGameContainer extends Component {
     
             const container = this.refs.container;
             container.addEventListener('mousedown', this.onGameMouseDown, false);
-            // document.addEventListener('mousemove', this.onGameMouseMove, false);
-            // document.addEventListener('mouseup', this.onGameMouseUp, false);
-            // document.addEventListener('mouseout', this.onGameMouseOut, false);
     
             let loader = new THREE.JSONLoader();
             loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
@@ -115,9 +150,6 @@ export default class EditorGameContainer extends Component {
                         currentAction: moveAction
                     });
     
-                    // Start the game loop when this component loads
-                    this.requestGameLoop();
-    
                 });
         
         }
@@ -131,8 +163,94 @@ export default class EditorGameContainer extends Component {
             document.removeEventListener('mousemove', this.onGameMouseMove, false);
             document.removeEventListener('mouseup', this.onGameMouseUp, false);
             document.removeEventListener('mouseout', this.onGameMouseOut, false);
-    
-            this.cancelGameLoop();
         
         }
+
+        // Mouse Click
+        onGameMouseClick = (event) => {
+            event.preventDefault();
+
+            console.log("Clicked.");
+        }
+
+        // Mouse Down
+        onGameMouseDown = (event) => {
+            event.preventDefault();
+
+            document.addEventListener('mousemove', this.onGameMouseMove, false);
+            document.addEventListener('mouseup', this.onGameMouseUp, false);
+            document.addEventListener('mouseout', this.onGameMouseOut, false);
+
+            /*
+                .. to add codes
+                record the initial position of mouse
+            */
+            this.mouseXOnMouseDown = event.clientX;
+            this.mouseYOnMouseDown = event.clientY;
+
+            this.cameraXOnMouseDown = this.state.cameraPosition.x;
+            this.cameraYOnMouseDown = this.state.cameraPosition.y;
+            this.cameraZOnMouseDown = this.state.cameraPosition.z;
+
+            this.lookAtXOnMouseDown = this.state.lookAt.x;
+            this.lookAtYOnMouseDown = this.state.lookAt.y;
+            this.lookAtZOnMouseDown = this.state.lookAt.z;
+        };
+
+        // Mouse Moving
+        onGameMouseMove = (event) => {
+            /*
+                .. to add codes
+            */
+            this.mouseX = event.clientX;
+            this.mouseY = event.clientY;
+    
+            let DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.005;
+            let DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.005;
+            let SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
+            let SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
+            
+            let SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
+            SightX = 1. * SightX / SightLen;
+            SightZ = 1. * SightZ / SightLen;
+            let vSightX = SightZ;
+            let vSightZ = -SightX;
+    
+            this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
+            this.cameraY = this.cameraYOnMouseDown;
+            this.cameraZ = this.cameraZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+    
+            this.lookAtX = this.lookAtXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
+            this.lookAtY = this.lookAtYOnMouseDown;
+            this.lookAtZ = this.lookAtZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+    
+            // this.setCameraPosition(this.cameraX, this.cameraY, this.cameraZ);
+            // this.setLookAt(this.lookAtX, this.lookAtY, this.lookAtZ);
+
+            this.setState(
+                {
+                    cameraPosition : new Vector3(this.cameraX, this.cameraY, this.cameraZ),
+                    lookAt : new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ),
+                }
+            );
+        };
+    
+        // Mouse Up
+        onGameMouseUp = () => {
+            document.removeEventListener('mousemove', this.onGameMouseMove, false);
+            document.removeEventListener('mouseup', this.onGameMouseUp, false);
+            document.removeEventListener('mouseout', this.onGameMouseOut, false);	
+
+            /* 
+                ... to add codes
+                place a person
+            */
+        };
+    
+        // Mouse Out
+        onGameMouseOut = () => {
+            document.removeEventListener('mousemove', this.onGameMouseMove, false);
+            document.removeEventListener('mouseup', this.onDocumentMouseUp, false);
+            document.removeEventListener('mouseout', this.onGameMouseOut, false);
+        };
 }
