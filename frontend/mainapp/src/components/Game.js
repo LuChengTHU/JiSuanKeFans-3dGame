@@ -116,8 +116,8 @@ export default class Game extends Component {
                 />
 				{ mapBlocks }
 				<Bar
-					position = {new Vector3(3, 5, 3)}
-					curValue = {0.5}
+					position = {new Vector3(playerPosition.x, 2, playerPosition.z)}
+					curValue = {1}
 					maxValue = {1}
 				/>
 

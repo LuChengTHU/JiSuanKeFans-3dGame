@@ -32,7 +32,7 @@ class DashBoard extends Component {
         }
         fetch_map(this.props.match.params.map_id)
         .then((response) => {
-            if(response.data.res_code === 1) {
+            if(response && response.data && response.data.res_code === 1) {
                 this.setState({ map: response.data.map });
             } else {
                 // TODO: Error message

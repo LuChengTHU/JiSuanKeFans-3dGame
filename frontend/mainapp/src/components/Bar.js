@@ -21,11 +21,11 @@ export default class Bar extends Component {
 			<mesh>
 				  <boxGeometry
 					width={curValue / maxValue}
-					height={0.5}
-					depth={0.1}
+					height={0.2}
+					depth={0.2}
 				  />
-				<materialResource
-					resourceId="robotTexture"
+				<meshLambertMaterial
+					color={0xff0000}
 				/>
 			</mesh>
 		</group>;
