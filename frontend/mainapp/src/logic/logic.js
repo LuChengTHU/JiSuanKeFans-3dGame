@@ -27,7 +27,7 @@ export default class Game {
 		Game.map = map;
 		
 		window.ui.createMap(map.height, map.width);
-		window.ui.createPlayer(map.init_pos[0], map.init_pos[1]);
+		window.ui.createPlayer(map.init_pos[0], map.init_pos[1], map.init_hp);
 		
 		for(let i = 0; i < map.init_AI_infos.length; i++)
 			window.ui.addMonster(i, map.init_AI_infos[i].pos[0], map.init_AI_infos[i].pos[1]);
@@ -72,7 +72,7 @@ export default class Game {
 		}
 		Game.map.cur_ai = -1;
 		
-		window.ui.createPlayer(Game.map.cur_pos[0], Game.map.cur_pos[1]);
+		window.ui.createPlayer(Game.map.cur_pos[0], Game.map.cur_pos[1], Game.map.cur_hp);
 		if(Game.map.cur_dir === Game.GameUp)
 			window.ui.setPlayerDirection(-1, 0);
 		if(Game.map.cur_dir === Game.GameLeft)
@@ -267,6 +267,7 @@ export default class Game {
 		if(target === -1)
 		{
 			Game.map.cur_hp -= attack;
+			window.ui.setPlayerHp(Game.map.cur_hp);
 			if(Game.map.cur_hp <= 0)
 				throw new Error('Player Dead');
 		}

@@ -53,6 +53,7 @@ export default class GameContainer extends Component {
         this.monsterMoveForward = this.monsterMoveForward.bind(this);
         this.monsterTurnCW = this.monsterTurnCW.bind(this);
         this.monsterTurnCCW = this.monsterTurnCCW.bind(this);
+        this.setPlayerHp = this.setPlayerHp.bind(this);
 
     }
 
@@ -164,15 +165,23 @@ export default class GameContainer extends Component {
 		this.setState({mapBlocks: bs, monsters: []});
 	}
 	
-	createPlayer(x, z)
+	createPlayer(x, z, maxHp)
 	{
 		this.setState(
 			{
 				playerPosition : new Vector3(x, 0, z),
 				playerTargetPosition : new Vector3(x, 0, z),
 				playerRotation : new Euler(0, -Math.PI / 2, 0),
+				playerMaxHp : maxHp,
+				playerHp : maxHp,
 			}
 		);
+	}
+	
+	setPlayerHp(hp)
+	{
+		if(hp < 0) hp = 0;
+		this.setState({playerHp: hp});
 	}
 	
 	setPlayerDirection(x, z)
@@ -461,7 +470,7 @@ export default class GameContainer extends Component {
 
         const {
 
-            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters
+            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp
         } = this.state;
 
 		
@@ -484,6 +493,8 @@ export default class GameContainer extends Component {
 					mapBlocks={ mapBlocks }
                     knightMesh={ knightMesh }
 					monsters={ monsters }
+					playerHp={playerHp}
+					playerMaxHp={playerMaxHp}
 				/> : 'Loading' }
 			</div>
 		</div>;

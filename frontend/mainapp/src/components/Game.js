@@ -48,7 +48,7 @@ export default class Game extends Component {
 
     render() {
         const {
-            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters
+            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp, playerMaxHp
         } = this.props;
 
         if(this.state.readyKnight) {
@@ -117,8 +117,8 @@ export default class Game extends Component {
 				{ mapBlocks }
 				<Bar
 					position = {new Vector3(playerPosition.x, 2, playerPosition.z)}
-					curValue = {1}
-					maxValue = {1}
+					curValue = {playerHp}
+					maxValue = {playerMaxHp}
 				/>
 
                 {/*<group ref={val => { this.playerGroupRef = val; }}>*/}
