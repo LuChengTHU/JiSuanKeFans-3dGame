@@ -27,9 +27,19 @@ export default class GameContainer extends Component {
 		
 		window.blocklyAutoRun = () =>
 		{
-			window.setTimeout(window.blocklyAutoRun, 1);
-			if(window.blocklyShouldRun)
-				window.blocklyCallback();
+			window.setTimeout(window.blocklyAutoRun, 10);
+			try
+			{
+				if(window.blocklyShouldRun)
+					window.blocklyCallback();
+			}
+			catch(e)
+			{
+				if(e.message == 'GameFinished')
+					window.alert('Game Finished!');
+				else
+					throw e;
+			}
 		};
 		window.blocklyAutoRun();
 
