@@ -113,9 +113,54 @@ export default class Game {
 		'IllegalInstruction'.
 	*/
 	
+	static gameLookAheadName()
+	{
+		let id = Game.map.cur_ai;
+		let x, y, dir;
+		if(id === -1)
+		{
+			x = Game.map.cur_pos[0];
+			y = Game.map.cur_pos[1];
+			dir = Game.map.cur_dir;
+		}
+		else
+		{
+			x = Game.map.cur_ai_infos[id].pos[0];
+			y = Game.map.cur_ai_infos[id].pos[1];
+			dir = Game.map.cur_ai_infos[id].dir;
+		}
+		let dx = 0, dy = 0;
+		if(dir === Game.GameUp)
+			dx = -1;
+		else if(dir === Game.GameLeft)
+			dy = -1;
+		else if(dir === Game.GameDown)
+			dx = 1;
+		else if(dir === Game.GameRight)
+			dy = 1;
+		else
+			throw new Error('IllegalState');
+		x += dx; y += dy;
+		while(x >= 0 && x < Game.map.height && y >= 0 && y < Game.map.width)
+		{
+			let tid = Game.map.grids[x][y];
+			if(tid !== null)
+			{
+				if(tid === -1)
+					return "player";
+				else
+					return Game.map.cur_ai_infos[id].id;
+			}
+			x += dx; y += dy;
+		}
+		return "";
+	}
+	
 	static gameMove()
 	{
-		if(Game.map.cur_ai === -1){
+		if(Game.map.cur_ai === -1)
+		{
+			// Player playing
 			if(!Game.map.instr_set[11])
 				throw new Error('IllegalInstruction');
 			let dir = Game.map.cur_dir;
