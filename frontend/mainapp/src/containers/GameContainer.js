@@ -93,6 +93,13 @@ export default class GameContainer extends Component {
 
     };
 
+	setTargetPos(x, z)
+	{
+		if(x)
+			this.setState({targetPosition: new Vector3(x, 0.05, z)});
+		else
+			this.setState({targetPosition: null});
+	}
 	
 	addMonster(id, x, z, maxHp)
 	{
@@ -482,7 +489,7 @@ export default class GameContainer extends Component {
 
         const {
 
-            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp
+            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition
         } = this.state;
 
 		
@@ -507,6 +514,7 @@ export default class GameContainer extends Component {
 					monsters={ monsters }
 					playerHp={playerHp}
 					playerMaxHp={playerMaxHp}
+					targetPosition={targetPosition}
 				/> : 'Loading' }
 			</div>
 		</div>;
