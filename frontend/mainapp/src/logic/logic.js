@@ -337,7 +337,7 @@ export default class Game {
 	 */
 	static gameCheckFinished()
 	{
-		if(Game.map.final_pos !== null)
+		if(Game.map.final_pos)
 		{
 			if(Game.map.cur_pos[0] !== Game.map.final_pos[0] || Game.map.cur_pos[1] !== Game.map.final_pos[1])
 				return;
@@ -348,6 +348,7 @@ export default class Game {
 				gold++;
 		if(gold < Game.map.final_gold)
 			return;
+		window.blocklyCallback = () => {};
 		throw new Error('GameFinished');
 	}
 }
