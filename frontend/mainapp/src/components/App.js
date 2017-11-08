@@ -9,6 +9,7 @@ import {Route} from 'react-router-dom'
 import MapChooser from '../containers/MapChooser'
 import createReactClass from 'create-react-class'
 import {createHashHistory} from 'history'
+import StageGallery from './pages/StageGallery'
 
 const styles = theme => ({
     root: {
@@ -50,6 +51,7 @@ class App extends Component {
                 <Route exact path="/editor/:map_id/" component={MapEditor}/>
                 <Route exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/maps/" component={MapListView}/>
+                <Route exact path="/stages/" component={StageGallery}/>
                 {/* for testing only*/}
                 {this.props.children}
             </div>
