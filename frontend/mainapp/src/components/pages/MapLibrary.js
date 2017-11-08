@@ -21,7 +21,7 @@ const MapLibrary = createReactClass({
     render: function(){
         return (
             <div>
-                <Typography type="title" align="center">地图库</Typography>
+                <Typography type="title" align="center">{this.props.author.username}的地图库</Typography>
                 <MapChooser mapFetcher={mapFetcher(this.props.author.id)} onClick={(map) => this.props.history.push('/editor/' + map.id + '/')}/>
             </div>
         );

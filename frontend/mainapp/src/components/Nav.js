@@ -64,7 +64,16 @@ class Nav extends Component {
                         this.setState({loginOpen:false, registerOpen:false});
                         this.props.history.push('/editor');}}>地图编辑器</Button>
                 </div>
-                {localStorage.getItem('token') 
+                { this.props.user ?
+                <div>
+                    <Button color="contrast" onClick={() => {
+                        this.setState({loginOpen:false, registerOpen:false});
+                        this.props.history.push('/mymaps/');
+                    }}>我的地图</Button>
+                </div>
+                : ""
+                }
+                { this.props.user
                 ? 
                     <div className="profile">
                     {JSON.parse(localStorage.getItem('user'))['username']}

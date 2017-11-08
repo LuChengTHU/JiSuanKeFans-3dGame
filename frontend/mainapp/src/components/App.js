@@ -86,7 +86,7 @@ class App extends Component {
                 <Route exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/maps/" component={MapListView}/>
                 {this.state.user ?
-                    <Route exact path="/maplib/" component={(props) => <MapLibrary
+                    <Route exact path="/mymaps/" component={(props) => <MapLibrary
                          author={this.state.user} {...props}/>}/>
                     : ""
                 }
