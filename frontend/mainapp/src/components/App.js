@@ -9,6 +9,7 @@ import {Route} from 'react-router-dom'
 import MapChooser from '../containers/MapChooser'
 import createReactClass from 'create-react-class'
 import {createHashHistory} from 'history'
+import MapLibrary from './pages/MapLibrary'
 
 const styles = theme => ({
     root: {
@@ -50,6 +51,7 @@ class App extends Component {
                 <Route exact path="/editor/:map_id/" component={MapEditor}/>
                 <Route exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/maps/" component={MapListView}/>
+                <Route exact path="/maplib/" component={MapLibrary}/>
                 {/* for testing only*/}
                 {this.props.children}
             </div>
