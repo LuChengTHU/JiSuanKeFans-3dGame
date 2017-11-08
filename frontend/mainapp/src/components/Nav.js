@@ -71,7 +71,8 @@ class Nav extends Component {
                     <Button color="contrast" onClick={(e) => {
                         localStorage.removeItem("token");
                         localStorage.removeItem("user");
-                        window.location.reload();
+                        if(this.props.onLoginChange)
+                            this.props.onLoginChange();
                         }
                     }>
                         登出
@@ -81,7 +82,7 @@ class Nav extends Component {
                     <div className="login-register">
                     <Button color="contrast" onClick={this.handleClick('loginOpen', true)}>登录</Button>
                     <Button color="contrast" onClick={this.handleClick('registerOpen', true)}>注册</Button>
-                    { <LoginFormDialog open={this.state.loginOpen} onRequestClose={this.handleClick('loginOpen', false)}/> }
+                    { <LoginFormDialog open={this.state.loginOpen} onRequestClose={this.handleClick('loginOpen', false)} onLogin={this.props.onLoginChange}/> }
                     { <RegisterFormDialog open={this.state.registerOpen} onRequestClose={this.handleClick('registerOpen', false)}/> }
                     </div>
                 }

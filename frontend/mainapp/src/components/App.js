@@ -38,20 +38,58 @@ class App extends Component {
         super(props);
         this.classes = props.classes;
         axios.defaults.baseURL = 'http://localhost:8000/api/v0.1';
-        if(localStorage.getItem('token'))
-            axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token');
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+        if(localStorage.getItem('user')){
+            this.state = {
+                user: JSON.parse(localStorage.getItem('user')),
+                token: localStorage.getItem('token')
+            };
+            axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token');
+        } else{
+            this.state = {
+                user: null,
+                token: null
+            };
+            axios.defaults.headers.common['Authorization'] = '';
+        }
+
+
+        this.onLoginChange = this.onLoginChange.bind(this);
     }
+
+    onLoginChange(){
+        if(localStorage.getItem('user')){
+            this.setState({
+                user: JSON.parse(localStorage.getItem('user')),
+                token: localStorage.getItem('token')
+            });
+            axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token');
+        } else{
+            this.setState({
+                user: null,
+                token: null
+            });
+            axios.defaults.headers.common['Authorization'] = '';
+        }
+
+    }
+
     render() 
     {
+
+        axios.defaults.headers.common['Authorization'] = 'Token ' + this.state.token;
         return (
             <div className={this.classes.root}>
-                <Nav/>
+                <Nav user={this.state.user} onLoginChange={this.onLoginChange}/>
                 <Route exact path="/game/:map_id/" component={DashBoard}/>
                 <Route exact path="/editor/:map_id/" component={MapEditor}/>
                 <Route exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/maps/" component={MapListView}/>
-                <Route exact path="/maplib/" component={MapLibrary}/>
+                {this.state.user ?
+                    <Route exact path="/maplib/" component={(props) => <MapLibrary
+                         author={this.state.user} {...props}/>}/>
+                    : ""
+                }
                 {/* for testing only*/}
                 {this.props.children}
             </div>
