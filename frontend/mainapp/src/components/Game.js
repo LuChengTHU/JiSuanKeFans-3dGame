@@ -48,7 +48,7 @@ export default class Game extends Component {
 
     render() {
         const {
-            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp, playerMaxHp
+            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp, playerMaxHp, targetPosition
         } = this.props;
 
         if(this.state.readyKnight) {
@@ -72,6 +72,25 @@ export default class Game extends Component {
 				ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
 				mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp}/>);
 			}
+		
+		let target = null;
+		if(targetPosition)
+		{
+			target = <group
+				position={ targetPosition }
+			>
+				<mesh>
+					  <boxGeometry
+						width={1}
+						height={0.1}
+						depth={1}
+					  />
+					<meshLambertMaterial
+						color={0xffff00}
+					/>
+				</mesh>
+			</group>;
+		}
 
 		let ans = <React3
             mainCamera="camera"
@@ -128,7 +147,7 @@ export default class Game extends Component {
 				/>
 				{ ms }
 				{mbar}
-
+				{target}
             </scene>
         </React3>;
 		return ans;

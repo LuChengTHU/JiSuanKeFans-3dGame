@@ -32,28 +32,32 @@
 		let map = new Object();
 		map.height = 6;
 		map.width = 9;
-		map.instr_set = new Array(100);
+		map.instr_set = [];
 		for(let i = 0; i < 100; i++)
 			map.instr_set[i] = true;
 		map.init_pos = [1, 1];
-		map.final_pos = [1, 233];
-		map.init_ground_colors = [[0, 0, 0], [0, 0, 0]];
-		map.final_ground_colors = null;
-		map.init_ground_boxes = [[null, null, null], [null, null, null]];
-		map.final_ground_boxes = null;
-		map.init_hand_boxes = [];
-		map.final_hand_boxes = null;
+		map.final_pos = null;
+		map.final_gold = 1;
 		map.init_dir = 16;
 		map.init_hp = 10;
 		map.init_attack = 1;
 		map.init_AI_infos = [];
 		map.init_AI_infos.push(
 		{
-			id: "naive",
-			pos: [1, 4],
-			code: "console.log('I am AI0');if(typeof(data.a)==='undefined')data.a=0;++data.a;console.log(data.a);if(data.a===3){Game.gameMove();data.a=0;}else if(data.a===2)Game.gameTurn(Game.GameCW);else Game.gameAttack()",
+			id: "moving",
+			pos: [4, 4],
+			code: "if(typeof(data.a)==='undefined')data.a=0;++data.a;if(data.a===3){Game.gameMove();data.a=0;}else if(data.a===2)Game.gameTurn(Game.GameCW);else Game.gameAttack();",
 			dir: 16,
 			hp: 10,
+			attack: 1,
+		});
+		map.init_AI_infos.push(
+		{
+			id: "naive",
+			pos: [1, 4],
+			code: "Game.gameTurn(Game.GameCW);",
+			dir: 16,
+			hp: 4,
 			attack: 1,
 		});
 		Game.gameSetMap(map);

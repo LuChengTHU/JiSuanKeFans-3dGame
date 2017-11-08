@@ -21,8 +21,8 @@ export default class Bar extends Component {
 			<mesh>
 				  <boxGeometry
 					width={curValue / maxValue}
-					height={0.2}
-					depth={0.2}
+					height={0.1}
+					depth={0.1}
 				  />
 				<meshLambertMaterial
 					color={0xff0000}
