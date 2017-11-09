@@ -8,25 +8,22 @@ export default class Player extends Component {
         super(props, context);
     }
 
+    componentDidMount() {
+        const {playerMesh,} = this.props;
+        playerMesh.name = "player";
+        this.groupRef.add(playerMesh);
+    }
+
     render() {
         const {
             position, rotation
         } = this.props;
 		
-		this.group = <group
+		this.group = <group ref={val => { this.groupRef = val; }}
 			position={ position }
 			rotation={ rotation }
 		>
-			<mesh>
-				  <boxGeometry
-					width={1}
-					height={2}
-					depth={1}
-				  />
-				<materialResource
-					resourceId="robotTexture"
-				/>
-			</mesh>
+
 		</group>;
 
         return this.group;

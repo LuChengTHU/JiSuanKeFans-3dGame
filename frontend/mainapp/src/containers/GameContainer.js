@@ -113,17 +113,33 @@ export default class GameContainer extends Component {
 	
 	addMonster(id, x, z, maxHp)
 	{
+	    let mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
+        mesh.scale.set(0.15, 0.15, 0.15);
+        let mixer = new THREE.AnimationMixer(mesh);
+        let moveAction = mixer.clipAction(mesh.geometry.animations[1]);
+        let attackAction = mixer.clipAction(mesh.geometry.animations[0]);
+        this.setWeight(moveAction, 0);
+        this.setWeight(attackAction, 1);
+        let actions = [moveAction, attackAction];
+        actions.forEach(function (action) {
+            action.play();
+        });
+
 		this.setState((prevState, props) => {
 			let ms = prevState.monsters.slice(0);
 			if(id >= ms.length)
 				ms.length = id + 1;
 			ms[id] =
 			{
-				position: new Vector3(x, 0.5, z),
+				position: new Vector3(x, 0.3, z),
 				direction: new Vector3(1, 0, 0),
 				rotation: new Euler(),
 				maxHp: maxHp,
 				hp: maxHp,
+                mesh: mesh,
+                mixer: mixer,
+                actions: actions,
+                currentAction: attackAction
 			};
 			return {monsters: ms};
 		});
@@ -184,6 +200,26 @@ export default class GameContainer extends Component {
 		});
 		window.blocklyShouldRun = false;
 	}
+
+    monsterAttack(id)
+    {
+        let oldState = this.state;
+        oldState.monsters.slice(0)[id].mixer.addEventListener('loop', onEndLoopFinished);
+        this.setWeight(oldState.monsters.slice(0)[id].currentAction, 1);
+        oldState.monsters.slice(0)[id].currentAction.play();
+        this.setState(oldState);
+        this.setState({monsterAnimateAttacking: true});
+        window.blocklyShouldRun = false;
+
+        let that = this;
+
+        function onEndLoopFinished(event) {
+            oldState.playerAnimateAttacking = false;
+            oldState.mixer.removeEventListener('loop', onEndLoopFinished);
+            that.setWeight(oldState.monsters.slice(0)[id].currentAction, 0);
+            that.setState(oldState);
+        }
+    }
 	
 	createMap(height, width)
 	{
@@ -296,14 +332,6 @@ export default class GameContainer extends Component {
         this.prepareCrossFade(this.state.currentAction, this.state.actions[1], 0);
     }
 
-    
-    cancelGameLoop = () => {
-    
-        window.cancelAnimationFrame( this.reqAnimId );
-
-    };
-
-    
     componentDidMount() {
     
         // Track if we're mounted so game loop doesn't tick after unmount
@@ -327,42 +355,77 @@ export default class GameContainer extends Component {
         let loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
             (geometry, materials) => {
-                let material = materials[ 0 ];
-                material.emissive.set( 0x101010 );
+                let material = materials[0];
+                material.emissive.set(0x101010);
                 material.skinning = true;
                 material.morphTargets = true;
-                let mesh = new THREE.SkinnedMesh( geometry, material );
-                mesh.scale.set( 0.01, 0.01, 0.01 );
-                let mixer = new THREE.AnimationMixer( mesh );
+                let mesh = new THREE.SkinnedMesh(geometry, material);
+                mesh.scale.set(0.01, 0.01, 0.01);
+                let mixer = new THREE.AnimationMixer(mesh);
                 // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
                 //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
                 //     action.play();
                 // }
-                let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
-                let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
+                let moveAction = mixer.clipAction(mesh.geometry.animations[0]);
+                let attackAction = mixer.clipAction(mesh.geometry.animations[2]);
                 //attackAction.setLoop(THREE.LoopOnce, 0);
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
-                let actions = [ moveAction, attackAction];
+                let actions = [moveAction, attackAction];
 
-                actions.forEach( function ( action ) {
+                actions.forEach(function (action) {
                     action.play();
-                } );
+                });
 
                 this.setState({
-                    knightMesh:mesh,
-                    mixer:mixer,
-                    clock:new THREE.Clock(),
+                    knightMesh: mesh,
+                    mixer: mixer,
+                    clock: new THREE.Clock(),
                     actions: actions,
                     currentAction: moveAction
                 });
 
-                // Start the game loop when this component loads
-                this.requestGameLoop();
+
+                let monsterLoader = new THREE.JSONLoader();
+                monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
+                    (geometry, materials) => {
+                        let material = materials[0];
+                        material.emissive.set(0x101010);
+                        material.skinning = true;
+                        material.morphTargets = true;
+                        // let mesh = new THREE.SkinnedMesh(geometry, material);
+                        // let mixer = new THREE.AnimationMixer(mesh);
+                        // // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
+                        // //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
+                        // //     action.play();
+                        // // }
+                        // let moveAction = mixer.clipAction(mesh.geometry.animations[6]);
+                        // let attackAction = mixer.clipAction(mesh.geometry.animations[0]);
+                        // //attackAction.setLoop(THREE.LoopOnce, 0);
+                        // this.setWeight(moveAction, 0);
+                        // this.setWeight(attackAction, 1);
+                        // let actions = [moveAction, attackAction];
+                        // actions.forEach(function (action) {
+                        //     action.play();
+                        // });
+                        //
+                        // this.setState({
+                        //     monsterMesh: mesh,
+                        //     monsterMixer: mixer,
+                        //     monsterActions: actions,
+                        //     monsterCurrentAction: attackAction
+                        // });
+
+                        this.setState({
+                            monsterGeometry: geometry,
+                            monsterMaterial: material
+                        });
+                        // Start the game loop when this component loads
+                        this.requestGameLoop();
+                    });
 
             });
-    
-    }
+    };
     
     componentWillUnmount() {
     
@@ -499,7 +562,8 @@ export default class GameContainer extends Component {
 
         const {
 
-            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition
+            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition,
+            monsterGeometry
         } = this.state;
 
 		
@@ -512,7 +576,7 @@ export default class GameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
 			<div>
-				{ knightMesh ? <Game
+				{ monsterGeometry ? <Game
 					width={ width }
 					height={ height }
 					cameraPosition={ cameraPosition }

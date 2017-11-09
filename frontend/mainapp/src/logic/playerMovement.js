@@ -143,9 +143,15 @@ export default function playerMovement( oldState, time ) {
 
 	window.blocklyShouldRun = (animationCount === 0);
 
-	state.mixer.update(state.clock.getDelta());
+
+    const delta = state.clock.getDelta();
+	state.mixer.update(delta);
     // let action = state.mixer.existingAction( state.knightMesh.geometry.animations[ 0 ] );
     // action._update(state.clock.getDelta())
+    for(let i = 0; i < state.monsters.length; i++) {
+        state.monsters[i].mixer.update(delta);
+    }
+
 
 	return state;
 

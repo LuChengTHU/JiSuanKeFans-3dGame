@@ -8,25 +8,22 @@ export default class Monster extends Component {
         super(props, context);
     }
 
+    componentDidMount() {
+        const {monsterMesh,} = this.props;
+        monsterMesh.name = "monster";
+        this.groupRef.add(monsterMesh);
+    }
+
     render() {
         const {
             position, rotation
         } = this.props;
 		
-		this.group = <group
+		this.group = <group ref={val => { this.groupRef = val; }}
 			position={ position }
 			rotation={ rotation }
 		>
-			<mesh>
-				  <boxGeometry
-					width={1}
-					height={1}
-					depth={1}
-				  />
-				<materialResource
-					resourceId="robotTexture"
-				/>
-			</mesh>
+
 		</group>;
 
         return this.group;
