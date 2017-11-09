@@ -1,4 +1,4 @@
-import GameContainer from '../../containers/GameContainer'
+import EditorGameContainer from '../../containers/EditorGameContainer'
 import {TextField, Button, Grid} from 'material-ui'
 import React from 'react'
 import {Component} from 'react'
@@ -24,8 +24,8 @@ const MapEditor = createReactClass({
         // };
         const INIT_MAP = { // initial map
             title: 'Untitled',
-            height: 6,
-            width: 9,
+            height: 10,
+            width: 10,
             n_max_hand_boxes: 4,
             n_blockly: 10,
             instr_set: [true, true, true],
@@ -58,15 +58,15 @@ const MapEditor = createReactClass({
         this.setState({inputText: event.target.value});
     },
     render: function(){
-        const gameContainer = <GameContainer/>;
+        const editorGameContainer = <EditorGameContainer/>;
         this.inputBox = <TextField onChange={this.handleTextChange}
             value={this.state.inputText} 
             multiline={true} fullWidth={true} rows={30} rowsMax={30}/>;
         return (
             <Grid container spacing={25} justify='center'>
             <Grid item xs={12} sm={6} >
-            <div id={'gameContainer'}>
-            {gameContainer}</div>
+            <div id={'editorGameContainer'}>
+            {editorGameContainer}</div>
             <Button onClick={() => this.updateMap()}>Update</Button>
             <Button onClick={() => this.submitMap()}>Submit</Button>
             </Grid>
