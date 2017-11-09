@@ -63,6 +63,10 @@ class BlocklyContainer extends Component {
                     interpreter.createNativeFunction(() => {
                         return Game.gameAttack();     
                     }));
+                interpreter.setProperty(scope, "gameLookAheadName",
+                    interpreter.createNativeFunction(() => {
+                        return Game.gameLookAheadName();     
+                    }));
                 var alertWrapper = function(text) {
                     text = text ? text.toString() : '';
                     return alert(text);
@@ -80,8 +84,8 @@ class BlocklyContainer extends Component {
                 var consoleObj = this.createObject(interpreter.OBJECT);
                 this.setProperty(scope, 'console', consoleObj);
                 var logWrapper = function(text) {
-                text = text ? text.toString() : '';
-                return console.log(text);
+					text = text ? text.toString() : '';
+					return console.log(text);
                 };
                 interpreter.setProperty(consoleObj, 'log',
                     interpreter.createNativeFunction(logWrapper));
@@ -115,6 +119,7 @@ class BlocklyContainer extends Component {
                 <block type="game_move"></block>
                 <block type="game_turn"></block>
                 <block type="game_attack"></block>
+                <block type="game_lookahead_name"></block>
                 <block type="controls_if"></block>
                 <block type="controls_repeat_ext"></block>
                 <block type="logic_compare"></block>

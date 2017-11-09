@@ -115,6 +115,7 @@ export default class Game {
 	
 	static gameLookAheadName()
 	{
+		// No "Call After Move" needed!
 		let id = Game.map.cur_ai;
 		let x, y, dir;
 		if(id === -1)
