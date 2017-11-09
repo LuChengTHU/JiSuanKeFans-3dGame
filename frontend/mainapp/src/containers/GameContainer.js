@@ -36,7 +36,8 @@ export default class GameContainer extends Component {
 			catch(e)
 			{
 				if(e.message == 'GameFinished')
-					window.alert('Game Finished!');
+					this.props.gameSetState('passed');
+					//window.alert('Game Finished!');
 				else
 					throw e;
 			}
