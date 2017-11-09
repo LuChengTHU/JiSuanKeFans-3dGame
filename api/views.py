@@ -233,6 +233,13 @@ class MapListView(APIView):
     # create a new map
     @with_pagination(serializer_class=MapBriefSerializer)
     def get(self, request):
+        author_id = request.query_params.get('authorId', None)
+        if author_id:
+            try:
+                author_id = int(author_id)
+                return Map.objects.filter(author_id=author_id).all(), {}
+            except TypeError:
+                return Map.objects.all(), {}
         return Map.objects.all(), {}
 
     @with_res_code

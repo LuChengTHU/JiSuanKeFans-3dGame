@@ -64,14 +64,24 @@ class Nav extends Component {
                         this.setState({loginOpen:false, registerOpen:false});
                         this.props.history.push('/editor');}}>地图编辑器</Button>
                 </div>
-                {localStorage.getItem('token') 
+                { this.props.user ?
+                <div>
+                    <Button color="contrast" onClick={() => {
+                        this.setState({loginOpen:false, registerOpen:false});
+                        this.props.history.push('/mymaps/');
+                    }}>我的地图</Button>
+                </div>
+                : ""
+                }
+                { this.props.user
                 ? 
                     <div className="profile">
                     {JSON.parse(localStorage.getItem('user'))['username']}
                     <Button color="contrast" onClick={(e) => {
                         localStorage.removeItem("token");
                         localStorage.removeItem("user");
-                        window.location.reload();
+                        if(this.props.onLoginChange)
+                            this.props.onLoginChange();
                         }
                     }>
                         登出
@@ -81,7 +91,7 @@ class Nav extends Component {
                     <div className="login-register">
                     <Button color="contrast" onClick={this.handleClick('loginOpen', true)}>登录</Button>
                     <Button color="contrast" onClick={this.handleClick('registerOpen', true)}>注册</Button>
-                    { <LoginFormDialog open={this.state.loginOpen} onRequestClose={this.handleClick('loginOpen', false)}/> }
+                    { <LoginFormDialog open={this.state.loginOpen} onRequestClose={this.handleClick('loginOpen', false)} onLogin={this.props.onLoginChange}/> }
                     { <RegisterFormDialog open={this.state.registerOpen} onRequestClose={this.handleClick('registerOpen', false)}/> }
                     </div>
                 }
