@@ -26,40 +26,19 @@ export default class Game extends Component {
         playerRotation: PropTypes.instanceOf( Euler ).isRequired,
     };
 
-    componentDidMount() {
-        const {knightMesh, playerPosition, playerRotation} = this.props;
-        let group = new THREE.Group();
-        knightMesh.position.x = playerPosition.x;
-        knightMesh.position.y = playerPosition.y;
-        knightMesh.position.z = playerPosition.z;
-        //knightMesh.rotation.set(0,0,0);
-        knightMesh.name = "knight";
-        this.sceneRef.add(knightMesh);
-
-        this.setState({readyKnight:true})
-    }
-
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            readyKnight:false
-        };
     }
 
     render() {
         const {
-            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp, playerMaxHp
+            width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp,
+            playerMaxHp, targetPosition, knightMesh
         } = this.props;
-
-        if(this.state.readyKnight) {
-            this.sceneRef.getObjectByName("knight").position.set(playerPosition.x, playerPosition.y, playerPosition.z);
-            this.sceneRef.getObjectByName("knight").rotation.set(playerRotation.x, playerRotation.y, playerRotation.z);
-        }
 
 		// return <div> width={ width }, height={ height }
                     // lookAt={ lookAt.x } </div>
 
-		
 		let ms = [];
 		let mbar = [];
 		for(let i = 0; i < monsters.length; ++i)
@@ -69,9 +48,28 @@ export default class Game extends Component {
 			}
 			else
 			{
-				ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation}/>);
+				ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation} monsterMesh={monsters[i].mesh}/>);
 				mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp}/>);
 			}
+		
+		let target = null;
+		if(targetPosition)
+		{
+			target = <group
+				position={ targetPosition }
+			>
+				<mesh>
+					  <boxGeometry
+						width={1}
+						height={0.1}
+						depth={1}
+					  />
+					<meshLambertMaterial
+						color={0xffff00}
+					/>
+				</mesh>
+			</group>;
+		}
 
 		let ans = <React3
             mainCamera="camera"
@@ -128,7 +126,12 @@ export default class Game extends Component {
 				/>
 				{ ms }
 				{mbar}
-
+				{target}
+				<Player
+                    position = {playerPosition}
+                    rotation={playerRotation}
+                    playerMesh = {knightMesh}
+                />
             </scene>
         </React3>;
 		return ans;
