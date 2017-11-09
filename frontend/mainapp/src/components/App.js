@@ -76,8 +76,6 @@ class App extends Component {
 
     render() 
     {
-
-        axios.defaults.headers.common['Authorization'] = 'Token ' + this.state.token;
         return (
             <div className={this.classes.root}>
                 <Nav user={this.state.user} onLoginChange={this.onLoginChange}/>
