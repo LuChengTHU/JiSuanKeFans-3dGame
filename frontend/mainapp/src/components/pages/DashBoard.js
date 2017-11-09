@@ -13,6 +13,7 @@ import BlocklyContainer from '../../containers/BlocklyContainer';
 import {fetch_map} from '../../interfaces/Map';
 import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
+import Logic from '../../logic/logic';
 
 const styles = theme => ({
   root: {
@@ -29,6 +30,8 @@ class DashBoard extends Component {
             welcomeOpen: true,
             welcomeMsg: null,
             map: null,
+            gameState: "ready",
+            passedOpen: false,
         }
         fetch_map(this.props.match.params.map_id)
         .then((response) => {
@@ -45,9 +48,21 @@ class DashBoard extends Component {
             [name]: value
         })
     }
+    gameSetState = (gameState) =>
+    {
+        this.setState((prevState, props) => {
+            let passedOpen = (prevState.gameState !== gameState && gameState === "passed");
+            return {passedOpen: passedOpen, gameState: gameState};
+        });
+    }
+    initMap = () => 
+    {
+        Logic.gameSetMap(window.map);
+        this.setState({gameState: "ready"});
+    }
     render()
     {
-        const gameContainer = <GameContainer/>;
+        const gameContainer = <GameContainer gameSetState={this.gameSetState}/>;
         let welcomeMsg;
         if (this.state.map === null) welcomeMsg = '加载中...';
         else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';
@@ -63,9 +78,14 @@ class DashBoard extends Component {
                     closeText="关闭" onRequestClose={this.handleClick('welcomeOpen', false)}>
                     {welcomeMsg} 
                 </MessageDialog>
+                <MessageDialog title="提示" open={this.state.passedOpen}
+                    closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
+                    {'通过'}
+                </MessageDialog>
                 <Grid container spacing={8} justify='center'>
                 <Grid item xs={12} sm={12} >
                     <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
+                    <Button onClick={this.initMap}>Init</Button>
                 </Grid>
                 <Grid item xs={12} sm={6} >
                     <div id={'gameContainer'}>
