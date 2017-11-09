@@ -9,6 +9,7 @@ import {Route} from 'react-router-dom'
 import MapChooser from '../containers/MapChooser'
 import createReactClass from 'create-react-class'
 import {createHashHistory} from 'history'
+import StageGallery from './pages/StageGallery'
 import MapLibrary from './pages/MapLibrary'
 
 const styles = theme => ({
@@ -82,7 +83,7 @@ class App extends Component {
                 <Route exact path="/game/:map_id/" component={DashBoard}/>
                 <Route exact path="/editor/:map_id/" component={MapEditor}/>
                 <Route exact path="/editor/" component={MapEditor}/>
-                <Route exact path="/maps/" component={MapListView}/>
+                <Route exact path="/stages/" component={StageGallery}/>
                 {this.state.user ?
                     <Route exact path="/mymaps/" component={(props) => <MapLibrary
                          author={this.state.user} {...props}/>}/>

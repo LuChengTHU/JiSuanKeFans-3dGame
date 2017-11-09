@@ -62,6 +62,11 @@ class Nav extends Component {
                 <div>
                     <Button color="contrast" onClick={() => {
                         this.setState({loginOpen:false, registerOpen:false});
+                        this.props.history.push('/stages');}}>关卡</Button>
+                </div>
+                <div>
+                    <Button color="contrast" onClick={() => {
+                        this.setState({loginOpen:false, registerOpen:false});
                         this.props.history.push('/editor');}}>地图编辑器</Button>
                 </div>
                 { this.props.user ?
