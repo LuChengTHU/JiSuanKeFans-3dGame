@@ -157,6 +157,56 @@ export default class Game {
 		return "";
 	}
 	
+	static gameGetPosX(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_pos[0];
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].name === name)
+				return Game.map.cur_ai_infos[i].pos[0];
+		return -1;
+	}
+	
+	static gameGetPosY(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_pos[1];
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].name === name)
+				return Game.map.cur_ai_infos[i].pos[1];
+		return -1;
+	}
+	
+	static gameGetDir(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_dir;
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].name === name)
+				return Game.map.cur_ai_infos[i].dir;
+		return -1;
+	}
+	
+	static gameGetAttack(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_attack;
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].name === name)
+				return Game.map.cur_ai_infos[i].attack;
+		return -1;
+	}
+	
+	static gameGetHp(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_hp;
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].name === name)
+				return Game.map.cur_ai_infos[i].hp;
+		return -1;
+	}
+	
 	static gameMove()
 	{
 		if(Game.map.cur_ai === -1)
