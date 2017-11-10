@@ -1,3 +1,4 @@
+# encoding=utf-8
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import AbstractUser
@@ -74,3 +75,10 @@ class Map(models.Model):
     final_hand_boxes = models.TextField(default=None, blank=True, null=True)
 
     final_dir = models.IntegerField(default=None, blank=True, null=True)
+
+    # ------------ popup messages -------------
+
+    welcome_msg = models.TextField(default=u"无。", blank=True)
+    passed_msg = models.TextField(default=u"厉害了！", blank=True)
+    failed_msg = models.TextField(default=u"再加把劲！", blank=True)
+    std_blockly_code = models.TextField(default=None, blank=True, null=True)

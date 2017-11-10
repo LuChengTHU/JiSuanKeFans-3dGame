@@ -1,3 +1,4 @@
+# encoding=utf-8
 from django.urls import reverse
 from rest_framework.test import APITestCase as TestCase
 from django.utils.timezone import now
@@ -251,7 +252,9 @@ class BackendTestCase(TestCase):
             "n_max_hand_boxes": 10,
             "instr_set": [True, True, False],
             "height": 10,
-            "width": 10
+            "width": 10,
+            "failed_msg": "failed!",
+            "passed_msg": "passed!"
             }
         print(token)
         response = self.create_map(map, token)
@@ -263,6 +266,10 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['map']['author']['id'], uid)
         self.assertEqual(response.json()['map']['init_AI_infos'], map['init_AI_infos'])
+        self.assertEqual(response.json()['map']['welcome_msg'], u'无。')
+        self.assertEqual(response.json()['map']['passed_msg'], 'passed!')
+        self.assertEqual(response.json()['map']['failed_msg'], 'failed!')
+        self.assertEqual(response.json()['map']['std_blockly_code'], None)
         print("response.json()['map']['stage']={}".format(response.json()['map']['stage']))
 
         response = self.client.get(reverse('api:map_list'))
