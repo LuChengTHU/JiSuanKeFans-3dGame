@@ -17,7 +17,7 @@ from api.serializers import \
    RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer
 import json
 import traceback
-
+import ac.settings as settings
 from .authenticaters import CsrfExemptSessionAuthentication
 
 from api.models import Map, User
@@ -195,18 +195,21 @@ class MapView(APIView):
         try:
             map = Map.objects.get(id=map_id)
         except:
+            if settings.DEBUG: traceback.print_exc()
             # not found
             return Response({}, status=status.HTTP_404_NOT_FOUND), 2
         try:
             serializer = MapFullSerializer(map, \
                 data = MapFullSerializer.repr_deflate(request.data['new_map_info']))
         except:
+            if settings.DEBUG: traceback.print_exc()
             return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
         if serializer.is_valid():
             try:
                 serializer.save()
             except:
+                if settings.DEBUG: traceback.print_exc()
                 return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
             return Response({}), 1
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
