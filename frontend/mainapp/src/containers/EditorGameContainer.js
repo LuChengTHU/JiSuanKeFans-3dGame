@@ -6,6 +6,7 @@ import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
 import Game from '../components/Game';
 import MapBlock from '../components/MapBlock';
 import * as Logic from '../logic/logic';
+import TrackballControls from '../utils/trackball';
 
 import playerMovement from '../logic/playerMovement';
 
@@ -21,7 +22,8 @@ export default class EditorGameContainer extends Component {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, 0, 0 ),
             cameraPosition: new THREE.Vector3( 2.5999999, 5, 4.07 ),
-            lookAt: new THREE.Vector3( 2.60, 0, 4.07 ),
+            cameraRotation: new THREE.Euler(),
+            //lookAt: new THREE.Vector3( 2.60, 0, 4.07 ),
             monsters: []
         };
     }
@@ -114,9 +116,22 @@ export default class EditorGameContainer extends Component {
                 // this.setState({ geometry })
             // );
     
-            const container = this.refs.container;
-            container.addEventListener('mousedown', this.onGameMouseDown, false);
+            // const container = this.refs.container;
+            // container.addEventListener('mousedown', this.onGameMouseDown, false);
             //container.addEventListener('click', this.onGameMouseClick, false);
+
+            const controls = new TrackballControls(this.camera);
+
+            controls.rotateSpeed = 1.0;
+            controls.zoomSpeed = 1.2;
+            controls.panSpeed = 0.8;
+            controls.noZoom = false;
+            controls.noPan = false;
+            controls.staticMoving = true;
+            controls.dynamicDampingFactor = 0.3;
+
+            this.controls = controls;            
+            this.controls.addEventListener('change', this.onTrackballChange);            
     
             let loader = new THREE.JSONLoader();
             loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
@@ -152,125 +167,136 @@ export default class EditorGameContainer extends Component {
                     });
     
                 });
-        
         }
         
         componentWillUnmount() {
         
             this.mounted = false;
+
+            // Remove Trackball
+            this.controls.removeEventListener('change', this.onTrackballChange);
+            this.controls.dispose();
+            delete this.controls;
             
-            const container = this.refs.container;
-            container.removeEventListener('mousedown', this.onGameMouseDown, false);
-            document.removeEventListener('mousemove', this.onGameMouseMove, false);
-            document.removeEventListener('mouseup', this.onGameMouseUp, false);
-            document.removeEventListener('mouseout', this.onGameMouseOut, false);
+            // const container = this.refs.container;
+            // container.removeEventListener('mousedown', this.onGameMouseDown, false);
+            // document.removeEventListener('mousemove', this.onGameMouseMove, false);
+            // document.removeEventListener('mouseup', this.onGameMouseUp, false);
+            // document.removeEventListener('mouseout', this.onGameMouseOut, false);
         
         }
 
-        // Mouse Click
-        onGameMouseClick = (event) => {
-            event.preventDefault();
-
-            console.log("Clicked.");
+        onTrackballChange = () => {
+            this.setState({
+                cameraPosition: this.refs.camera.position.clone(),
+                cameraRotation: this.refs.camera.position.clone(),
+            });
         }
 
-        // Mouse Down
-        onGameMouseDown = (event) => {
-            event.preventDefault();
+        // // Mouse Click
+        // onGameMouseClick = (event) => {
+        //     event.preventDefault();
 
-            document.addEventListener('mousemove', this.onGameMouseMove, false);
-            document.addEventListener('mouseup', this.onGameMouseUp, false);
-            document.addEventListener('mouseout', this.onGameMouseOut, false);
+        //     console.log("Clicked.");
+        // }
 
-            this.dragging = false;
+        // // Mouse Down
+        // onGameMouseDown = (event) => {
+        //     event.preventDefault();
 
-            /*
-                .. to add codes
-                record the initial position of mouse
-            */
-            this.mouseXOnMouseDown = event.clientX;
-            this.mouseYOnMouseDown = event.clientY;
+        //     document.addEventListener('mousemove', this.onGameMouseMove, false);
+        //     document.addEventListener('mouseup', this.onGameMouseUp, false);
+        //     document.addEventListener('mouseout', this.onGameMouseOut, false);
 
-            this.cameraXOnMouseDown = this.state.cameraPosition.x;
-            this.cameraYOnMouseDown = this.state.cameraPosition.y;
-            this.cameraZOnMouseDown = this.state.cameraPosition.z;
+        //     this.dragging = false;
 
-            this.lookAtXOnMouseDown = this.state.lookAt.x;
-            this.lookAtYOnMouseDown = this.state.lookAt.y;
-            this.lookAtZOnMouseDown = this.state.lookAt.z;
-        };
+        //     /*
+        //         .. to add codes
+        //         record the initial position of mouse
+        //     */
+        //     this.mouseXOnMouseDown = event.clientX;
+        //     this.mouseYOnMouseDown = event.clientY;
 
-        // Mouse Moving
-        onGameMouseMove = (event) => {
-            /*
-                .. to add codes
-            */
-            this.mouseX = event.clientX;
-            this.mouseY = event.clientY;
+        //     this.cameraXOnMouseDown = this.state.cameraPosition.x;
+        //     this.cameraYOnMouseDown = this.state.cameraPosition.y;
+        //     this.cameraZOnMouseDown = this.state.cameraPosition.z;
+
+        //     this.lookAtXOnMouseDown = this.state.lookAt.x;
+        //     this.lookAtYOnMouseDown = this.state.lookAt.y;
+        //     this.lookAtZOnMouseDown = this.state.lookAt.z;
+        // };
+
+        // // Mouse Moving
+        // onGameMouseMove = (event) => {
+        //     /*
+        //         .. to add codes
+        //     */
+        //     this.mouseX = event.clientX;
+        //     this.mouseY = event.clientY;
     
-            let DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.005;
-            let DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.005;
-            let SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
-            let SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
+        //     let DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.005;
+        //     let DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.005;
+        //     let SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
+        //     let SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
             
-            let SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
-            SightX = 1. * SightX / SightLen;
-            SightZ = 1. * SightZ / SightLen;
-            let vSightX = SightZ;
-            let vSightZ = -SightX;
+        //     let SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
+        //     SightX = 1. * SightX / SightLen;
+        //     SightZ = 1. * SightZ / SightLen;
+        //     let vSightX = SightZ;
+        //     let vSightZ = -SightX;
     
-            this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
-            this.cameraY = this.cameraYOnMouseDown;
-            this.cameraZ = this.cameraZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+        //     this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
+        //     this.cameraY = this.cameraYOnMouseDown;
+        //     this.cameraZ = this.cameraZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
     
-            this.lookAtX = this.lookAtXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
-            this.lookAtY = this.lookAtYOnMouseDown;
-            this.lookAtZ = this.lookAtZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+        //     this.lookAtX = this.lookAtXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
+        //     this.lookAtY = this.lookAtYOnMouseDown;
+        //     this.lookAtZ = this.lookAtZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
 
-            this.dragging = true;
+        //     this.dragging = true;
     
-            // this.setCameraPosition(this.cameraX, this.cameraY, this.cameraZ);
-            // this.setLookAt(this.lookAtX, this.lookAtY, this.lookAtZ);
+        //     // this.setCameraPosition(this.cameraX, this.cameraY, this.cameraZ);
+        //     // this.setLookAt(this.lookAtX, this.lookAtY, this.lookAtZ);
 
-            // this.setState(
-            //     {
-            //         cameraPosition : new Vector3(this.cameraX, this.cameraY, this.cameraZ),
-            //         lookAt : new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ),
-            //     }
-            // );
-        };
+        //     // this.setState(
+        //     //     {
+        //     //         cameraPosition : new Vector3(this.cameraX, this.cameraY, this.cameraZ),
+        //     //         lookAt : new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ),
+        //     //     }
+        //     // );
+        // };
     
-        // Mouse Up
-        onGameMouseUp = (event) => {
-            document.removeEventListener('mousemove', this.onGameMouseMove, false);
-            document.removeEventListener('mouseup', this.onGameMouseUp, false);
-            document.removeEventListener('mouseout', this.onGameMouseOut, false);	
+        // // Mouse Up
+        // onGameMouseUp = (event) => {
+        //     document.removeEventListener('mousemove', this.onGameMouseMove, false);
+        //     document.removeEventListener('mouseup', this.onGameMouseUp, false);
+        //     document.removeEventListener('mouseout', this.onGameMouseOut, false);	
 
-            console.log(event.clientX, event.clientY);
+        //     console.log(event.clientX, event.clientY);
 
-            if (!this.dragging) {
-                // Clicked
-                let gridX = parseInt((event.clientX - 110) / 45.4);
-                let gridY = parseInt((317 - event.clientY) / 45.4);
+        //     if (!this.dragging) {
+        //         // Clicked
+        //         let gridX = parseInt((event.clientX - 110) / 45.4);
+        //         let gridY = parseInt((317 - event.clientY) / 45.4);
 
-                console.log(gridX, gridY);
+        //         console.log(gridX, gridY);
 
-                this.setState(
-                    {
-                        playerPosition : new Vector3(gridY, 0, gridX),
-                    }
-                );
-            }
-            /* 
-                ... to add codes
-                place a person
-            */
-        };
+        //         this.setState(
+        //             {
+        //                 playerPosition : new Vector3(gridY, 0, gridX),
+        //             }
+        //         );
+        //     }
+        //     /* 
+        //         ... to add codes
+        //         place a person
+        //     */
+        // };
     
-        // Mouse Out
-        onGameMouseOut = () => {
-            document.removeEventListener('mousemove', this.onGameMouseMove, false);
-            document.removeEventListener('mouseup', this.onDocumentMouseUp, false);
-            document.removeEventListener('mouseout', this.onGameMouseOut, false);
-        };
+        // // Mouse Out
+        // onGameMouseOut = () => {
+        //     document.removeEventListener('mousemove', this.onGameMouseMove, false);
+        //     document.removeEventListener('mouseup', this.onDocumentMouseUp, false);
+        //     document.removeEventListener('mouseout', this.onGameMouseOut, false);
+        // };
 }
