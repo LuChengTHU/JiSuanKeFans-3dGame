@@ -32,6 +32,7 @@ class DashBoard extends Component {
             map: null,
             gameState: "ready",
             passedOpen: false,
+            failedOpen: false,
         }
         fetch_map(this.props.match.params.map_id)
         .then((response) => {
@@ -43,7 +44,6 @@ class DashBoard extends Component {
         });
     }
     handleClick = (name, value) => () => {
-        console.log('setState',name,value,this)
         this.setState({
             [name]: value
         })
@@ -52,7 +52,8 @@ class DashBoard extends Component {
     {
         this.setState((prevState, props) => {
             let passedOpen = (prevState.gameState !== gameState && gameState === "passed");
-            return {passedOpen: passedOpen, gameState: gameState};
+            let failedOpen = (prevState.gameState !== gameState && gameState === "failed");
+            return {passedOpen: passedOpen, gameState: gameState, failedOpen: failedOpen};
         });
     }
     initMap = () => 
@@ -62,12 +63,12 @@ class DashBoard extends Component {
     }
     render()
     {
-        const gameContainer = <GameContainer gameSetState={this.gameSetState}/>;
-        let welcomeMsg;
+        const gameContainer = <GameContainer gameSetState={this.gameSetState} gameState={this.state.gameState}/>;
+        let welcomeMsg, gameoverMsg = 'GAME OVER';
         if (this.state.map === null) welcomeMsg = '加载中...';
         else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';
         else welcomeMsg = this.state.map['welcome_msg'];
-        console.log(welcomeMsg)
+        if (this.state.map) gameoverMsg = this.state.map['gameover_msg'];
 
         //TODO
         // window.Game.gameSetMap(fetch_map(1));
@@ -81,6 +82,11 @@ class DashBoard extends Component {
                 <MessageDialog title="提示" open={this.state.passedOpen}
                     closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
                     {'通过'}
+                </MessageDialog>
+                <MessageDialog title="游戏失败" open={this.state.failedOpen}
+                    confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); this.initMap();}}
+                    closeText="关闭" onRequestClose={this.handleClick('failedOpen', false)}>
+                    {gameoverMsg}
                 </MessageDialog>
                 <Grid container spacing={8} justify='center'>
                 <Grid item xs={12} sm={12} >
