@@ -11,7 +11,6 @@ class TrackballControls extends THREE.EventDispatcher {
 
     this.object = object;
     this.domElement = ( domElement !== undefined ) ? domElement : document;
-
     // API
 
     this.enabled = true;
@@ -497,7 +496,6 @@ class TrackballControls extends THREE.EventDispatcher {
       window.removeEventListener('keydown', keydown, false);
       window.removeEventListener('keyup', keyup, false);
     };
-
     this.domElement.addEventListener('contextmenu', contextmenu, false);
     this.domElement.addEventListener('mousedown', mousedown, false);
     this.domElement.addEventListener('mousewheel', mousewheel, false);

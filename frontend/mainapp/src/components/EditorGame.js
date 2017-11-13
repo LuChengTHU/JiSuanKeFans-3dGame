@@ -1,7 +1,7 @@
 import React, { Component, PropTypes, } from 'react';
 import React3 from 'react-three-renderer';
 
-import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
+import { Vector3, Euler, Geometry, DoubleSide, PerspectiveCamera, } from 'three';
 
 import * as THREE from 'three';
 
@@ -9,20 +9,20 @@ import Player from './Player';
 import Bar from './Bar';
 import MapBlock from './MapBlock';
 import Monster from './Monster';
-import MouseInput from '../utils/MouseInputs';
 
 /**
  * Our main class to display the game. This contains only view code! It's very
  * easy to reason about
  */
 
-export default class Game extends Component {
+export default class EditorGame extends Component {
 
     static propTypes = {
         width: PropTypes.number.isRequired,
         height: PropTypes.number.isRequired,
-        cameraPosition: PropTypes.instanceOf( Vector3 ).isRequired,
-        cameraRotation: PropTypes.instanceOf( Euler ).isRequired,
+        // cameraPosition: PropTypes.instanceOf( Vector3 ).isRequired,
+        // cameraRotation: PropTypes.instanceOf( Euler ).isRequired,
+        // camera: PropTypes.instanceOf( PerspectiveCamera ).isRequired,
         playerPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         playerRotation: PropTypes.instanceOf( Euler ).isRequired,
     };
@@ -35,9 +35,10 @@ export default class Game extends Component {
         const {
             width, 
             height, 
-            
-            cameraPosition, 
-            cameraRotation, 
+
+            camera,
+            // cameraPosition, 
+            // cameraRotation, 
             
             mapBlocks, 
             playerPosition, 
@@ -50,8 +51,10 @@ export default class Game extends Component {
             knightMesh
         } = this.props;
 
-		// return <div> width={ width }, height={ height }
-                    // lookAt={ lookAt.x } </div>
+        if (camera) {
+            console.log(camera.position);
+            console.log(camera.rotation);
+        }
 
 		let ms = [];
 		let mbar = [];
@@ -73,11 +76,11 @@ export default class Game extends Component {
 				position={ targetPosition }
 			>
 				<mesh>
-					  <boxGeometry
-						width={1}
-						height={0.1}
-						depth={1}
-					  />
+                    <boxGeometry
+                        width={1}
+                        height={0.1}
+                        depth={1}
+                    />
 					<meshLambertMaterial
 						color={0xffff00}
 					/>
@@ -91,10 +94,6 @@ export default class Game extends Component {
             height={ height }
             antialias
         >
-            <module
-                ref="mouseInput"
-                descriptor={MouseInput}
-            />
             <resources>
                 <texture
                     resourceId="robotImage"
@@ -126,14 +125,12 @@ export default class Game extends Component {
             <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
                     name="camera"
-                    ref="camera"
-                    fov={ 75 }
-                    aspect={ width / height }
-                    near={ 0.1 }
-                    far={ 1000 }
-                    position={ cameraPosition }
-                    rotation={ cameraRotation }
-                    lookAt={ lookAt }
+                    fov={ camera.fov }
+                    aspect={ width/height }
+                    near={ camera.near }
+                    far={ camera.far }
+                    position={ camera.position.clone() }
+                    rotation={ camera.rotation.clone() }
                 />
                 <ambientLight
                     color={ 0xdddddd }

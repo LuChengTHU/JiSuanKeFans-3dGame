@@ -7,21 +7,6 @@ import {fetch_map, create_map, modify_map} from '../../interfaces/Map'
 
 const MapEditor = createReactClass({
     getInitialState: function(){
-        // const INIT_MAP = { // initial map
-        //     height: 6,
-        //     width: 9,
-        //     nMaxHandBoxes: 4,
-        //     instrSet: [true, true, true],
-        //     initPos: [1, 1],
-        //     finalPos: [1, 2],
-        //     initGroundColors: [[0, 0, 0], [0, 0, 0]],
-        //     finalGroundColors: null,
-        //     initGroundBoxes: [[null, null, null], [null, null, null]],
-        //     finalGroundBoxes: null,
-        //     initHandBoxes: [],
-        //     finalHandBoxes: [],
-        //     initDir:16
-        // };
         const INIT_MAP = { // initial map
             title: 'Untitled',
             height: 10,
