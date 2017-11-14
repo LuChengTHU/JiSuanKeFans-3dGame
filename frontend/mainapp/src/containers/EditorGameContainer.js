@@ -6,7 +6,7 @@ import { Vector3, Euler, Geometry, DoubleSide, PerspectiveCamera, } from 'three'
 import EditorGame from '../components/EditorGame';
 import MapBlock from '../components/MapBlock';
 import * as Logic from '../logic/logic';
-import TrackballControls from '../utils/Trackball';
+import TracerControls from '../utils/tracer';
 
 import playerMovement from '../logic/playerMovement';
 
@@ -93,8 +93,7 @@ export default class EditorGameContainer extends Component {
             knightMesh,
             monsters
         } = this.state;
-        // if (camera) console.log(camera.position);
-
+        
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
         // a loading  screen, or even a 3d scene without geometry in it
@@ -131,22 +130,23 @@ export default class EditorGameContainer extends Component {
         } = this.refs;
 
         this.camera = new PerspectiveCamera(75, 1, 0.1, 1000);
-        this.camera.position.x = 10;
-        this.camera.position.y = 10;
-        this.camera.position.z = 10;
-        this.camera.lookAt.x = 5;
-        this.camera.lookAt.y = 0;
-        this.camera.lookAt.z = 5;
+        this.camera.position.x = 5;
+        this.camera.position.y = 5;
+        this.camera.position.z = 0;
+        // this.camera.lookAt.x = 5;
+        // this.camera.lookAt.y = 0;
+        // this.camera.lookAt.z = 5;
 
-        const controls = new TrackballControls(this.camera, container);
+        const controls = new TracerControls(this.camera, container);
 
-        controls.rotateSpeed = 1.0;
+        controls.slideSpeed = 2.0;
         controls.zoomSpeed = 1.2;
         controls.panSpeed = 0.8;
         controls.noZoom = false;
         controls.noPan = false;
         controls.staticMoving = true;
         controls.dynamicDampingFactor = 0.3;
+        controls.maxDistance = 10;
 
         this.controls = controls;            
         this.controls.addEventListener('change', this.onTrackballChange);       

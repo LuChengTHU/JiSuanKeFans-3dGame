@@ -51,11 +51,6 @@ export default class EditorGame extends Component {
             knightMesh
         } = this.props;
 
-        if (camera) {
-            console.log(camera.position);
-            console.log(camera.rotation);
-        }
-
 		let ms = [];
 		let mbar = [];
 		for(let i = 0; i < monsters.length; ++i)
@@ -125,10 +120,10 @@ export default class EditorGame extends Component {
             <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
                     name="camera"
-                    fov={ camera.fov }
+                    fov={ 75 }
                     aspect={ width/height }
-                    near={ camera.near }
-                    far={ camera.far }
+                    near={ 0.1 }
+                    far={ 100 }
                     position={ camera.position.clone() }
                     rotation={ camera.rotation.clone() }
                 />
