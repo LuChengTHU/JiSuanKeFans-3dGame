@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^stage/(?P<stage_id>[0-9]+)/$', stage_view, name='stage'),
     url(r'^map/$', map_list_view, name='map_list'),
     url(r'^solution/$', solution_list_view, name='solution_list'),
-    url(r'^solution/(?P<solution_id>[0-9]+)/$', solution_view, name='solution')
+    url(r'^solution/(?P<sol_id>[0-9]+)/$', solution_view, name='solution')
 ]
