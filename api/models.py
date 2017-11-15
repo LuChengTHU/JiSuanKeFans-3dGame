@@ -82,3 +82,9 @@ class Map(models.Model):
     passed_msg = models.TextField(default=u"厉害了！", blank=True)
     failed_msg = models.TextField(default=u"再加把劲！", blank=True)
     std_blockly_code = models.TextField(default=None, blank=True, null=True)
+
+class Solution(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    map = models.ForeignKey(Map, on_delete=models.CASCADE)
+
+    code = models.TextField()

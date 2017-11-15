@@ -14,13 +14,13 @@ from django.utils.timezone import now
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
-   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer
+   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer, get_solution_serializer_class
 import json
 import traceback
 import ac.settings as settings
 from .authenticaters import CsrfExemptSessionAuthentication
 
-from api.models import Map, User
+from api.models import Map, User, Solution
 
 def get_pwd_hash(pwd):
     m = sha512()
@@ -110,7 +110,6 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
         # Return token for User
         user_serializer_class = get_user_serializer_class(RATE_BRIEF)
 
-        print(request.data)
         serializer = TokenPostSerializer(data=request.data)
         if serializer.is_valid():
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
@@ -289,3 +288,52 @@ class StageView(APIView):
         return Response({'map' : data}), 1
 
 stage_view = StageView.as_view()
+
+class SolutionListView(APIView):
+    @with_pagination(serializer_class=get_solution_serializer_class(RATE_BRIEF))
+    def get(self, request):
+        user_id = int(request.query_params.get('user', 0))
+        map_id = int(request.query_params.get('map', 0))
+
+        res = Solution.objects
+
+        if user_id != 0:
+            res = res.filter(user_id=user_id)
+        if map_id != 0:
+            res = res.filter(map_id=map_id)
+
+        return res.all(), {}
+        
+    @with_res_code
+    def post(self, request):
+        sol_info = request.data['solution']
+
+        # sol = Solution(user=User.objects.get(id=sol_info['user_id']),
+            # map=Map.objects.get(id=sol_info['map_id']))
+
+        serializer = get_solution_serializer_class(RATE_CREATE)(data=sol_info)
+        if serializer.is_valid():
+            try:
+                solution = serializer.save()
+            except Exception as e:
+                print(e)
+                return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
+            return Response({'sol_id' : solution.id}, status=status.HTTP_201_CREATED), 1
+        print(serializer.errors)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+
+
+solution_list_view = SolutionListView.as_view()
+
+class SolutionView(APIView):
+    @with_record_fetch(get_solution_serializer_class(RATE_FULL), record_entrypoint='solution')
+    def get(self, request, sol_id=None):
+        return Solution, {}
+    
+    @with_res_code
+    def put(self, request, sol_id=None):
+        # TODO modifying solution records
+        raise NotImplementedError
+
+
+solution_view = SolutionView.as_view()
