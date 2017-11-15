@@ -1,11 +1,12 @@
 import React, { Component, PropTypes} from 'react';
 import * as THREE from 'three';
 
-import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
+import { Vector3, Euler, Geometry, DoubleSide, PerspectiveCamera, } from 'three';
 
-import Game from '../components/Game';
+import EditorGame from '../components/EditorGame';
 import MapBlock from '../components/MapBlock';
 import * as Logic from '../logic/logic';
+import TracerControls from '../utils/tracer';
 
 import playerMovement from '../logic/playerMovement';
 
@@ -20,8 +21,8 @@ export default class EditorGameContainer extends Component {
         this.state = {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, 0, 0 ),
-            cameraPosition: new THREE.Vector3( 2.5999999, 5, 4.07 ),
-            lookAt: new THREE.Vector3( 2.60, 0, 4.07 ),
+            // mouseInput: null, 
+            // scene: null,
             monsters: []
         };
     }
@@ -61,6 +62,13 @@ export default class EditorGameContainer extends Component {
         action.setEffectiveWeight( weight );
     };
 
+    setTargetPos(x, z)
+	{
+		if(x)
+			this.setState({targetPosition: new Vector3(x, 0.05, z)});
+		else
+			this.setState({targetPosition: null});
+	}
 
     render() {
 
@@ -74,27 +82,33 @@ export default class EditorGameContainer extends Component {
         }
 
         const {
-            cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters
+            camera,
+            // mouseInput,
+
+            playerPosition,
+            playerRotation,
+            
+            mapBlocks,
+            
+            knightMesh,
+            monsters
         } = this.state;
-
-        // console.log(cameraPosition);
-        // console.log(lookAt);
-
+        
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { knightMesh ? <Game
+                { knightMesh ? <EditorGame
                     width={ width }
                     height={ height }
-                    cameraPosition={ cameraPosition }
-                    lookAt={ lookAt }
+                    camera={ camera }
                     playerPosition={ playerPosition }
                     playerRotation={ playerRotation }
                     mapBlocks={ mapBlocks }
                     knightMesh={ knightMesh }
                     monsters={ monsters }
+                    // mouseInput={ mouseInput }
                 /> : 'Loading' }
             </div>
         </div>;
@@ -102,175 +116,180 @@ export default class EditorGameContainer extends Component {
 
     componentDidMount() {
         
-            // Track if we're mounted so game loop doesn't tick after unmount
-            this.mounted = true;
+        // Track if we're mounted so game loop doesn't tick after unmount
+        this.mounted = true;
+    
+        // Expose the global THREE object for use in debugging console
+        window.THREE = THREE;
+    
+        // Load the geometry in didMount, which is only executed server side.
+        // Note we can pass our JSON file paths to webpack!
+
+        const {
+            container,
+        } = this.refs;
+
+        this.camera = new PerspectiveCamera(75, 1, 0.1, 1000);
+        this.camera.position.x = 5;
+        this.camera.position.y = 5;
+        this.camera.position.z = 0;
+        // this.camera.lookAt.x = 5;
+        // this.camera.lookAt.y = 0;
+        // this.camera.lookAt.z = 5;
+
+        const controls = new TracerControls(this.camera, container);
+
+        controls.slideSpeed = 2.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.noZoom = false;
+        controls.noPan = false;
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+        controls.maxDistance = 10;
+
+        this.controls = controls;            
+        this.controls.addEventListener('change', this.onTrackballChange);       
         
-            // Expose the global THREE object for use in debugging console
-            window.THREE = THREE;
-        
-            // Load the geometry in didMount, which is only executed server side.
-            // Note we can pass our JSON file paths to webpack!
-            // loadModel( require( '../assets/sitepoint-robot.json' ) ).then(geometry =>
-                // this.setState({ geometry })
-            // );
-    
-            const container = this.refs.container;
-            container.addEventListener('mousedown', this.onGameMouseDown, false);
-            //container.addEventListener('click', this.onGameMouseClick, false);
-    
-            let loader = new THREE.JSONLoader();
-            loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
-                (geometry, materials) => {
-                    let material = materials[ 0 ];
-                    material.emissive.set( 0x101010 );
-                    material.skinning = true;
-                    material.morphTargets = true;
-                    let mesh = new THREE.SkinnedMesh( geometry, material );
-                    mesh.scale.set( 0.01, 0.01, 0.01 );
-                    let mixer = new THREE.AnimationMixer( mesh );
-                    // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
-                    //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
-                    //     action.play();
-                    // }
-                    let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
-                    let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
-                    //attackAction.setLoop(THREE.LoopOnce, 0);
-                    this.setWeight(moveAction, 1);
-                    this.setWeight(attackAction, 0);
-                    let actions = [ moveAction, attackAction];
-    
-                    actions.forEach( function ( action ) {
-                        action.play();
-                    } );
-    
-                    this.setState({
-                        knightMesh:mesh,
-                        mixer:mixer,
-                        clock:new THREE.Clock(),
-                        actions: actions,
-                        currentAction: moveAction
-                    });
-    
+        this.setState({
+            camera: this.camera,
+        })
+
+        let loader = new THREE.JSONLoader();
+        loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
+            (geometry, materials) => {
+                let material = materials[ 0 ];
+                material.emissive.set( 0x101010 );
+                material.skinning = true;
+                material.morphTargets = true;
+                let mesh = new THREE.SkinnedMesh( geometry, material );
+                mesh.scale.set( 0.01, 0.01, 0.01 );
+                let mixer = new THREE.AnimationMixer( mesh );
+                let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
+                let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
+                this.setWeight(moveAction, 1);
+                this.setWeight(attackAction, 0);
+                let actions = [ moveAction, attackAction];
+
+                actions.forEach( function ( action ) {
+                    action.play();
+                } );
+
+                this.setState({
+                    knightMesh:mesh,
+                    mixer:mixer,
+                    clock:new THREE.Clock(),
+                    actions: actions,
+                    currentAction: moveAction
                 });
+                this.requestGameLoop();
+            });
+    }
+
+    componentDidUpdate(newProps) {
+        // const {
+        //     mouseInput,
+        // } = this.state;
+
+        // const {
+        //     width,
+        //     height,
+        // } = this.props;
+
+        // if (width !== newProps.width || height !== newProps.height) {
+        //     mouseInput.containerResized();
+        // }
+    }
+    
+    componentWillUnmount() {
+    
+        this.mounted = false;
+
+        // Remove Trackball
+        this.controls.removeEventListener('change', this.onTrackballChange);
+        this.controls.dispose();
+        delete this.controls;
+
+        // Cancel
+        this.cancelGameLoop();
         
+    }
+
+    requestGameLoop = () => {
+
+        this.reqAnimId = window.requestAnimationFrame( this.gameLoop );
+        
+    }
+    
+    cancelGameLoop = () => {
+        
+        window.cancelAnimationFrame( this.reqAnimId );
+        
+    }
+    
+    // Our game loop, which is managed as the window's requestAnimationFrame
+    // callback
+    gameLoop = (time) => {
+    
+        if( !this.mounted ) {
+            return;
         }
+    
+        this.requestGameLoop();
+
+        // const {
+        //     mouseInput,
+        // } = this.refs;
+
+        // console.log(this.camera.position);
+
+        this.controls.update();
+        // const {
+        //     // mouseInput,
+        //     camera,
+        // } = this.state;
         
-        componentWillUnmount() {
+        // console.log(this.statcamera);
+
+        // if (!mouseInput.isReady()) {
+        //     const {
+        //         scene,
+        //         container,
+        //     } = this.refs;
+
+        //     mouseInput.ready(scene, container, camera);
+        //     mouseInput.setActive(false);
+        // }
         
-            this.mounted = false;
-            
-            const container = this.refs.container;
-            container.removeEventListener('mousedown', this.onGameMouseDown, false);
-            document.removeEventListener('mousemove', this.onGameMouseMove, false);
-            document.removeEventListener('mouseup', this.onGameMouseUp, false);
-            document.removeEventListener('mouseout', this.onGameMouseOut, false);
-        
+        // if (this.state.mouseInput !== mouseInput) {
+        //     this.setState({
+        //         mouseInput,
+        //     });
+        // }
+
+        if (this.state.camera !== this.camera) {
+            this.setState({
+                camera: this.camera,
+            });
         }
-
-        // Mouse Click
-        onGameMouseClick = (event) => {
-            event.preventDefault();
-
-            console.log("Clicked.");
-        }
-
-        // Mouse Down
-        onGameMouseDown = (event) => {
-            event.preventDefault();
-
-            document.addEventListener('mousemove', this.onGameMouseMove, false);
-            document.addEventListener('mouseup', this.onGameMouseUp, false);
-            document.addEventListener('mouseout', this.onGameMouseOut, false);
-
-            this.dragging = false;
-
-            /*
-                .. to add codes
-                record the initial position of mouse
-            */
-            this.mouseXOnMouseDown = event.clientX;
-            this.mouseYOnMouseDown = event.clientY;
-
-            this.cameraXOnMouseDown = this.state.cameraPosition.x;
-            this.cameraYOnMouseDown = this.state.cameraPosition.y;
-            this.cameraZOnMouseDown = this.state.cameraPosition.z;
-
-            this.lookAtXOnMouseDown = this.state.lookAt.x;
-            this.lookAtYOnMouseDown = this.state.lookAt.y;
-            this.lookAtZOnMouseDown = this.state.lookAt.z;
-        };
-
-        // Mouse Moving
-        onGameMouseMove = (event) => {
-            /*
-                .. to add codes
-            */
-            this.mouseX = event.clientX;
-            this.mouseY = event.clientY;
     
-            let DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.005;
-            let DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.005;
-            let SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
-            let SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
-            
-            let SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
-            SightX = 1. * SightX / SightLen;
-            SightZ = 1. * SightZ / SightLen;
-            let vSightX = SightZ;
-            let vSightZ = -SightX;
+        // const oldState = this.state;
     
-            this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
-            this.cameraY = this.cameraYOnMouseDown;
-            this.cameraZ = this.cameraZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
-    
-            this.lookAtX = this.lookAtXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
-            this.lookAtY = this.lookAtYOnMouseDown;
-            this.lookAtZ = this.lookAtZOnMouseDown + (DeltaY * SightZ + DeltaX * vSightZ);
+        // Apply our reducer functions to the "game state", which for this
+        // example is held in local container state. It could be moved into
+        // a redux/flux store and udpated once per game loop.
+        // const newState = playerMovement( oldState, time );
+        // if(!this.state.playerAnimateAttacking) {
+        //     newState.playerAnimateAttacking = false;
+        // }
+        // this.setState( newState );
+        // if(newState.ready)
+        //     window.blocklyCallback();
+    };
 
-            this.dragging = true;
-    
-            // this.setCameraPosition(this.cameraX, this.cameraY, this.cameraZ);
-            // this.setLookAt(this.lookAtX, this.lookAtY, this.lookAtZ);
-
-            // this.setState(
-            //     {
-            //         cameraPosition : new Vector3(this.cameraX, this.cameraY, this.cameraZ),
-            //         lookAt : new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ),
-            //     }
-            // );
-        };
-    
-        // Mouse Up
-        onGameMouseUp = (event) => {
-            document.removeEventListener('mousemove', this.onGameMouseMove, false);
-            document.removeEventListener('mouseup', this.onGameMouseUp, false);
-            document.removeEventListener('mouseout', this.onGameMouseOut, false);	
-
-            console.log(event.clientX, event.clientY);
-
-            if (!this.dragging) {
-                // Clicked
-                let gridX = parseInt((event.clientX - 110) / 45.4);
-                let gridY = parseInt((317 - event.clientY) / 45.4);
-
-                console.log(gridX, gridY);
-
-                this.setState(
-                    {
-                        playerPosition : new Vector3(gridY, 0, gridX),
-                    }
-                );
-            }
-            /* 
-                ... to add codes
-                place a person
-            */
-        };
-    
-        // Mouse Out
-        onGameMouseOut = () => {
-            document.removeEventListener('mousemove', this.onGameMouseMove, false);
-            document.removeEventListener('mouseup', this.onDocumentMouseUp, false);
-            document.removeEventListener('mouseout', this.onGameMouseOut, false);
-        };
+    onTrackballChange = () => {
+        this.setState({
+            camera: this.camera,
+        });
+    }
 }
