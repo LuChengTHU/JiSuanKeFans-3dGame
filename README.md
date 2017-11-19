@@ -27,7 +27,13 @@ By default the frontend uses `localhost` and port `8000` for the backend API. Yo
 by setting the environment variable `REACT_APP_AC_BACKEND`, either permanently or temporarily before launching the frontend each time.
 
 For example, to temporarily set the variable to the remote backend server, use the following instruction when you want to run the frontend:
-	REACT_APP_AC_BACKEND="http://118.190.147.6:8000" npm start
+
+```
+REACT_APP_AC_BACKEND="http://118.190.147.6:8000" npm start
+```
 
 To use the environment for the current shell session, set it with
-	export REACT_APP_AC_BACKEND="http://118.190.147.6:8000"
+
+```
+export REACT_APP_AC_BACKEND="http://118.190.147.6:8000"
+```
