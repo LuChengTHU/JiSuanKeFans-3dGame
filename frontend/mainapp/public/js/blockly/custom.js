@@ -63,5 +63,22 @@ Blockly.Blocks['game_lookahead_name'] = {
 Blockly.JavaScript['game_lookahead_name'] = function(block) {
 	var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
 	var code = 'gameLookAheadName()';
-	return code;
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.Blocks['game_get_pos_x'] = {
+	init: function() {
+		this.appendValueInput("ARG")
+			.setCheck("Number")
+			.appendField("GetPosX");
+		this.setOutput(true, null);
+		this.setColour(230);
+		this.setTooltip("");
+		this.setHelpUrl("");
+	}
+};
+Blockly.JavaScript['game_get_pos_x'] = function(block) {
+	var arg = Blockly.JavaScript.valueToCode(block, 'ARG', Blockly.JavaScript.ORDER_NONE) || 0;
+	var code = `gameGetPosX(${arg})`;
+	return [code, Blockly.JavaScript.ORDER_NONE];
 };

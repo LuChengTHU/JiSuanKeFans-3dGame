@@ -67,6 +67,26 @@ class BlocklyContainer extends Component {
                     interpreter.createNativeFunction(() => {
                         return Game.gameLookAheadName();     
                     }));
+                interpreter.setProperty(scope, "gameGetPosX",
+                    interpreter.createNativeFunction((x) => {
+                        return Game.gameGetPosX(x);     
+                    }));
+                interpreter.setProperty(scope, "gameGetPosY",
+                    interpreter.createNativeFunction((x) => {
+                        return Game.gameGetPosY(x);     
+                    }));
+                interpreter.setProperty(scope, "gameGetDir",
+                    interpreter.createNativeFunction((x) => {
+                        return Game.gameGetDir(x);     
+                    }));
+                interpreter.setProperty(scope, "gameGetAttack",
+                    interpreter.createNativeFunction((x) => {
+                        return Game.gameGetAttack(x);     
+                    }));
+                interpreter.setProperty(scope, "gameGetHp",
+                    interpreter.createNativeFunction((x) => {
+                        return Game.gameGetHp(x);     
+                    }));
                 var alertWrapper = function(text) {
                     text = text ? text.toString() : '';
                     return alert(text);
@@ -120,6 +140,11 @@ class BlocklyContainer extends Component {
                 <block type="game_turn"></block>
                 <block type="game_attack"></block>
                 <block type="game_lookahead_name"></block>
+                <block type="game_get_pos_x"></block>
+                <block type="game_get_pos_y"></block>
+                <block type="game_get_dir"></block>
+                <block type="game_get_attack"></block>
+                <block type="game_get_hp"></block>
                 <block type="controls_if"></block>
                 <block type="controls_repeat_ext"></block>
                 <block type="logic_compare"></block>
