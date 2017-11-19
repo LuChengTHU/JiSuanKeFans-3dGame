@@ -14,13 +14,13 @@ from django.utils.timezone import now
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
-   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer
+   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer, get_solution_serializer_class
 import json
 import traceback
 import ac.settings as settings
 from .authenticaters import CsrfExemptSessionAuthentication
 
-from api.models import Map, User
+from api.models import Map, User, Solution
 
 def get_pwd_hash(pwd):
     m = sha512()
@@ -36,14 +36,14 @@ def with_res_code(func):
 
     return get_response
 
-def with_record_fetch(serializer_class, record_entrypoint = 'data'):
+def with_record_fetch(serializer_class, record_entrypoint = 'data', id_arg_name = 'id'):
     def with_record_fetch_decorator(func):
         
         @with_res_code
         def get_response(*arg_list, **arg_dict):
             record_model, extra_data = func(*arg_list, **arg_dict)
             try:
-                record = record_model.objects.get(id=arg_dict['user_id'])
+                record = record_model.objects.get(id=arg_dict[id_arg_name])
             except:
                 return Response({}, status=status.HTTP_404_NOT_FOUND), 2
             extra_data[record_entrypoint] = serializer_class(record).data
@@ -110,7 +110,6 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
         # Return token for User
         user_serializer_class = get_user_serializer_class(RATE_BRIEF)
 
-        print(request.data)
         serializer = TokenPostSerializer(data=request.data)
         if serializer.is_valid():
             if User.objects.filter(email=serializer.validated_data['email']).count() > 0:
@@ -170,7 +169,8 @@ class UserListView(APIView):
 user_list_view = UserListView.as_view()
 
 class UserView(APIView):
-    @with_record_fetch(get_user_serializer_class(RATE_FULL), record_entrypoint='user')
+    @with_record_fetch(get_user_serializer_class(RATE_FULL), 
+        record_entrypoint='user', id_arg_name='user_id')
     def get(self, request, user_id=None):
         return User, {}
 
@@ -289,3 +289,62 @@ class StageView(APIView):
         return Response({'map' : data}), 1
 
 stage_view = StageView.as_view()
+
+class SolutionListView(APIView):
+    @with_pagination(serializer_class=get_solution_serializer_class(RATE_BRIEF))
+    def get(self, request):
+        user_id = int(request.query_params.get('user', 0))
+        map_id = int(request.query_params.get('map', 0))
+
+        res = Solution.objects
+
+        if user_id != 0:
+            res = res.filter(user_id=user_id)
+        if map_id != 0:
+            res = res.filter(map_id=map_id)
+
+        return res.all(), {}
+        
+    @with_res_code
+    def post(self, request):
+        sol_info = request.data['solution']
+
+        serializer = get_solution_serializer_class(RATE_CREATE)(data=sol_info)
+        if serializer.is_valid():
+            try:
+                solution = serializer.save()
+            except Exception as e:
+                print(e)
+                return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
+            return Response({'sol_id' : solution.id}, status=status.HTTP_201_CREATED), 1
+        print(serializer.errors)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+
+
+solution_list_view = SolutionListView.as_view()
+
+class SolutionView(APIView):
+    @with_record_fetch(get_solution_serializer_class(RATE_FULL), record_entrypoint='solution',
+        id_arg_name='sol_id')
+    def get(self, request, sol_id=None):
+        return Solution, {}
+    
+    @with_res_code
+    def put(self, request, sol_id=None):
+        # temporarily does not consider the privilege issues
+        # that is, everybody can update any solution at present
+        sol_info = request.data['solution']
+        try:
+            solution = Solution.objects.get(id=sol_id)
+        except:
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+        serializer = get_solution_serializer_class(RATE_CREATE)(solution, data=sol_info)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except:
+                return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
+            return Response({}, status=status.HTTP_200_OK), 1
+        return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
+
+solution_view = SolutionView.as_view()

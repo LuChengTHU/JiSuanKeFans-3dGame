@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Map, User
+from api.models import Map, User, Solution
 import json
 import os
 import ac.settings as settings
@@ -7,6 +7,7 @@ import ac.settings as settings
 RATE_BRIEF = 0
 RATE_FULL = 1
 RATE_CREATE = 2
+           
 
 def get_user_serializer_class(rate):
     class UserSerializer(serializers.ModelSerializer):
@@ -97,3 +98,26 @@ class StageSerializer(MapFullSerializer):
 class TokenPostSerializer(serializers.Serializer):
     email = serializers.CharField(max_length = 30)
     password = serializers.CharField(max_length = 100)
+
+def get_solution_serializer_class(rate):
+    class SolutionSerializer(serializers.ModelSerializer):
+        if rate in [RATE_FULL, RATE_BRIEF]:
+            user = get_user_serializer_class(RATE_BRIEF)(required=False)
+            map = MapBriefSerializer(required=False)
+        else:
+            user = serializers.PrimaryKeyRelatedField(many=False, read_only=False, 
+                queryset=User.objects.all())
+            map = serializers.PrimaryKeyRelatedField(many=False, read_only=False,
+                queryset=Map.objects.all())
+        
+        class Meta:
+            model = Solution
+            if rate == RATE_BRIEF:
+                fields = ('id', 'user', 'map')
+            elif rate == RATE_FULL:
+                fields = ('id', 'user', 'map', 'code')
+            else:
+                fields = ('user', 'map', 'code')
+        
+    return SolutionSerializer
+ 
