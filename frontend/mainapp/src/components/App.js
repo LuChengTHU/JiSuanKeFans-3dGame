@@ -38,10 +38,10 @@ class App extends Component {
     {
         super(props);
         this.classes = props.classes;
-        if(type(process.env.REACT_APP_AC_BACKEND) === 'undefined')
-            axios.defaults.baseURL = process.env.REACT_APP_AC_BACKEND + '/api/v0.1';
-        else
+        if(typeof(process.env.REACT_APP_AC_BACKEND) === 'undefined')
             axios.defaults.baseURL = 'http://localhost:8000/api/v0.1';
+        else
+            axios.defaults.baseURL = process.env.REACT_APP_AC_BACKEND + '/api/v0.1';
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         if(localStorage.getItem('user')){
             this.state = {
