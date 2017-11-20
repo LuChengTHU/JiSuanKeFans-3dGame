@@ -113,11 +113,11 @@ def get_solution_serializer_class(rate):
         class Meta:
             model = Solution
             if rate == RATE_BRIEF:
-                fields = ('id', 'user', 'map')
+                fields = ('id', 'user', 'map', 'shared')
             elif rate == RATE_FULL:
-                fields = ('id', 'user', 'map', 'code')
+                fields = ('id', 'user', 'map', 'code', 'shared')
             else:
-                fields = ('user', 'map', 'code')
+                fields = ('user', 'map', 'code', 'shared')
         
     return SolutionSerializer
  
