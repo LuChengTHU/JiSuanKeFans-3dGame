@@ -15,12 +15,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='map',
             name='failed_msg',
-            field=models.TextField(blank=True, default='再加把劲！'),
+            field=models.TextField(blank=True, default='Failed!'),
         ),
         migrations.AddField(
             model_name='map',
             name='passed_msg',
-            field=models.TextField(blank=True, default='厉害了！'),
+            field=models.TextField(blank=True, default='Passed!'),
         ),
         migrations.AddField(
             model_name='map',
@@ -30,6 +30,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='map',
             name='welcome_msg',
-            field=models.TextField(blank=True, default='无。'),
+            field=models.TextField(blank=True, default='Welcome!'),
         ),
     ]
