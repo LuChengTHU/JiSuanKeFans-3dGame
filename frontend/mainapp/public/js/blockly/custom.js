@@ -82,3 +82,71 @@ Blockly.JavaScript['game_get_pos_x'] = function(block) {
 	var code = `gameGetPosX(${arg})`;
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.Blocks['game_get_pos_y'] = {
+	init: function() {
+		this.appendValueInput("ARG")
+			.setCheck("Number")
+			.appendField("GetPosY");
+		this.setOutput(true, null);
+		this.setColour(230);
+		this.setTooltip("");
+		this.setHelpUrl("");
+	}
+};
+Blockly.JavaScript['game_get_pos_y'] = function(block) {
+	var arg = Blockly.JavaScript.valueToCode(block, 'ARG', Blockly.JavaScript.ORDER_NONE) || 0;
+	var code = `gameGetPosY(${arg})`;
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.Blocks['game_get_dir'] = {
+	init: function() {
+		this.appendValueInput("ARG")
+			.setCheck("Number")
+			.appendField("GetDir");
+		this.setOutput(true, null);
+		this.setColour(230);
+		this.setTooltip("");
+		this.setHelpUrl("");
+	}
+};
+Blockly.JavaScript['game_get_dir'] = function(block) {
+	var arg = Blockly.JavaScript.valueToCode(block, 'ARG', Blockly.JavaScript.ORDER_NONE) || 0;
+	var code = `gameGetDir(${arg})`;
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.Blocks['game_get_hp'] = {
+	init: function() {
+		this.appendValueInput("ARG")
+			.setCheck("Number")
+			.appendField("GetHp");
+		this.setOutput(true, null);
+		this.setColour(230);
+		this.setTooltip("");
+		this.setHelpUrl("");
+	}
+};
+Blockly.JavaScript['game_get_hp'] = function(block) {
+	var arg = Blockly.JavaScript.valueToCode(block, 'ARG', Blockly.JavaScript.ORDER_NONE) || 0;
+	var code = `gameGetHp(${arg})`;
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.Blocks['game_get_attack'] = {
+	init: function() {
+		this.appendValueInput("ARG")
+			.setCheck("Number")
+			.appendField("GetAttack");
+		this.setOutput(true, null);
+		this.setColour(230);
+		this.setTooltip("");
+		this.setHelpUrl("");
+	}
+};
+Blockly.JavaScript['game_get_attack'] = function(block) {
+	var arg = Blockly.JavaScript.valueToCode(block, 'ARG', Blockly.JavaScript.ORDER_NONE) || 0;
+	var code = `gameGetAttack(${arg})`;
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
