@@ -30,7 +30,7 @@ class DashBoard extends Component {
             welcomeOpen: true,
             welcomeMsg: null,
             map: null,
-            gameState: "ready",
+            gameState: "ready", // one of 'ready', 'stepping', 'running', 'failed', 'passed'
             passedOpen: false,
             failedOpen: false,
         }
@@ -60,10 +60,12 @@ class DashBoard extends Component {
     {
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
-        this.enhancedInterpreter = new EnhancedInterpreter(window.Game, this.gameSetState);
+        this.blocklyContainer.highlightBlock('');
+        this.enhancedInterpreter = new EnhancedInterpreter(window.Game, this.blocklyContainer, this.gameSetState);
     }
     run = () => {
         window.Game.gameInit();
+        this.setState({gameState: "stepping"});
         this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode())
         this.enhancedInterpreter.step();
     }
@@ -78,6 +80,7 @@ class DashBoard extends Component {
             gameoverMsg = this.state.map['gameover_msg'];
             passedMsg = this.state.map['passed_msg'];
         }
+        let blocklyReadOnly = (this.state.gameState === 'stepping');
 
         //TODO
         // window.Game.gameSetMap(fetch_map(1));
@@ -110,7 +113,8 @@ class DashBoard extends Component {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
-                        refCallback={(e) => { this.blocklyContainer = e; }} />
+                        refCallback={(e) => { this.blocklyContainer = e; }}
+                        readOnly={blocklyReadOnly} />
                 </Grid>
                 </Grid>
             </div>
