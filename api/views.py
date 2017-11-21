@@ -4,7 +4,8 @@ import base64
 
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly,\
+    AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import views, status
@@ -290,7 +291,11 @@ class StageView(APIView):
 
 stage_view = StageView.as_view()
 
+# only show shared solutions
 class SolutionListView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @with_pagination(serializer_class=get_solution_serializer_class(RATE_BRIEF))
     def get(self, request):
         user_id = int(request.query_params.get('user', 0))
@@ -303,13 +308,15 @@ class SolutionListView(APIView):
         if map_id != 0:
             res = res.filter(map_id=map_id)
 
-        return res.all(), {}
+        return res.filter(shared=True).all(), {}
         
     @with_res_code
     def post(self, request):
         sol_info = request.data['solution']
+        solution = Solution()
+        solution.user = request.user
 
-        serializer = get_solution_serializer_class(RATE_CREATE)(data=sol_info)
+        serializer = get_solution_serializer_class(RATE_CREATE)(solution, data=sol_info)
         if serializer.is_valid():
             try:
                 solution = serializer.save()

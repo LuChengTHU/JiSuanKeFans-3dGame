@@ -14,6 +14,7 @@ import {fetch_map} from '../../interfaces/Map';
 import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
+import {create_solution} from '../../interfaces/Solution'
 
 const styles = theme => ({
   root: {
@@ -70,9 +71,6 @@ class DashBoard extends Component {
         else welcomeMsg = this.state.map['welcome_msg'];
         if (this.state.map) gameoverMsg = this.state.map['gameover_msg'];
 
-        //TODO
-        // window.Game.gameSetMap(fetch_map(1));
-
         return (
             <div className={this.classes.root}>
                 <MessageDialog title="提示" open={this.state.welcomeOpen} 
@@ -81,7 +79,14 @@ class DashBoard extends Component {
                 </MessageDialog>
                 <MessageDialog title="提示" open={this.state.passedOpen}
                     closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
-                    {'通过'}
+                    <div><Button onClick={()=>{
+                        const code = this.blocklyContainer.getBlocklyCode();
+                        const map_id = this.props.match.params.map_id;
+                        const shared = true;
+                        create_solution(map_id, code, shared).then((id)=>{window.alert('Good! A shared solution created! ' + id);})
+                        this.setState({passedOpen: false});
+                    }}>分享解法</Button></div>
+                    <p>通过</p>
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
                     confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); this.initMap();}}
@@ -99,7 +104,8 @@ class DashBoard extends Component {
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}/>
+                    <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
+                        refCallback={(e)=>{this.blocklyContainer=e;}}/>
                 </Grid>
                 </Grid>
             </div>

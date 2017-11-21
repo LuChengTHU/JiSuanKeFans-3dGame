@@ -106,7 +106,7 @@ def get_solution_serializer_class(rate):
             map = MapBriefSerializer(required=False)
         else:
             user = serializers.PrimaryKeyRelatedField(many=False, read_only=False, 
-                queryset=User.objects.all())
+                queryset=User.objects.all(), required=False)
             map = serializers.PrimaryKeyRelatedField(many=False, read_only=False,
                 queryset=Map.objects.all())
         

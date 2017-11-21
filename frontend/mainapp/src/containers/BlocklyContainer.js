@@ -6,7 +6,13 @@ class BlocklyContainer extends Component {
         super(props);
         this.workspace = null;
         this.myUpdateFunction = this.myUpdateFunction.bind(this);
+        this.getBlocklyCode = this.getBlocklyCode.bind(this);
     }
+
+    getBlocklyCode(){
+        return window.Blockly.JavaScript.workspaceToCode(this.workspace);
+    }
+
     componentWillReceiveProps ({ isScriptLoaded, isScriptLoadSucceed }) {
         if (isScriptLoaded && !this.props.isScriptLoaded) { // load finished 
           if (isScriptLoadSucceed) {
@@ -19,6 +25,7 @@ class BlocklyContainer extends Component {
     init()
     {
         this.loadBlocklyJS();
+        this.props.refCallback(this);
     }
     
     myUpdateFunction(event) {
