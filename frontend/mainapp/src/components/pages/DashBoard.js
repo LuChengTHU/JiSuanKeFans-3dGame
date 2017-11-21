@@ -15,6 +15,9 @@ import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
 import {create_solution} from '../../interfaces/Solution'
+import Typography from 'material-ui/Typography'
+import TextField from 'material-ui/TextField'
+import {CopyToClipboard} from 'react-copy-to-clipboard'
 
 const styles = theme => ({
   root: {
@@ -34,6 +37,8 @@ class DashBoard extends Component {
             gameState: "ready",
             passedOpen: false,
             failedOpen: false,
+            sharedOpen: false,
+            solutionId: -1
         }
         fetch_map(this.props.match.params.map_id)
         .then((response) => {
@@ -70,6 +75,9 @@ class DashBoard extends Component {
         else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';
         else welcomeMsg = this.state.map['welcome_msg'];
         if (this.state.map) gameoverMsg = this.state.map['gameover_msg'];
+        const solutionUrl = `${typeof(process.env.REACT_APP_AC_BASE) === 'undefined' ? 
+                            'http://localhost:3000' :
+                             process.env.REACT_APP_AC_BASE}/solution/${this.state.solutionId}/`;
 
         return (
             <div className={this.classes.root}>
@@ -77,13 +85,28 @@ class DashBoard extends Component {
                     closeText="关闭" onRequestClose={this.handleClick('welcomeOpen', false)}>
                     {welcomeMsg} 
                 </MessageDialog>
+                <MessageDialog title="提示" open={this.state.sharedOpen}
+                    closeText="好的" onRequestClose={this.handleClick('sharedOpen', false)}>
+                    <Typography type="title">解法分享成功！</Typography>
+                    <Typography type="body2">请将下面的链接分享给好友：</Typography>
+                    <TextField disabled autoFocus fullWidth
+                    defaultValue={solutionUrl}/>
+                    <CopyToClipboard text={solutionUrl}>
+                        <Button>复制链接</Button>
+                    </CopyToClipboard>
+                </MessageDialog>
                 <MessageDialog title="提示" open={this.state.passedOpen}
                     closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
                     <div><Button onClick={()=>{
                         const code = this.blocklyContainer.getBlocklyCode();
                         const map_id = this.props.match.params.map_id;
                         const shared = true;
-                        create_solution(map_id, code, shared).then((id)=>{window.alert('Good! A shared solution created! ' + id);})
+                        create_solution(map_id, code, shared).then(
+                            (id)=>{
+                                this.setState({
+                                    sharedOpen: true,
+                                    solutionId: id
+                                });});
                         this.setState({passedOpen: false});
                     }}>分享解法</Button></div>
                     <p>通过</p>

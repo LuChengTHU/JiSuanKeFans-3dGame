@@ -37,7 +37,8 @@ def with_res_code(func):
 
     return get_response
 
-def with_record_fetch(serializer_class, record_entrypoint = 'data', id_arg_name = 'id'):
+def with_record_fetch(serializer_class, record_entrypoint = 'data', id_arg_name = 'id', 
+    check_permission = lambda record, request : True):
     def with_record_fetch_decorator(func):
         
         @with_res_code
@@ -47,6 +48,8 @@ def with_record_fetch(serializer_class, record_entrypoint = 'data', id_arg_name 
                 record = record_model.objects.get(id=arg_dict[id_arg_name])
             except:
                 return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+            if not check_permission(record, arg_list[1]):
+                return Response({}, status=status.HTTP_403_FORBIDDEN), 2
             extra_data[record_entrypoint] = serializer_class(record).data
             return Response(extra_data), 1
         return get_response
@@ -331,8 +334,12 @@ class SolutionListView(APIView):
 solution_list_view = SolutionListView.as_view()
 
 class SolutionView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @with_record_fetch(get_solution_serializer_class(RATE_FULL), record_entrypoint='solution',
-        id_arg_name='sol_id')
+        id_arg_name='sol_id', check_permission=lambda record, request: 
+            (record.shared or (request.auth is not None and record.user.id == request.user.id)))
     def get(self, request, sol_id=None):
         return Solution, {}
     

@@ -25,7 +25,8 @@ class BlocklyContainer extends Component {
     init()
     {
         this.loadBlocklyJS();
-        this.props.refCallback(this);
+        if(typeof(this.props.refCallback) !== 'undefined')
+            this.props.refCallback(this);
     }
     
     myUpdateFunction(event) {

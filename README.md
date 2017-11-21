@@ -37,3 +37,8 @@ To use the environment for the current shell session, set it with
 ```
 export REACT_APP_AC_BACKEND="http://118.190.147.6:8000"
 ```
+
+## Setting the frontend base URL
+
+By default the `http://localhost:3000` is used as the front end base URL. To change this setting, set the
+environment variable `REACT_APP_AC_BASE` to what you want.
