@@ -14,7 +14,7 @@ import {fetch_map} from '../../interfaces/Map';
 import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
-
+import EnhancedInterpreter from '../EnhancedInterpreter';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -60,6 +60,12 @@ class DashBoard extends Component {
     {
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
+        this.enhancedInterpreter = new EnhancedInterpreter(window.Game, this.gameSetState);
+    }
+    run = () => {
+        window.Game.gameInit();
+        this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode())
+        this.enhancedInterpreter.step();
     }
     render()
     {
@@ -95,6 +101,7 @@ class DashBoard extends Component {
                 <Grid item xs={12} sm={12} >
                     <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
                     <Button onClick={this.initMap}>Init</Button>
+                    <Button onClick={this.run}>Play</Button>
                 </Grid>
                 <Grid item xs={12} sm={6} >
                     <div id={'gameContainer'}>
@@ -102,11 +109,14 @@ class DashBoard extends Component {
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}/>
+                    <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
+                        refCallback={(e) => { this.blocklyContainer = e; }} />
                 </Grid>
                 </Grid>
             </div>
         );
+    }
+    componentDidMount = () => {
     }
 }
 
