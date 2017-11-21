@@ -1,6 +1,7 @@
 import datetime
 import base64
-
+import random
+import string
 
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
@@ -363,12 +364,14 @@ class ForgetView(APIView):
         except:
             return Response({}, status=status.HTTP_404_NOT_FOUND), 0
 
-        # Generate link
-        
+        # Generate Password
+        random_password = ''.join(random.sample(string.ascii_letters + string.digits, 20))
+        user.password = base64.b64encode(get_pwd_hash(random_password))
+        user.save()
 
         # Send Email
 
-        send_mail('Subject here', 'Here is the message.', '计蒜客粉丝队 <jisuankefans@163.com>',
+        send_mail('Password Reset', random_password, '计蒜客粉丝队 <jisuankefans@163.com>',
                  ['bill125@gmail.com'], fail_silently=False)
         
         return Response({}, status=status.HTTP_200_OK), 1
