@@ -97,6 +97,11 @@ class LoginFormDialog extends React.Component {
         });
     e.preventDefault();
   };
+
+  handlePasswordForget = () => {
+      
+  }
+
   myUpdate(newState) {
       this.setState(newState);
       console.log('myUpdate');
@@ -145,6 +150,9 @@ class LoginFormDialog extends React.Component {
               fullWidth
               onChange={this.handleInputChange('password')}
              />
+            <Button type={'submit'} color="secondary">
+                Boom!
+            </Button>
           </DialogContent>
           <DialogActions>
             <Button type={'submit'} color="primary">

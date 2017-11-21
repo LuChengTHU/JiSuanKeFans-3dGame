@@ -348,3 +348,13 @@ class SolutionView(APIView):
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
 solution_view = SolutionView.as_view()
+
+class ForgetView(APIView):
+    @with_res_code
+    def post(self, request, email=None):
+        email_info = request.data['email']
+        try:
+            user = User.objects.get(id=user_id)
+        except:
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+        
