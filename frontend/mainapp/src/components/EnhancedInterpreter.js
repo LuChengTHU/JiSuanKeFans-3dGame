@@ -1,6 +1,7 @@
 import Game from '../logic/logic';
 export default class EnhancedInterpreter {
-    constructor(runtimeLibrary, stateListenerCallback) {
+    constructor(runtimeLibrary, blocklyContainer, stateListenerCallback) {
+        this.blocklyContainer = blocklyContainer;
         this.blockStarting = null;
         this.code = null;
         this.continuous = null;
@@ -78,7 +79,17 @@ export default class EnhancedInterpreter {
         };
         interpreter.setProperty(consoleObj, 'log',
             interpreter.createNativeFunction(logWrapper));
+
+        interpreter.setProperty(scope, 'highlightBlock', 
+            interpreter.createNativeFunction((id) => this.highlightBlock(id))
+        );
     };
+
+    highlightBlock = (id) => {
+        this.blockStarting = true;
+        id = id ? id.toString() : '';
+        this.blocklyContainer.highlightBlock(id);
+    }
 
     loadProgram = (code) => {
         this.code = code;

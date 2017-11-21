@@ -24,7 +24,6 @@ class BlocklyContainer extends Component {
     }
 
     highlightBlock = (id) => {
-        this.workspace.traceOn(true);
         this.workspace.highlightBlock(id);
     }
 
@@ -79,6 +78,8 @@ class BlocklyContainer extends Component {
     loadBlocklyJS() {
         console.log('loadBlocklyJS');
         let Blockly = window.Blockly;
+        Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
+        Blockly.JavaScript.addReservedWords('highlightBlock');
         let Interpreter = window.Interpreter;
         this.workspace = Blockly.inject('blocklyDiv',
         {toolbox: document.getElementById('toolbox')});

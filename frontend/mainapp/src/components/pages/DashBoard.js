@@ -60,7 +60,8 @@ class DashBoard extends Component {
     {
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
-        this.enhancedInterpreter = new EnhancedInterpreter(window.Game, this.gameSetState);
+        this.blocklyContainer.highlightBlock('');
+        this.enhancedInterpreter = new EnhancedInterpreter(window.Game, this.blocklyContainer, this.gameSetState);
     }
     run = () => {
         window.Game.gameInit();
