@@ -7,7 +7,6 @@ class BlocklyContainer extends Component {
         this.workspace = null;
         this.mounted = false;
         this.isScriptLoadSucceed = false;
-        this.myUpdateFunction = this.myUpdateFunction.bind(this);
         this.props.refCallback(this);
     }
 
@@ -54,25 +53,21 @@ class BlocklyContainer extends Component {
             this.setReadOnly(newProps.readOnly);
         }
     }
+
+    resize = (h) => {
+        if (this.height === h) return;
+        this.height = h;
+        this._blocklyDiv.style.height = h + 'px';
+        if (this.workspace) {
+            window.Blockly.svgResize(this.workspace);
+        }
+    }
     
     init()
     {
         if (this.mounted && this.isScriptLoadSucceed) {
             this.loadBlocklyJS();
         }
-    }
-    
-    myUpdateFunction(event) {
-        let Blockly = window.Blockly;
-        let Interpreter = window.Interpreter;
-        var languageSelection = 'JavaScript';
-        let codeDiv = document.getElementById('codeDiv');
-        let codeHolder = document.createElement('pre');
-        codeHolder.className = 'prettyprint but-not-that-pretty';
-        let code = document.createTextNode(Blockly[languageSelection].workspaceToCode(this.workspace));
-        codeHolder.appendChild(code);
-        codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
-        //PR.prettyPrint();
     }
 
     loadBlocklyJS() {
@@ -85,13 +80,12 @@ class BlocklyContainer extends Component {
         {toolbox: document.getElementById('toolbox')});
         let defaultBlocks = document.getElementById('workspaceBlocks');
         Blockly.Xml.domToWorkspace(defaultBlocks, this.workspace);
-        this.workspace.addChangeListener((e) => this.myUpdateFunction(e));
         this.setReadOnly(this.props.readOnly);
     }
     render ()
     {
         return (
-        <div ref={el => this.el = el} className="blockly">
+        <div className="blockly" style={{height: "100%"}}>
             <xml id="toolbox" style={{display: "none"}}>
                 <block type="game_move"></block>
                 <block type="game_turn"></block>
@@ -124,14 +118,9 @@ class BlocklyContainer extends Component {
             </block>
             </xml>
 
-            <div className="row">
-                <div id="blocklyDiv" style={{height: "480px", width: "600px"}}></div>
-                <div id="codeDiv" className="main output-panel">
-                    <hr className="POps"/>
-                    <pre></pre>
-                </div>
+            <div ref={el => this._blocklyArea = el} className="blocklyArea" >
             </div>
-
+            <div id="blocklyDiv" ref={el => this._blocklyDiv = el}></div>
         </div>
         );
     }
