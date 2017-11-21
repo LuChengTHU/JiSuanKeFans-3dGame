@@ -23,18 +23,19 @@ const SolutionViewer = createReactClass({
             <Grid item xs={12} sm={6} >
             <div id={'gameContainer'}>
             <GameContainer/></div>
-            <Button onClick={() => this.loadMap()}>Load</Button>
+            <Button onClick={() => this.loadSolution()}>Load</Button>
             </Grid>
             <Grid item xs={12} sm={6}>
-            <BlocklyContainer/>
+            <BlocklyContainer readOnly refCallback={(e)=>{this.blocklyContainer = e;}}/>
             </Grid>
             </Grid>
         );
     },
-    loadMap: function(){
+    loadSolution: function(){
         fetch_map(this.solution.map.id).then(function(response){
             window.Game.gameSetMap(window.map);
         });
+        this.blocklyContainer.loadXmlText(this.solution.code);
     }
 });
 

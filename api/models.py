@@ -78,9 +78,9 @@ class Map(models.Model):
 
     # ------------ popup messages -------------
 
-    welcome_msg = models.TextField(default=u"无。", blank=True)
-    passed_msg = models.TextField(default=u"厉害了！", blank=True)
-    failed_msg = models.TextField(default=u"再加把劲！", blank=True)
+    welcome_msg = models.TextField(default=u"Welcome!", blank=True)
+    passed_msg = models.TextField(default=u"Passed!", blank=True)
+    failed_msg = models.TextField(default=u"Failed!", blank=True)
     std_blockly_code = models.TextField(default=None, blank=True, null=True)
 
 class Solution(models.Model):

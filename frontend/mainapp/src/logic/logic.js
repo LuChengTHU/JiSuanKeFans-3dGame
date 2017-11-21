@@ -115,6 +115,7 @@ export default class Game {
 	
 	static gameLookAheadName()
 	{
+		// No "Call After Move" needed!
 		let id = Game.map.cur_ai;
 		let x, y, dir;
 		if(id === -1)
@@ -149,11 +150,61 @@ export default class Game {
 				if(tid === -1)
 					return "player";
 				else
-					return Game.map.cur_ai_infos[id].id;
+					return Game.map.cur_ai_infos[tid].id;
 			}
 			x += dx; y += dy;
 		}
 		return "";
+	}
+	
+	static gameGetPosX(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_pos[0];
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].id === name)
+				return Game.map.cur_ai_infos[i].pos[0];
+		return -1;
+	}
+	
+	static gameGetPosY(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_pos[1];
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].id === name)
+				return Game.map.cur_ai_infos[i].pos[1];
+		return -1;
+	}
+	
+	static gameGetDir(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_dir;
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].id === name)
+				return Game.map.cur_ai_infos[i].dir;
+		return -1;
+	}
+	
+	static gameGetAttack(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_attack;
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].id === name)
+				return Game.map.cur_ai_infos[i].attack;
+		return -1;
+	}
+	
+	static gameGetHp(name)
+	{
+		if(name === 'player')
+			return Game.map.cur_hp;
+		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)
+			if(Game.map.cur_ai_infos[i].id === name)
+				return Game.map.cur_ai_infos[i].hp;
+		return -1;
 	}
 	
 	static gameMove()

@@ -19,6 +19,7 @@ import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 
+import EnhancedInterpreter from '../EnhancedInterpreter';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -34,7 +35,7 @@ class DashBoard extends Component {
             welcomeOpen: true,
             welcomeMsg: null,
             map: null,
-            gameState: "ready",
+            gameState: "ready", // one of 'ready', 'stepping', 'running', 'failed', 'passed'
             passedOpen: false,
             failedOpen: false,
             sharedOpen: false,
@@ -66,18 +67,33 @@ class DashBoard extends Component {
     {
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
+        this.blocklyContainer.highlightBlock('');
+        this.enhancedInterpreter = new EnhancedInterpreter(window.Game, this.blocklyContainer, this.gameSetState);
+    }
+    run = () => {
+        window.Game.gameInit();
+        this.setState({gameState: "stepping"});
+        this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode());
+        this.enhancedInterpreter.step();
     }
     render()
     {
         const gameContainer = <GameContainer gameSetState={this.gameSetState} gameState={this.state.gameState}/>;
-        let welcomeMsg, gameoverMsg = 'GAME OVER';
+        let welcomeMsg, gameoverMsg = 'GAME OVER', passedMsg = '通过';
         if (this.state.map === null) welcomeMsg = '加载中...';
         else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';
         else welcomeMsg = this.state.map['welcome_msg'];
-        if (this.state.map) gameoverMsg = this.state.map['gameover_msg'];
         const solutionUrl = `${typeof(process.env.REACT_APP_AC_BASE) === 'undefined' ? 
                             'http://localhost:3000' :
                              process.env.REACT_APP_AC_BASE}/solution/${this.state.solutionId}/`;
+        if (this.state.map) {
+            gameoverMsg = this.state.map['gameover_msg'];
+            passedMsg = this.state.map['passed_msg'];
+        }
+        let blocklyReadOnly = (this.state.gameState === 'stepping');
+
+        //TODO
+        // window.Game.gameSetMap(fetch_map(1));
 
         return (
             <div className={this.classes.root}>
@@ -98,7 +114,7 @@ class DashBoard extends Component {
                 <MessageDialog title="提示" open={this.state.passedOpen}
                     closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
                     <div><Button onClick={()=>{
-                        const code = this.blocklyContainer.getBlocklyCode();
+                        const code = this.blocklyContainer.getXmlText();
                         const map_id = this.props.match.params.map_id;
                         const shared = true;
                         create_solution(map_id, code, shared).then(
@@ -120,6 +136,7 @@ class DashBoard extends Component {
                 <Grid item xs={12} sm={12} >
                     <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
                     <Button onClick={this.initMap}>Init</Button>
+                    <Button onClick={this.run}>Play</Button>
                 </Grid>
                 <Grid item xs={12} sm={6} >
                     <div id={'gameContainer'}>
@@ -128,11 +145,14 @@ class DashBoard extends Component {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
-                        refCallback={(e)=>{this.blocklyContainer=e;}}/>
+                        refCallback={(e) => { this.blocklyContainer = e; }}
+                        readOnly={blocklyReadOnly} />
                 </Grid>
                 </Grid>
             </div>
         );
+    }
+    componentDidMount = () => {
     }
 }
 

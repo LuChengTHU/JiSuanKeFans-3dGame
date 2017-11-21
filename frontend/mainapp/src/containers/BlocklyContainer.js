@@ -5,28 +5,62 @@ class BlocklyContainer extends Component {
     constructor(props) {
         super(props);
         this.workspace = null;
+        this.mounted = false;
+        this.isScriptLoadSucceed = false;
         this.myUpdateFunction = this.myUpdateFunction.bind(this);
-        this.getBlocklyCode = this.getBlocklyCode.bind(this);
+        if(typeof(this.props.refCallback) !== 'undefined')
+            this.props.refCallback(this);
     }
 
-    getBlocklyCode(){
+    clear() {
+        this.workspace.clear();
+    }
+
+    getCode = () => {
         return window.Blockly.JavaScript.workspaceToCode(this.workspace);
     }
 
-    componentWillReceiveProps ({ isScriptLoaded, isScriptLoadSucceed }) {
+    getXmlText() {
+        return window.Blockly.Xml.domToText(window.Blockly.Xml.workspaceToDom(this.workspace));
+    }
+
+    highlightBlock = (id) => {
+        this.workspace.highlightBlock(id);
+    }
+
+    loadXmlText = (xmlText) => {
+        this.workspace.clear();
+        window.Blockly.Xml.domToWorkspace(this.workspace, window.Blockly.Xml.textToDom(xmlText));
+    }
+
+    setReadOnly = (readOnly) => {
+        this.workspace.options.readOnly = readOnly;
+        if (readOnly) {
+            this.workspace.options.maxBlocks = 0;
+        } else {
+            this.workspace.options.maxBlocks = this.props.maxBlocks ? this.props.maxBlocks : 99999;
+        }
+        this.workspace.updateToolbox(document.getElementById('toolbox'));
+    }
+
+    componentWillReceiveProps ({ isScriptLoaded, isScriptLoadSucceed, ...newProps }) {
         if (isScriptLoaded && !this.props.isScriptLoaded) { // load finished 
           if (isScriptLoadSucceed) {
-            this.init()
+            this.isScriptLoadSucceed = true;
+            this.init();
           }
           else this.props.onError()
         }
-      }
+        if (this.workspace != null) {
+            this.setReadOnly(newProps.readOnly);
+        }
+    }
     
     init()
     {
-        this.loadBlocklyJS();
-        if(typeof(this.props.refCallback) !== 'undefined')
-            this.props.refCallback(this);
+        if (this.mounted && this.isScriptLoadSucceed) {
+            this.loadBlocklyJS();
+        }
     }
     
     myUpdateFunction(event) {
@@ -43,77 +77,17 @@ class BlocklyContainer extends Component {
     }
 
     loadBlocklyJS() {
+        console.log('loadBlocklyJS');
         let Blockly = window.Blockly;
+        Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
+        Blockly.JavaScript.addReservedWords('highlightBlock');
         let Interpreter = window.Interpreter;
         this.workspace = Blockly.inject('blocklyDiv',
         {toolbox: document.getElementById('toolbox')});
         let defaultBlocks = document.getElementById('workspaceBlocks');
         Blockly.Xml.domToWorkspace(defaultBlocks, this.workspace);
         this.workspace.addChangeListener((e) => this.myUpdateFunction(e));
-        function executeBlockCode() {
-            let code = 'gameInit();\n' + Blockly.JavaScript.workspaceToCode(this.workspace);
-            let initFunc = function(interpreter, scope) {
-                interpreter.setProperty(scope, 'GameCW', Game.GameCW);
-                interpreter.setProperty(scope, 'GameCCW', Game.GameCCW);
-                interpreter.setProperty(scope, "gameTurn",
-                    interpreter.createNativeFunction((x) => {
-                        return Game.gameTurn(x);     
-                    }));
-                interpreter.setProperty(scope, "gameMove",
-                    interpreter.createNativeFunction(() => {
-                        return Game.gameMove();     
-                    }));
-                interpreter.setProperty(scope, "gameInit",
-                    interpreter.createNativeFunction(() => {
-                        return Game.gameInit();     
-                    }));
-                interpreter.setProperty(scope, "gameAttack",
-                    interpreter.createNativeFunction(() => {
-                        return Game.gameAttack();     
-                    }));
-                var alertWrapper = function(text) {
-                    text = text ? text.toString() : '';
-                    return alert(text);
-                };
-                interpreter.setProperty(scope, 'alert',
-                    interpreter.createNativeFunction(alertWrapper));
-
-                var promptWrapper = function(text) {
-                    text = text ? text.toString() : '';
-                    return prompt(text);
-                };
-                interpreter.setProperty(scope, 'prompt',
-                    interpreter.createNativeFunction(promptWrapper));
-
-                var consoleObj = this.createObject(interpreter.OBJECT);
-                this.setProperty(scope, 'console', consoleObj);
-                var logWrapper = function(text) {
-                text = text ? text.toString() : '';
-                return console.log(text);
-                };
-                interpreter.setProperty(consoleObj, 'log',
-                    interpreter.createNativeFunction(logWrapper));
-            };
-
-            let myInterpreter = new Interpreter(code, initFunc);
-            let stepsAllowed = 10000;
-			let stepCallback = () =>
-			{
-				console.log('calling ' + stepsAllowed);
-				if(stepsAllowed <= 0)
-					throw EvalError('Infinite loop.');
-				stepsAllowed--;
-				if(!myInterpreter.step())
-				{
-					window.blocklyCallback = () => {};
-					window.blocklyShouldRun = false;
-				}
-			};
-			window.blocklyCallback = stepCallback;
-			window.blocklyShouldRun = true;
-        }
-
-        document.getElementById('playButton').addEventListener('click', executeBlockCode);
+        this.setReadOnly(this.props.readOnly);
     }
     render ()
     {
@@ -123,6 +97,12 @@ class BlocklyContainer extends Component {
                 <block type="game_move"></block>
                 <block type="game_turn"></block>
                 <block type="game_attack"></block>
+                <block type="game_lookahead_name"></block>
+                <block type="game_get_pos_x"></block>
+                <block type="game_get_pos_y"></block>
+                <block type="game_get_dir"></block>
+                <block type="game_get_attack"></block>
+                <block type="game_get_hp"></block>
                 <block type="controls_if"></block>
                 <block type="controls_repeat_ext"></block>
                 <block type="logic_compare"></block>
@@ -151,10 +131,6 @@ class BlocklyContainer extends Component {
                     <hr className="POps"/>
                     <pre></pre>
                 </div>
-                <div className="col-xs-12">
-                    <hr className="POps"/>
-                <button type="button" id="playButton" className="btn-success">Play</button>
-                </div>
             </div>
 
         </div>
@@ -165,6 +141,10 @@ class BlocklyContainer extends Component {
         script.src = str;
         script.async = false;
         document.body.appendChild(script);
+    }
+    componentDidMount() {
+        this.mounted = true;
+        this.init();
     }
 }
 
