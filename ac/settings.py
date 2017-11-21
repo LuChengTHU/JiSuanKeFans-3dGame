@@ -154,3 +154,12 @@ REST_FRAMEWORK = {
 }
 
 AI_URL = os.path.join(BASE_DIR, 'frontend', 'mainapp', 'public', 'ai')
+
+# Email Settings
+
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.163.com'  # 如果是 163 改成 smtp.163.com
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'jisuankefans@163.com' # 帐号
+EMAIL_HOST_PASSWORD = 'jisuankefans2017'  # 密码
+DEFAULT_FROM_EMAIL = '计蒜客粉丝队 <jisuankefans@163.com>'

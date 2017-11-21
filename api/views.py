@@ -11,6 +11,7 @@ from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from django.utils.timezone import now
+from django.core.mail import send_mail
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
@@ -351,10 +352,25 @@ solution_view = SolutionView.as_view()
 
 class ForgetView(APIView):
     @with_res_code
-    def post(self, request, email=None):
-        email_info = request.data['email']
+    def post(self, request):
         try:
-            user = User.objects.get(id=user_id)
+            email = request.data['email'] 
         except:
-            return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 0
+
+        try:
+            user = User.objects.get(email=email)
+        except:
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 0
+
+        # Generate link
         
+
+        # Send Email
+
+        send_mail('Subject here', 'Here is the message.', '计蒜客粉丝队 <jisuankefans@163.com>',
+                 ['bill125@gmail.com'], fail_silently=False)
+        
+        return Response({}, status=status.HTTP_200_OK), 1
+        
+forget_view = ForgetView.as_view()
