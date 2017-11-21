@@ -14,7 +14,7 @@ import {fetch_map} from '../../interfaces/Map';
 import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
-
+import {getToolboxXml, getDefaultBlocks} from '../../utils/BlocklyAttribute';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -63,6 +63,8 @@ class DashBoard extends Component {
     }
     render()
     {
+        const toolboxXml = getToolboxXml(this.state.map);
+        const defaultBlocks = getDefaultBlocks(this.state.map);
         const gameContainer = <GameContainer gameSetState={this.gameSetState} gameState={this.state.gameState}/>;
         let welcomeMsg, gameoverMsg = 'GAME OVER', passedMsg = '通过';
         if (this.state.map === null) welcomeMsg = '加载中...';
@@ -102,7 +104,7 @@ class DashBoard extends Component {
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}/>
+                    <BlocklyContainer defaultBlocks={defaultBlocks} toolboxXml={toolboxXml} onError={()=> {throw Error('JS load failed.');}}/>
                 </Grid>
                 </Grid>
             </div>
