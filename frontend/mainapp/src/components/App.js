@@ -11,6 +11,7 @@ import createReactClass from 'create-react-class'
 import {createHashHistory} from 'history'
 import StageGallery from './pages/StageGallery'
 import MapLibrary from './pages/MapLibrary'
+import SolutionViewer from './pages/SolutionViewer'
 import InfoModify from './pages/InfoModify'
 
 const styles = theme => ({
