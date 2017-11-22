@@ -44,37 +44,34 @@ class Map(models.Model):
 
     # ------------ restrictions -------------
 
-    n_max_hand_boxes = models.IntegerField()
+    # n_max_hand_boxes = models.IntegerField()
     n_blockly = models.IntegerField()
     instr_set = models.TextField()
 
     # ------------ initial states -------------
-    init_ground_colors = models.TextField() 
     init_AI_infos = models.TextField(default="[]")
     # temporary solution: storing all arrays using json strings
     # TODO: find a more efficient solution 
-    init_ground_boxes = models.TextField()
+    # init_ground_boxes = models.TextField()
 
     # initial position
     init_pos_x = models.IntegerField()
     init_pos_y = models.IntegerField()
 
     init_dir = models.IntegerField(default=16)
+    init_hp = models.IntegerField(default=10)
+    init_attack = models.IntegerField(default=1)
 
-    init_hand_boxes = models.TextField()
+    # init_hand_boxes = models.TextField()
 
     # ------------ final states -------------
 
-    
-    final_ground_colors = models.TextField(default=None, blank=True, null=True)
-    final_ground_boxes = models.TextField(default=None, blank=True, null=True)
 
     # final position
     final_pos_x = models.IntegerField(default=None, blank=True, null=True)
     final_pos_y = models.IntegerField(default=None, blank=True, null=True)
-    final_hand_boxes = models.TextField(default=None, blank=True, null=True)
-
-    final_dir = models.IntegerField(default=None, blank=True, null=True)
+    
+    final_gold = models.IntegerField(default=0)
 
     # ------------ popup messages -------------
 
