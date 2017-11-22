@@ -120,10 +120,10 @@ export default class EditorGame extends Component {
             <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
                     name="camera"
-                    fov={ 75 }
-                    aspect={ width/height }
-                    near={ 0.1 }
-                    far={ 100 }
+                    fov={ camera.fov }
+                    aspect={ camera.aspect }
+                    near={ camera.near }
+                    far={ camera.far }
                     position={ camera.position.clone() }
                     rotation={ camera.rotation.clone() }
                 />

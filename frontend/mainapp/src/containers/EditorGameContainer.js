@@ -130,7 +130,7 @@ export default class EditorGameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { knightMesh ? <EditorGame
+                { knightMesh ? <EditorGame ref={val => { this.gameRef = val; }}
                     width={ width }
                     height={ height }
                     camera={ camera }
@@ -160,11 +160,11 @@ export default class EditorGameContainer extends Component {
         } = this.refs;
 
         container.addEventListener('mousedown', this.onMouseDown, false);
-
-        this.camera = new PerspectiveCamera(75, 1, 0.1, 1000);
-        this.camera.position.x = 5;
-        this.camera.position.y = 5;
-        this.camera.position.z = 0;
+        const divObj = window.document.getElementById('editorGameContainer');
+        const screenWidth = divObj.clientWidth;
+        const screenHeight = window.innerHeight * .8;
+        this.camera = new PerspectiveCamera(60, screenWidth/screenHeight, 0, 100);
+        this.camera.position.set(5, 5, 0);
 
         const controls = new TracerControls(this.camera, container);
 
@@ -175,7 +175,7 @@ export default class EditorGameContainer extends Component {
         controls.noPan = false;
         controls.staticMoving = true;
         controls.dynamicDampingFactor = 0.3;
-        controls.maxDistance = 10;
+        // controls.maxDistance = 10;
 
         this.controls = controls;            
         this.controls.addEventListener('change', this.onTrackballChange);       
@@ -265,37 +265,7 @@ export default class EditorGameContainer extends Component {
         }
     
         this.requestGameLoop();
-
-        // const {
-        //     mouseInput,
-        // } = this.refs;
-
-        // console.log(this.camera.position);
-
         this.controls.update();
-        // const {
-        //     // mouseInput,
-        //     camera,
-        // } = this.state;
-        
-        // console.log(this.statcamera);
-
-        // if (!mouseInput.isReady()) {
-        //     const {
-        //         scene,
-        //         container,
-        //     } = this.refs;
-
-        //     mouseInput.ready(scene, container, camera);
-        //     mouseInput.setActive(false);
-        // }
-        
-        // if (this.state.mouseInput !== mouseInput) {
-        //     this.setState({
-        //         mouseInput,
-        //     });
-        // }
-
         this.setState({
             camera: this.camera,
         });
@@ -323,30 +293,32 @@ export default class EditorGameContainer extends Component {
         
         const divObj = window.document.getElementById('editorGameContainer');
         if (divObj) {
-            let width = divObj.clientWidth;
-            let height = window.innerHeight * .8;
+            const screenWidth = divObj.clientWidth;
+            const screenHeight = window.innerHeight * .8;
+
+            console.log(this.camera);
+
+            const mouse = new THREE.Vector2();
+            mouse.x =   (event.clientX / screenWidth)  * 2 - 1;
+            mouse.y = - (event.clientY / screenHeight) * 2 + 1;
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera( mouse, this.camera );
+            const intersects = raycaster.intersectObjects( this.gameRef.sceneRef.children );
             
-            let raycaster = new THREE.Raycaster();
-            let mouse = new THREE.Vector2();
-            mouse.x =   (event.clientX / width)  * 2 - 1;
-            mouse.y = - (event.clientY / height) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, this.camera);
-
-            const {
-                mapBlocks
-            } = this.state;
-
+            console.log(intersects);
             
-            if (mapBlocks) {
-                console.log(mapBlocks)
-                
-                let intersects = raycaster.intersectObject(this.state.mapBlocks);
+            
+            // const standardVector  = new THREE.Vector3(mouse.x, mouse.y, 0.5);//标准设备坐标
+            // const worldVector = standardVector.unproject(this.camera);
+            // const ray = worldVector.sub(this.camera.position).normalize();
+            // const pos = this.camera.position;
 
-                if (intersects[0]) {
-                    console.log(intersects[0].object.position)
-                }
-            }
+            // const t = -pos.y / ray.y;
+            // const interX = pos.x + t * ray.x;
+            // const interZ = pos.z + t * ray.z;
+
+            // console.log(interX, interZ);
         }
     }
 }
