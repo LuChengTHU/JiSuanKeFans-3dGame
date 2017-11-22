@@ -392,19 +392,15 @@ class ModifyView(APIView):
         user = request.user
         
         if serializer.is_valid(raise_exception=True):
+            # check password
+            encode_pwd = base64.b64encode(get_pwd_hash(\
+                serializer.validated_data['old_password']))
+            if user.password.encode("ascii") != encode_pwd:
+                return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
+
             user.gender = serializer.validated_data['gender']
             user.username = serializer.validated_data['username']
-            if 'new_password' in serializer.validated_data:
-                # reconfirm password
-                try:
-                    encode_pwd = base64.b64encode(get_pwd_hash(\
-                        serializer.validated_data['old_password']))
-                except:
-                    return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
-                
-                if user.password.encode("ascii") == encode_pwd:
-                    user.password = base64.b64encode(get_pwd_hash(request.data['new_password']))
-            
+            user.password = base64.b64encode(get_pwd_hash(request.data['new_password']))
             user.save()
 
             return Response({}, status=status.HTTP_200_OK), 1

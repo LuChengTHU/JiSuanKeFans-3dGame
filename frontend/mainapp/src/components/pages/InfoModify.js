@@ -76,12 +76,16 @@ class InfoModify extends React.Component {
     }
     
     submitInfo = () => {
+        let _new_password = this.state.new_password
+        if (_new_password === '')
+            _new_password = this.state.old_password
         let paylord = {
             'username': this.state.username,
             'gender': this.state.gender,
             'old_password': this.state.old_password,
-            'new_password': this.state.new_password,
+            'new_password': _new_password,
         }
+        
         axios.post('modify/', paylord)
     }
 
@@ -122,8 +126,8 @@ class InfoModify extends React.Component {
                         required={false}
                         id="old_password"
                         type="password"
-                        label="旧密码"
-                        placeholder="Required when changing password"
+                        label="原密码"
+                        placeholder="Required"
                         value={this.state.old_password}
                         onChange={this.handleInputChange('old_password')}
                     />
