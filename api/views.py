@@ -351,6 +351,31 @@ class SolutionView(APIView):
 
 solution_view = SolutionView.as_view()
 
+class ModifyView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    
+    @with_res_code
+    def post(self, request):
+        # need authentication
+        if request.auth is None:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
+    
+        serializer = get_user_serializer_class(RATE_BRIEF)(data=request.data)
+        user = request.user
+        
+        if serializer.is_valid():
+            # email = serializer.validated_data['email']
+            user.gender = serializer.validated_data['gender']
+            user.username = serializer.validated_data['username']
+            try:
+                user.password = base64.b64encode(get_pwd_hash(request.data['password']))
+            user.save()
+
+            return Response({}, status=status.HTTP_200_OK), 1
+        
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
 class ForgetView(APIView):
     @with_res_code
     def post(self, request):
@@ -370,7 +395,6 @@ class ForgetView(APIView):
         user.save()
 
         # Send Email
-
         send_mail('Password Reset', random_password, '计蒜客粉丝队 <jisuankefans@163.com>',
                  ['bill125@gmail.com'], fail_silently=False)
         
