@@ -353,8 +353,20 @@ class SolutionView(APIView):
 solution_view = SolutionView.as_view()
 
 class ModifyView(APIView):
-    authentication_classes = (TokenAuthentication,)
+
+    parser_classes = (JSONParser, FormParser)
+    authentication_classes = (CsrfExemptSessionAuthentication, TokenAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    @with_res_code
+    def get(self, request):
+        if request.auth is None:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 0
+    
+        user = request.user
+        info = {'gender':user.gender, 'username':user.username}
+
+        return Response(info, status=status.HTTP_200_OK), 1
     
     @with_res_code
     def post(self, request):
@@ -365,7 +377,7 @@ class ModifyView(APIView):
         serializer = ModifySerializer(data=request.data)
         user = request.user
         
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user.gender = serializer.validated_data['gender']
             user.username = serializer.validated_data['username']
             if 'new_password' in serializer.validated_data:
@@ -376,16 +388,16 @@ class ModifyView(APIView):
                 except:
                     return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
                 
-                if user.password.encode("ascii") != encode_pwd:
-                    return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
-
-                user.password = base64.b64encode(get_pwd_hash(request.data['new_password']))
+                if user.password.encode("ascii") == encode_pwd:
+                    user.password = base64.b64encode(get_pwd_hash(request.data['new_password']))
             
             user.save()
 
             return Response({}, status=status.HTTP_200_OK), 1
-        
-        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
+
+modify_view = ModifyView.as_view()
 
 class ForgetView(APIView):
     @with_res_code

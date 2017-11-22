@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .views import obtain_expiring_auth_token, user_list_view,\
     map_view, map_list_view, user_view, stage_view, solution_list_view, \
-    solution_view, forget_view
+    solution_view, forget_view, modify_view
 
 app_name = 'api'
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^solution/$', solution_list_view, name='solution_list'),
     url(r'^solution/(?P<sol_id>[0-9]+)/$', solution_view, name='solution'),
     url(r'^forget/$', forget_view, name='forget'),
+    url(r'^modify/$', modify_view, name='modify'),
 ]

@@ -49,6 +49,8 @@ class InfoModify extends React.Component {
             old_password: '',
             new_password: '',
         };
+
+        this.updateInfo()
     }
 
     handleInputChange = name => event => {
@@ -58,7 +60,29 @@ class InfoModify extends React.Component {
     };
 
     updateInfo = () => {
-        
+        axios.get('modify/', {})
+            .then((response) => {
+                console.log(response.data.res_code)
+                console.log(response.data)
+                if (response.data.res_code !== null) {
+                    if (response.data.res_code === 1) {
+                        this.setState({
+                            username: response.data['username'],
+                            gender: response.data['gender'],
+                        })
+                    }
+                }
+            })
+    }
+    
+    submitInfo = () => {
+        let paylord = {
+            'username': this.state.username,
+            'gender': this.state.gender,
+            'old_password': this.state.old_password,
+            'new_password': this.state.new_password,
+        }
+        axios.post('modify/', paylord)
     }
 
     render() 
@@ -112,6 +136,12 @@ class InfoModify extends React.Component {
                         value={this.state.new_password}
                         onChange={this.handleInputChange('new_password')}
                     />
+                    <Button onClick={this.submitInfo} color="primary">
+                        提交
+                    </Button>
+                    <Button onClick={this.updateInfo} color="primary">
+                        重置
+                    </Button>
                 {/* </List> */}
             </div>
         );
