@@ -78,7 +78,9 @@ class DashBoard extends Component {
     }
     render()
     {
-        const gameContainer = <GameContainer gameSetState={this.gameSetState} gameState={this.state.gameState}/>;
+        const gameContainer = <GameContainer gameSetState={this.gameSetState} 
+            gameState={this.state.gameState}
+            reportHeight={(h)=>{this.blocklyContainer.resize(h)}}/>;
         let welcomeMsg, gameoverMsg = 'GAME OVER', passedMsg = '通过';
         if (this.state.map === null) welcomeMsg = '加载中...';
         else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';

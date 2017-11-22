@@ -559,6 +559,7 @@ export default class GameContainer extends Component {
 			width = divObj.clientWidth;
 			// height = divObj.clientHeight;
 			height = window.innerHeight * .8;
+			this.props.reportHeight(height);
 		}
 
         const {
