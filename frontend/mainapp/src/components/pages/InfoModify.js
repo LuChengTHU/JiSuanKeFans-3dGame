@@ -90,7 +90,7 @@ class InfoModify extends React.Component {
             })
     }
     
-    submitInfo = () => {
+    submitInfo = (e) => {
         let _new_password = this.state.new_password
         if (_new_password === '')
             _new_password = this.state.old_password
@@ -101,7 +101,8 @@ class InfoModify extends React.Component {
             'new_password': _new_password,
         }
         
-        axios.post('modify/', paylord)
+        axios.post('modify/', paylord);
+        // e.preventDefault();
     }
 
     render() 
@@ -109,7 +110,7 @@ class InfoModify extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.root}>
-                <form>
+                <form onSubmit={this.submitInfo}>
                 {/* <List> */}
       <Card className={classes.card}>
         <CardContent>
@@ -149,7 +150,7 @@ class InfoModify extends React.Component {
                     <div>
                     <TextField 
                         className={classes.textField}
-                        required={false}
+                        required={true}
                         id="old_password"
                         type="password"
                         label="原密码"
@@ -171,7 +172,7 @@ class InfoModify extends React.Component {
                     />
                     </div>
                     <div className={classes.buttonGroup}>
-                    <Button onClick={this.submitInfo} color="primary">
+                    <Button color="primary" type={'submit'}>
                         提交
                     </Button>
                     <Button onClick={this.updateInfo} color="primary">
