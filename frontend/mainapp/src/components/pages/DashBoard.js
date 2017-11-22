@@ -72,7 +72,8 @@ class DashBoard extends Component {
         window.Game.gameInit();
         this.setState({gameState: "stepping"});
         this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode());
-        this.enhancedInterpreter.step();
+		window.blocklyCallback = this.enhancedInterpreter.step;
+		window.blocklyShouldRun = true;
     }
     render()
     {
