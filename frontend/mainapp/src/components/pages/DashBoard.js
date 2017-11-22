@@ -14,6 +14,7 @@ import {fetch_map} from '../../interfaces/Map';
 import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
+import {getToolboxXml, getDefaultBlocks} from '../../utils/BlocklyAttribute';
 import {create_solution} from '../../interfaces/Solution'
 import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
@@ -78,6 +79,8 @@ class DashBoard extends Component {
     }
     render()
     {
+        const toolboxXml = getToolboxXml(this.state.map);
+        const defaultBlocks = getDefaultBlocks(this.state.map);
         const gameContainer = <GameContainer gameSetState={this.gameSetState} 
             gameState={this.state.gameState}
             reportHeight={(h)=>{this.blocklyContainer.resize(h)}}/>;
@@ -148,7 +151,8 @@ class DashBoard extends Component {
                 <Grid item xs={12} sm={6}>
                     <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
                         refCallback={(e) => { this.blocklyContainer = e; }}
-                        readOnly={blocklyReadOnly} />
+                        readOnly={blocklyReadOnly}
+                        defaultBlocks={defaultBlocks} toolboxXml={toolboxXml} />
                 </Grid>
                 </Grid>
             </div>

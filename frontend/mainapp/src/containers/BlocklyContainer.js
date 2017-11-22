@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 import scriptLoader from 'react-async-script-loader';
 import Game from '../logic/logic';
+import PropTypes from 'prop-types';
 class BlocklyContainer extends Component {
     constructor(props) {
         super(props);
         this.workspace = null;
+        this._blocklyArea = null;
+        this._blocklyDiv = null;
         this.mounted = false;
+        this.initialized = false;
         this.isScriptLoadSucceed = false;
-        if(typeof(this.props.refCallback) !== 'undefined')
+        if(typeof(this.props.refCallback) !== 'undefined') {
             this.props.refCallback(this);
+        }
     }
 
     clear() {
@@ -39,7 +44,12 @@ class BlocklyContainer extends Component {
         } else {
             this.workspace.options.maxBlocks = this.props.maxBlocks ? this.props.maxBlocks : 99999;
         }
-        this.workspace.updateToolbox(document.getElementById('toolbox'));
+        // this.workspace.updateToolbox(this.props.toolboxXml);
+        // this._blocklyDiv.getElementsByClassName('blocklyToolboxDiv')[0].style.display = readOnly ? 'none' : '';
+        // window.Blockly.svgResize(this.workspace);
+        if (typeof(this.workspace.toolbox_) !== 'undefined') {
+            this.workspace.toolbox_.flyout_.hide(); // This solution is found in the source code....
+        }
     }
 
     componentWillReceiveProps ({ isScriptLoaded, isScriptLoadSucceed, ...newProps }) {
@@ -51,12 +61,16 @@ class BlocklyContainer extends Component {
           else this.props.onError()
         }
         if (this.workspace != null) {
-            this.setReadOnly(newProps.readOnly);
+            if (newProps !== this.props) {
+                // this.props.toolboxXml TODO 
+                this.update(newProps, this.props);
+            }
         }
     }
 
     resize = (h) => {
         if (this.height === h) return;
+        console.log(`blockly: resize(${h})`);
         this.height = h;
         this._blocklyDiv.style.height = h + 'px';
         if (this.workspace) {
@@ -66,61 +80,39 @@ class BlocklyContainer extends Component {
     
     init()
     {
-        if (this.mounted && this.isScriptLoadSucceed) {
-            this.loadBlocklyJS();
+        if (this.mounted && this.isScriptLoadSucceed && !this.initialized) {
+            this.initialized = true;
+            let Blockly = window.Blockly;
+            Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
+            Blockly.JavaScript.addReservedWords('highlightBlock');
+            this.workspace = Blockly.inject(this._blocklyDiv,
+                {toolbox: this.props.toolboxXml});
+            this.resize(600);
+            this.update(this.props, {});
         }
     }
 
-    loadBlocklyJS() {
-        console.log('loadBlocklyJS');
-        let Blockly = window.Blockly;
-        Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
-        Blockly.JavaScript.addReservedWords('highlightBlock');
-        let Interpreter = window.Interpreter;
-        this.workspace = Blockly.inject('blocklyDiv',
-        {toolbox: document.getElementById('toolbox')});
-        let defaultBlocks = document.getElementById('workspaceBlocks');
-        Blockly.Xml.domToWorkspace(defaultBlocks, this.workspace);
-        this.setReadOnly(this.props.readOnly);
+    update = (newProps, prevProps) => {
+        if (newProps.toolboxXml !== prevProps.toolboxXml) {
+            this.workspace.updateToolbox(newProps.toolboxXml);
+        }
+        if (newProps.defaultBlocks !== prevProps.defaultBlocks) {
+            this.loadXmlText(newProps.defaultBlocks);
+        }
+        // let blocklyHeight;
+        // if ('blocklyHeight' in newProps && newProps.blocklyHeight !== null) {
+        //     blocklyHeight = newProps.blocklyHeight;
+        // } else {
+        //     blocklyHeight = this._blocklyArea.offsetHeight;
+        // }
+        // this.resize(blocklyHeight);
+        this.setReadOnly(newProps.readOnly);
+        window.Blockly.svgResize(this.workspace);
     }
     render ()
     {
         return (
-        <div className="blockly" style={{height: "100%"}}>
-            <xml id="toolbox" style={{display: "none"}}>
-                <block type="game_move"></block>
-                <block type="game_turn"></block>
-                <block type="game_attack"></block>
-                <block type="game_lookahead_name"></block>
-                <block type="game_get_pos_x"></block>
-                <block type="game_get_pos_y"></block>
-                <block type="game_get_dir"></block>
-                <block type="game_get_attack"></block>
-                <block type="game_get_hp"></block>
-                <block type="controls_if"></block>
-                <block type="controls_repeat_ext"></block>
-                <block type="logic_compare"></block>
-                <block type="math_number"></block>
-                <block type="math_arithmetic"></block>
-                <block type="text"></block>
-                <block type="text_print"></block>
-            </xml>
-            <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style={{display:"none"}}>
-            <variables></variables>
-            <block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c`k=Y" x="13" y="13">
-                <value name="TIMES">
-                <shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
-                    <field name="NUM">2</field>
-                </shadow>
-                </value>
-                <statement name="DO">
-                <block type="game_move" id="+!cL)/7;TB9NG)vuHr+;"></block>
-                </statement>
-            </block>
-            </xml>
-
-            <div ref={el => this._blocklyArea = el} className="blocklyArea" >
-            </div>
+        <div ref={el => this._blocklyArea = el} className="blocklyArea" lang="zh-hans" style={{height: "100%"}}>
             <div id="blocklyDiv" ref={el => this._blocklyDiv = el}></div>
         </div>
         );
@@ -136,6 +128,15 @@ class BlocklyContainer extends Component {
         this.init();
     }
 }
+
+BlocklyContainer.propTypes = {
+    // blocklyHeight: PropTypes.number,
+    readOnly: PropTypes.bool.isRequired,
+    onError: PropTypes.func.isRequired,
+    readOnly: PropTypes.bool,
+    defaultBlocks: PropTypes.string,
+    toolboxXml: PropTypes.string,
+};
 
 export default scriptLoader(
 
