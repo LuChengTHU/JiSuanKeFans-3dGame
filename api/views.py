@@ -1,6 +1,7 @@
 import datetime
 import base64
-
+import random
+import string
 
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
@@ -12,10 +13,12 @@ from rest_framework import views, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from django.utils.timezone import now
+from django.core.mail import send_mail
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
-   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer, get_solution_serializer_class
+   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer, get_solution_serializer_class, \
+   ModifySerializer
 import json
 import traceback
 import ac.settings as settings
@@ -362,3 +365,72 @@ class SolutionView(APIView):
         return Response({}, status=status.HTTP_400_BAD_REQUEST), 2
 
 solution_view = SolutionView.as_view()
+
+class ModifyView(APIView):
+
+    parser_classes = (JSONParser, FormParser)
+    authentication_classes = (CsrfExemptSessionAuthentication, TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    @with_res_code
+    def get(self, request):
+        if request.auth is None:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 0
+    
+        user = request.user
+        info = {'gender':user.gender, 'username':user.username}
+
+        return Response(info, status=status.HTTP_200_OK), 1
+    
+    @with_res_code
+    def post(self, request):
+        # need authentication
+        if request.auth is None:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
+    
+        serializer = ModifySerializer(data=request.data)
+        user = request.user
+        
+        if serializer.is_valid(raise_exception=True):
+            # check password
+            encode_pwd = base64.b64encode(get_pwd_hash(\
+                serializer.validated_data['old_password']))
+            if user.password.encode("ascii") != encode_pwd:
+                return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
+
+            user.gender = serializer.validated_data['gender']
+            user.username = serializer.validated_data['username']
+            user.password = base64.b64encode(get_pwd_hash(request.data['new_password']))
+            user.save()
+
+            return Response({}, status=status.HTTP_200_OK), 1
+
+        return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
+
+modify_view = ModifyView.as_view()
+
+class ForgetView(APIView):
+    @with_res_code
+    def post(self, request):
+        try:
+            email = request.data['email'] 
+        except:
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 0
+
+        try:
+            user = User.objects.get(email=email)
+        except:
+            return Response({}, status=status.HTTP_404_NOT_FOUND), 0
+
+        # Generate Password
+        random_password = ''.join(random.sample(string.ascii_letters + string.digits, 20))
+        user.password = base64.b64encode(get_pwd_hash(random_password))
+        user.save()
+
+        # Send Email
+        send_mail('Password Reset', random_password, '计蒜客粉丝队 <jisuankefans@163.com>',
+                 ['bill125@gmail.com'], fail_silently=False)
+        
+        return Response({}, status=status.HTTP_200_OK), 1
+        
+forget_view = ForgetView.as_view()
