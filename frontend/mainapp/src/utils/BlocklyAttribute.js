@@ -278,15 +278,18 @@ export function getToolboxXml(map) {
 export function getDefaultBlocks(map) {
 	return `<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display: none">
 	<variables></variables>
-	<block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c\`k=Y" x="13" y="13">
-		<value name="TIMES">
-		<shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
-			<field name="NUM">2</field>
-		</shadow>
-		</value>
-		<statement name="DO">
-		<block type="game_move" id="+!cL)/7;TB9NG)vuHr+;"></block>
-		</statement>
-	</block>
 	</xml>`;
+	// return `<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display: none">
+	// <variables></variables>
+	// <block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c\`k=Y" x="13" y="13">
+		// <value name="TIMES">
+		// <shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
+			// <field name="NUM">2</field>
+		// </shadow>
+		// </value>
+		// <statement name="DO">
+		// <block type="game_move" id="+!cL)/7;TB9NG)vuHr+;"></block>
+		// </statement>
+	// </block>
+	// </xml>`;
 }
