@@ -47,6 +47,7 @@ class LoginFormDialog extends React.Component {
       messages: []
     };
     this.handleRequestSubmit = this.handleRequestSubmit.bind(this);
+    this.handleRequestForget = this.handleRequestForget.bind(this);
   }
 
   addMessage(msg)
@@ -98,8 +99,14 @@ class LoginFormDialog extends React.Component {
     e.preventDefault();
   };
 
-  handlePasswordForget = () => {
-      
+  handleRequestForget = (e) => {
+    let payload={
+        "email":this.state.email
+    }
+    console.log(payload);
+    axios.post('forget/', payload)
+
+    e.preventDefault();
   }
 
   myUpdate(newState) {
@@ -150,11 +157,11 @@ class LoginFormDialog extends React.Component {
               fullWidth
               onChange={this.handleInputChange('password')}
              />
-            <Button type={'submit'} color="secondary">
-                Boom!
-            </Button>
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.handleRequestForget} color="primary">
+              忘记密码
+            </Button>
             <Button type={'submit'} color="primary">
               登录
             </Button>

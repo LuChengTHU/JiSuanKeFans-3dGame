@@ -370,6 +370,8 @@ class ModifyView(APIView):
             user.username = serializer.validated_data['username']
             try:
                 user.password = base64.b64encode(get_pwd_hash(request.data['password']))
+            except:
+                pass
             user.save()
 
             return Response({}, status=status.HTTP_200_OK), 1
