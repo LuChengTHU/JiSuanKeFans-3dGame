@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import scriptLoader from 'react-async-script-loader';
 import Game from '../logic/logic';
+import PropTypes from 'prop-types';
 class BlocklyContainer extends Component {
     constructor(props) {
         super(props);
@@ -68,6 +69,7 @@ class BlocklyContainer extends Component {
     }
 
     resize = (h) => {
+        console.log(`blockly: resize(${h})`);
         if (this.height === h) return;
         this.height = h;
         this._blocklyDiv.style.height = h + 'px';
@@ -97,16 +99,20 @@ class BlocklyContainer extends Component {
         if (newProps.defaultBlocks !== prevProps.defaultBlocks) {
             this.loadXmlText(newProps.defaultBlocks);
         }
+        // let blocklyHeight;
+        // if ('blocklyHeight' in newProps && newProps.blocklyHeight !== null) {
+        //     blocklyHeight = newProps.blocklyHeight;
+        // } else {
+        //     blocklyHeight = this._blocklyArea.offsetHeight;
+        // }
+        // this.resize(blocklyHeight);
         this.setReadOnly(newProps.readOnly);
         window.Blockly.svgResize(this.workspace);
     }
     render ()
     {
         return (
-        <div ref={el => this.el = el} className="blockly" lang="zh-hans" style={{height: "100%"}}>
-
-            <div ref={el => this._blocklyArea = el} className="blocklyArea" >
-            </div>
+        <div ref={el => this._blocklyArea = el} className="blocklyArea" lang="zh-hans" style={{height: "100%"}}>
             <div id="blocklyDiv" ref={el => this._blocklyDiv = el}></div>
         </div>
         );
@@ -122,6 +128,15 @@ class BlocklyContainer extends Component {
         this.init();
     }
 }
+
+BlocklyContainer.propTypes = {
+    // blocklyHeight: PropTypes.number,
+    readOnly: PropTypes.bool.isRequired,
+    onError: PropTypes.func.isRequired,
+    readOnly: PropTypes.bool,
+    defaultBlocks: PropTypes.string,
+    toolboxXml: PropTypes.string,
+};
 
 export default scriptLoader(
 
