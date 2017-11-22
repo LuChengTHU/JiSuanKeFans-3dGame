@@ -87,6 +87,7 @@ class BlocklyContainer extends Component {
             Blockly.JavaScript.addReservedWords('highlightBlock');
             this.workspace = Blockly.inject(this._blocklyDiv,
                 {toolbox: this.props.toolboxXml});
+            this.resize(600);
             this.update(this.props, {});
         }
     }
