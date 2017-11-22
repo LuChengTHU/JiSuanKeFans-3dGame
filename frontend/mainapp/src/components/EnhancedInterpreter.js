@@ -101,12 +101,17 @@ export default class EnhancedInterpreter {
     step = () => {
         console.log('calling ' + this.stepsAllowed);
         if(this.stepsAllowed <= 0)
-            throw EvalError('Infinite loop.');
+		{
+            window.blocklyCallback = () => {};
+            window.blocklyShouldRun = false;
+            throw new Error('GameFailedLoop');
+		}
         this.stepsAllowed--;
         if(!this.myInterpreter.step())
         {
             window.blocklyCallback = () => {};
             window.blocklyShouldRun = false;
+            throw new Error('GameFailed');
         }
     }
 
