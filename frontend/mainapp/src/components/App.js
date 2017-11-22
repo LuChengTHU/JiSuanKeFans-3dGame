@@ -11,6 +11,7 @@ import createReactClass from 'create-react-class'
 import {createHashHistory} from 'history'
 import StageGallery from './pages/StageGallery'
 import MapLibrary from './pages/MapLibrary'
+import InfoModify from './pages/InfoModify'
 
 const styles = theme => ({
     root: {
@@ -87,6 +88,7 @@ class App extends Component {
                 <Route exact path="/editor/:map_id/" component={MapEditor}/>
                 <Route exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/stages/" component={StageGallery}/>
+                <Route exact path="/info/" component={InfoModify}/>
                 {this.state.user ?
                     <Route exact path="/mymaps/" component={(props) => <MapLibrary
                          author={this.state.user} {...props}/>}/>

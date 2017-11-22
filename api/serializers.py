@@ -33,6 +33,11 @@ def get_user_serializer_class(rate):
 
     return UserSerializer
 
+class ModifySerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(max_length=100)
+    new_password = serializers.CharField(max_length=100)
+    username = serializers.CharField(max_length=50)
+    gender = serializers.IntegerField()
 
 class MapBriefSerializer(serializers.ModelSerializer):
     author = get_user_serializer_class(RATE_BRIEF)(required=False)

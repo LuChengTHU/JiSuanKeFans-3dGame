@@ -160,7 +160,7 @@ class LoginFormDialog extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleRequestForget} color="primary">
-              忘记密码
+              重置密码
             </Button>
             <Button type={'submit'} color="primary">
               登录

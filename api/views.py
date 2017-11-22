@@ -16,7 +16,8 @@ from django.core.mail import send_mail
 from hashlib import sha512
 from api.serializers import \
    TokenPostSerializer, MapFullSerializer, MapBriefSerializer, get_user_serializer_class,\
-   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer, get_solution_serializer_class
+   RATE_BRIEF, RATE_FULL, RATE_CREATE, StageSerializer, get_solution_serializer_class, \
+   ModifySerializer
 import json
 import traceback
 import ac.settings as settings
@@ -361,17 +362,25 @@ class ModifyView(APIView):
         if request.auth is None:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
     
-        serializer = get_user_serializer_class(RATE_BRIEF)(data=request.data)
+        serializer = ModifySerializer(data=request.data)
         user = request.user
         
         if serializer.is_valid():
-            # email = serializer.validated_data['email']
             user.gender = serializer.validated_data['gender']
             user.username = serializer.validated_data['username']
-            try:
-                user.password = base64.b64encode(get_pwd_hash(request.data['password']))
-            except:
-                pass
+            if 'new_password' in serializer.validated_data:
+                # reconfirm password
+                try:
+                    encode_pwd = base64.b64encode(get_pwd_hash(\
+                        serializer.validated_data['old_password']))
+                except:
+                    return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
+                
+                if user.password.encode("ascii") != encode_pwd:
+                    return Response({}, status=status.HTTP_400_BAD_REQUEST), 0
+
+                user.password = base64.b64encode(get_pwd_hash(request.data['new_password']))
+            
             user.save()
 
             return Response({}, status=status.HTTP_200_OK), 1
