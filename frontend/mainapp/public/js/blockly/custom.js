@@ -1,7 +1,7 @@
 Blockly.Blocks['game_move'] = {
 	init: function() {
 		this.appendDummyInput()
-			.appendField("Move");
+			.appendField("前进");
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setColour(230);
@@ -18,8 +18,8 @@ Blockly.JavaScript['game_move'] = function(block) {
 Blockly.Blocks['game_turn'] = {
 	init: function() {
 		this.appendDummyInput()
-			.appendField("Turn")
-			.appendField(new Blockly.FieldDropdown([["Clockwise","GameCW"], ["CounterClockwise","GameCCW"]]), "Turn");
+			.appendField(new Blockly.FieldDropdown([["顺时针","GameCW"], ["逆时针","GameCCW"]]), "Turn")
+			.appendField("转弯");
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setColour(230);
@@ -36,7 +36,7 @@ Blockly.JavaScript['game_turn'] = function(block) {
 Blockly.Blocks['game_attack'] = {
 	init: function() {
 		this.appendDummyInput()
-			.appendField("Attack");
+			.appendField("攻击");
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setColour(230);
@@ -53,7 +53,7 @@ Blockly.JavaScript['game_attack'] = function(block) {
 Blockly.Blocks['game_lookahead_name'] = {
 	init: function() {
 		this.appendDummyInput()
-			.appendField("LookAhead");
+			.appendField("向前看");
 		this.setOutput(true, null);
 		this.setColour(230);
 		this.setTooltip("");
@@ -70,7 +70,7 @@ Blockly.Blocks['game_get_pos_x'] = {
 	init: function() {
 		this.appendValueInput("ARG")
 			.setCheck("Number")
-			.appendField("GetPosX");
+			.appendField("获取X坐标");
 		this.setOutput(true, null);
 		this.setColour(230);
 		this.setTooltip("");
@@ -87,7 +87,7 @@ Blockly.Blocks['game_get_pos_y'] = {
 	init: function() {
 		this.appendValueInput("ARG")
 			.setCheck("Number")
-			.appendField("GetPosY");
+			.appendField("获取Y坐标");
 		this.setOutput(true, null);
 		this.setColour(230);
 		this.setTooltip("");
@@ -104,7 +104,7 @@ Blockly.Blocks['game_get_dir'] = {
 	init: function() {
 		this.appendValueInput("ARG")
 			.setCheck("Number")
-			.appendField("GetDir");
+			.appendField("获取方向");
 		this.setOutput(true, null);
 		this.setColour(230);
 		this.setTooltip("");
@@ -121,7 +121,7 @@ Blockly.Blocks['game_get_hp'] = {
 	init: function() {
 		this.appendValueInput("ARG")
 			.setCheck("Number")
-			.appendField("GetHp");
+			.appendField("获取生命值");
 		this.setOutput(true, null);
 		this.setColour(230);
 		this.setTooltip("");
@@ -138,7 +138,7 @@ Blockly.Blocks['game_get_attack'] = {
 	init: function() {
 		this.appendValueInput("ARG")
 			.setCheck("Number")
-			.appendField("GetAttack");
+			.appendField("获取攻击力");
 		this.setOutput(true, null);
 		this.setColour(230);
 		this.setTooltip("");

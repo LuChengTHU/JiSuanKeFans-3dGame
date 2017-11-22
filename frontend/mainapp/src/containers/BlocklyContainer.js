@@ -135,7 +135,7 @@ class BlocklyContainer extends Component {
     render ()
     {
         return (
-        <div ref={el => this.el = el} className="blockly">
+        <div ref={el => this.el = el} className="blockly" lang="zh-hans">
 
             <div className="row">
                 <div id="blocklyDiv" style={{height: "480px", width: "600px"}}></div>
