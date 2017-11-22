@@ -7,6 +7,26 @@ import { Vector3, Euler, } from 'three';
 export default function playerMovement( oldState, time ) {
 
 	let state = { ...oldState };
+	if(window.animationShouldStop)
+	{
+		state.playerAnimateForward = false;
+		state.playerAnimateForwarding = false;
+		state.playerAnimateCW = false;
+		state.playerAnimateCCW = false;
+		state.playerAnimateTurning = false;
+		state.playerAnimateAttacking = false;
+		for(let i = 0; i < state.monsters.length; i++)
+		{
+			state.monsters[i].animateForward = false;
+			state.monsters[i].animateForwarding = false;
+			state.monsters[i].animateCW = false;
+			state.monsters[i].animateCCW = false;
+			state.monsters[i].animateTurning = false;
+			state.monsters[i].animateAttacking = false;
+		}
+		window.animationShouldStop = false;
+		return state;
+	}
 	let animationCount = 0;
 	// Player Animate Forward
 	if(state.playerAnimateForward)
