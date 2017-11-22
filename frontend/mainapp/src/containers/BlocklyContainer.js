@@ -24,6 +24,10 @@ class BlocklyContainer extends Component {
         return window.Blockly.JavaScript.workspaceToCode(this.workspace);
     }
 
+    getNBlocks = () => {
+        return this.workspace.getAllBlocks().length;
+    }
+
     getXmlText() {
         return window.Blockly.Xml.domToText(window.Blockly.Xml.workspaceToDom(this.workspace));
     }

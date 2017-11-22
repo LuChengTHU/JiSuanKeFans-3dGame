@@ -97,6 +97,31 @@ class DashBoard extends Component {
         }
         let blocklyReadOnly = (this.state.gameState === 'stepping');
 
+        let starNum = 3;
+        try {
+            const blockNumber = window.Game.map.n_blockly;
+            const userNumber = this.blocklyContainer.getNBlocks();
+            if(userNumber <= blockNumber) {
+                starNum = 3;
+            } else if(userNumber <= 2 * blockNumber) {
+                starNum = 2;
+            } else {
+                starNum = 1;
+            }
+            if(blockNumber === 0) {
+                starNum = 3;
+            }
+        } catch(e) {
+            starNum = 3;
+        }
+
+        let starImg = [];
+        for(let i = 0; i < starNum; i++) {
+            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_true.jpg`}/>)
+        }
+        for(let i = starNum; i < 3; i++) {
+            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_false.png`}/>)
+        }
         //TODO
         // window.Game.gameSetMap(fetch_map(1));
 
@@ -131,6 +156,7 @@ class DashBoard extends Component {
                         this.setState({passedOpen: false});
                     }}>分享解法</Button></div>
                     <p>通过</p>
+                    {starImg}
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
                     confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); this.initMap();}}
