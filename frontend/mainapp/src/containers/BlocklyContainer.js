@@ -7,7 +7,6 @@ class BlocklyContainer extends Component {
         this.workspace = null;
         this.mounted = false;
         this.isScriptLoadSucceed = false;
-        this.myUpdateFunction = this.myUpdateFunction.bind(this);
         if(typeof(this.props.refCallback) !== 'undefined')
             this.props.refCallback(this);
     }
