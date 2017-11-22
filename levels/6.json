@@ -1,0 +1,102 @@
+{
+    "id": 6,
+    "title": "level6",
+    "height": 5,
+    "width": 11,
+    "stage": null,
+    "n_blockly": 8,
+    "instr_set": [
+		false,false,false,false,false,false,false,false,false,false,
+		true ,true ,true ,true ,true ,true ,true ,true ,true ,true ,
+		false,true ,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false
+    ],
+    "init_AI_infos": [
+		{
+			"pos": [1, 2],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [3, 2],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [1, 4],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [3, 4],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [1, 6],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [3, 6],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [1, 8],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [3, 8],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		}
+    ],
+    "init_dir": 19,
+    "init_hp": 10,
+    "init_attack": 1,
+    "final_gold": 8,
+    "welcome_msg": "diliuguan",
+    "passed_msg": "guoguan666",
+    "failed_msg": "Failed!",
+    "std_blockly_code": null,
+    "init_pos": [
+        2,
+        1
+    ],
+    "final_pos": [
+        2,
+        9
+    ]
+}
