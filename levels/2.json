@@ -1,0 +1,38 @@
+{
+    "id": 2,
+    "title": "level2",
+    "height": 5,
+    "width": 5,
+    "stage": null,
+    "n_blockly": 5,
+    "instr_set": [
+		false,false,false,false,false,false,false,false,false,false,
+		true ,true ,true ,true ,true ,true ,true ,true ,true ,true ,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false
+    ],
+    "init_AI_infos": [
+    ],
+    "init_dir": 19,
+    "init_hp": 10,
+    "init_attack": 1,
+    "final_gold": 0,
+    "welcome_msg": "dierguan",
+    "passed_msg": "guoguan2",
+    "failed_msg": "Failed!",
+    "std_blockly_code": null,
+    "init_pos": [
+        1,
+        1
+    ],
+    "final_pos": [
+        3,
+        3
+    ]
+}

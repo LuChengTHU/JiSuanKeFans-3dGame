@@ -1,0 +1,38 @@
+{
+    "id": 1,
+    "title": "第一关",
+    "height": 3,
+    "width": 5,
+    "stage": null,
+    "n_blockly": 2,
+    "instr_set": [
+		false,false,false,false,false,false,false,false,false,false,
+		false,true ,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false
+    ],
+    "init_AI_infos": [
+    ],
+    "init_dir": 19,
+    "init_hp": 10,
+    "init_attack": 1,
+    "final_gold": 0,
+    "welcome_msg": "欢迎来到第一关！你需要控制小人向前走两步，就能通关了！",
+    "passed_msg": "恭喜你通关了",
+    "failed_msg": "Failed!",
+    "std_blockly_code": null,
+    "init_pos": [
+        1,
+        1
+    ],
+    "final_pos": [
+        1,
+        3
+    ]
+}
