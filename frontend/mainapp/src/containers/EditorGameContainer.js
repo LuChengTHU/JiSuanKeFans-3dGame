@@ -25,6 +25,7 @@ export default class EditorGameContainer extends Component {
             // scene: null,
             monsters: []
         };
+
     }
 
     createMap(height, width)
@@ -240,6 +241,8 @@ export default class EditorGameContainer extends Component {
                     });
                 });
 
+		if(typeof(this.props.onLoaded) !== 'undefined')
+			this.props.onLoaded();
     }
 
     componentDidUpdate(newProps) {

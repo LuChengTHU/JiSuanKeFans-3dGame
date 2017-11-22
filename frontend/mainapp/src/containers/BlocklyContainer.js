@@ -11,9 +11,8 @@ class BlocklyContainer extends Component {
         this.mounted = false;
         this.initialized = false;
         this.isScriptLoadSucceed = false;
-        if(typeof(this.props.refCallback) !== 'undefined') {
+        if(typeof(this.props.refCallback) !== 'undefined')
             this.props.refCallback(this);
-        }
     }
 
     clear() {
@@ -89,7 +88,10 @@ class BlocklyContainer extends Component {
                 {toolbox: this.props.toolboxXml});
             this.resize(600);
             this.update(this.props, {});
+            if(typeof(this.props.onLoaded) !== 'undefined')
+                this.props.onLoaded();
         }
+        console.log('haha: ' + this.workspace);
     }
 
     update = (newProps, prevProps) => {

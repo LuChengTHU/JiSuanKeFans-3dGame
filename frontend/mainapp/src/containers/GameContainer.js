@@ -65,7 +65,6 @@ export default class GameContainer extends Component {
         this.monsterTurnCW = this.monsterTurnCW.bind(this);
         this.monsterTurnCCW = this.monsterTurnCCW.bind(this);
         this.setPlayerHp = this.setPlayerHp.bind(this);
-
     }
 
     setWeight = ( action, weight ) => {
@@ -450,6 +449,9 @@ export default class GameContainer extends Component {
                     });
 
             });
+
+		if(typeof(this.props.onLoaded) !== 'undefined')
+			this.props.onLoaded();
     };
     
     componentWillUnmount() {
