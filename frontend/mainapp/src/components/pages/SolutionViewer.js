@@ -24,7 +24,8 @@ const SolutionViewer = createReactClass({
             <Grid container spacing={25} justify='center'>
             <Grid item xs={12} sm={6} >
             <div id={'gameContainer'}>
-            <GameContainer gameState={this.state.gameState} gameSetState={()=>{}}/></div>
+            <GameContainer gameState={this.state.gameState} gameSetState={()=>{}}
+            reportHeight={(h)=>{this.blocklyContainer.resize(h)}}/></div>
             <Button onClick={this.loadSolution}>Load</Button>
             <Button onClick={this.run}>Run</Button>
             </Grid>
