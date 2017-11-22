@@ -302,19 +302,33 @@ class SolutionListView(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    @with_pagination(serializer_class=get_solution_serializer_class(RATE_BRIEF))
-    def get(self, request):
-        user_id = int(request.query_params.get('user', 0))
-        map_id = int(request.query_params.get('map', 0))
+    def get(self, request, *args, **kargs):
+        @with_pagination(serializer_class=get_solution_serializer_class(RATE_FULL \
+            if request.query_params.get('details', 'false') == 'true' else RATE_BRIEF))
+        def real_get(*args, **kargs):
+            request = args[1]
+            user_id = int(request.query_params.get('user', 0))
+            map_id = int(request.query_params.get('map', 0))
+            show_self = request.query_params.get('self', 'false')
 
-        res = Solution.objects
+            if show_self == 'true':
+                if request.auth is None:
+                    return Solution.objects.none()
+                user_id = request.user.id
 
-        if user_id != 0:
-            res = res.filter(user_id=user_id)
-        if map_id != 0:
-            res = res.filter(map_id=map_id)
+            res = Solution.objects
 
-        return res.filter(shared=True).all(), {}
+            if show_self != 'true':
+                res = res.filter(shared=True)
+
+            if user_id != 0:
+                res = res.filter(user_id=user_id)
+            if map_id != 0:
+                res = res.filter(map_id=map_id)
+
+            return res.order_by('-id').all(), {}
+
+        return real_get(self, request, *args, **kargs)
         
     @with_res_code
     def post(self, request):

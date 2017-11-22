@@ -15,7 +15,7 @@ import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
 import {getToolboxXml, getDefaultBlocks} from '../../utils/BlocklyAttribute';
-import {create_solution} from '../../interfaces/Solution'
+import {create_solution, fetch_solution_list} from '../../interfaces/Solution'
 import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
@@ -62,6 +62,7 @@ class DashBoard extends Component {
     {
 		window.blocklyCallback = () => {};
 		window.blocklyShouldRun = false;
+		window.animationShouldStop = true;
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
         this.blocklyContainer.highlightBlock('');
@@ -71,7 +72,8 @@ class DashBoard extends Component {
         window.Game.gameInit();
         this.setState({gameState: "stepping"});
         this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode());
-        this.enhancedInterpreter.step();
+		window.blocklyCallback = this.enhancedInterpreter.step;
+		window.blocklyShouldRun = true;
     }
     render()
     {
@@ -93,6 +95,31 @@ class DashBoard extends Component {
         }
         let blocklyReadOnly = (this.state.gameState === 'stepping');
 
+        let starNum = 3;
+        try {
+            const blockNumber = window.Game.map.n_blockly;
+            const userNumber = this.blocklyContainer.getNBlocks();
+            if(userNumber <= blockNumber) {
+                starNum = 3;
+            } else if(userNumber <= 2 * blockNumber) {
+                starNum = 2;
+            } else {
+                starNum = 1;
+            }
+            if(blockNumber === 0) {
+                starNum = 3;
+            }
+        } catch(e) {
+            starNum = 3;
+        }
+
+        let starImg = [];
+        for(let i = 0; i < starNum; i++) {
+            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_true.jpg`}/>)
+        }
+        for(let i = starNum; i < 3; i++) {
+            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_false.png`}/>)
+        }
         //TODO
         // window.Game.gameSetMap(fetch_map(1));
 
@@ -113,7 +140,14 @@ class DashBoard extends Component {
                     </CopyToClipboard>
                 </MessageDialog>
                 <MessageDialog title="提示" open={this.state.passedOpen}
-                    closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
+                    closeText="关闭" onRequestClose={()=>{
+                        // accepted. Store the code.
+                        const code = this.blocklyContainer.getXmlText();
+                        const map_id = this.props.match.params.map_id;
+
+                        create_solution(map_id, code, false);
+                        this.handleClick('passedOpen', false)();
+                    }}>
                     <div><Button onClick={()=>{
                         const code = this.blocklyContainer.getXmlText();
                         const map_id = this.props.match.params.map_id;
@@ -127,6 +161,7 @@ class DashBoard extends Component {
                         this.setState({passedOpen: false});
                     }}>分享解法</Button></div>
                     <p>通过</p>
+                    {starImg}
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
                     confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); console.log('hehe'); this.initMap();}}
@@ -156,13 +191,22 @@ class DashBoard extends Component {
                                         .then((response) => {
                                         if(response && response.data && response.data.res_code === 1) {
                                             this.setState({ map: response.data.map });
-                                            console.log('haha');
                                             this.initMap();
                                             } else {
                                                 // TODO: Error message
                                             }
-                                        });
-                                    }
+                                    });
+
+                                    fetch_solution_list(0, this.props.match.params.map_id, 'true',
+                                        'true', 1, 1).then((list) => {
+                                            if(typeof(list) !== 'undefined' && list.length > 0){
+                                                const solution = list[0];
+                                                this.blocklyContainer.loadXmlText(solution.code);
+                                            }
+                                    });
+                                    
+                                }
+                                
                         }}
                         readOnly={blocklyReadOnly} 
                         defaultBlocks={defaultBlocks} toolboxXml={toolboxXml}

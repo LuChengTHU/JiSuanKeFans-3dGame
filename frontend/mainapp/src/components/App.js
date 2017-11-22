@@ -89,9 +89,12 @@ class App extends Component {
                 <PrivateRoute exact path="/editor/:map_id/" component={MapEditor}/>
                 <PrivateRoute exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/solution/:sol_id/" component={SolutionViewer}/>
-                <Route exact path="/stages/" component={StageGallery}/>
-                <PrivateRoute exact path="/info/" component={InfoModify}/>
                 <Route path="/login" component={PleaseLogin}/>
+                <Route exact path="/searchmaps/:author_id/" component={StageGallery}/>
+                <Route exact path="/allmaps/" component={StageGallery}/>
+				<Route exact path="/stages/" component={(props) => <StageGallery
+                         author_id={1} {...props}/>}/>
+                <PrivateRoute exact path="/info/" component={InfoModify}/>
                 {this.state.user ?
                     <Route exact path="/mymaps/" component={(props) => <MapLibrary
                          author={this.state.user} {...props}/>}/>

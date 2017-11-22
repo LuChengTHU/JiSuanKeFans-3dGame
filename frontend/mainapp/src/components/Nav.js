@@ -57,12 +57,17 @@ class Nav extends Component {
                     <MenuIcon />
                 </IconButton>
                 <Typography type="title" color="inherit" className={this.classes.flex}>
-                    Title
+                    JiSuanKeFans
                 </Typography>
                 <div>
                     <Button color="contrast" onClick={() => {
                         this.setState({loginOpen:false, registerOpen:false});
-                        this.props.history.push('/stages');}}>关卡</Button>
+                        this.props.history.push('/stages');}}>主线关卡</Button>
+                </div>
+                <div>
+                    <Button color="contrast" onClick={() => {
+                        this.setState({loginOpen:false, registerOpen:false});
+                        this.props.history.push('/allmaps');}}>所有关卡</Button>
                 </div>
                 <div>
                     <Button color="contrast" onClick={() => {
