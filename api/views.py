@@ -4,7 +4,8 @@ import base64
 
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly,\
+    AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import views, status
@@ -36,7 +37,8 @@ def with_res_code(func):
 
     return get_response
 
-def with_record_fetch(serializer_class, record_entrypoint = 'data', id_arg_name = 'id'):
+def with_record_fetch(serializer_class, record_entrypoint = 'data', id_arg_name = 'id', 
+    check_permission = lambda record, request : True):
     def with_record_fetch_decorator(func):
         
         @with_res_code
@@ -46,6 +48,8 @@ def with_record_fetch(serializer_class, record_entrypoint = 'data', id_arg_name 
                 record = record_model.objects.get(id=arg_dict[id_arg_name])
             except:
                 return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+            if not check_permission(record, arg_list[1]):
+                return Response({}, status=status.HTTP_403_FORBIDDEN), 2
             extra_data[record_entrypoint] = serializer_class(record).data
             return Response(extra_data), 1
         return get_response
@@ -290,7 +294,11 @@ class StageView(APIView):
 
 stage_view = StageView.as_view()
 
+# only show shared solutions
 class SolutionListView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @with_pagination(serializer_class=get_solution_serializer_class(RATE_BRIEF))
     def get(self, request):
         user_id = int(request.query_params.get('user', 0))
@@ -303,13 +311,15 @@ class SolutionListView(APIView):
         if map_id != 0:
             res = res.filter(map_id=map_id)
 
-        return res.all(), {}
+        return res.filter(shared=True).all(), {}
         
     @with_res_code
     def post(self, request):
         sol_info = request.data['solution']
+        solution = Solution()
+        solution.user = request.user
 
-        serializer = get_solution_serializer_class(RATE_CREATE)(data=sol_info)
+        serializer = get_solution_serializer_class(RATE_CREATE)(solution, data=sol_info)
         if serializer.is_valid():
             try:
                 solution = serializer.save()
@@ -324,8 +334,12 @@ class SolutionListView(APIView):
 solution_list_view = SolutionListView.as_view()
 
 class SolutionView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @with_record_fetch(get_solution_serializer_class(RATE_FULL), record_entrypoint='solution',
-        id_arg_name='sol_id')
+        id_arg_name='sol_id', check_permission=lambda record, request: 
+            (record.shared or (request.auth is not None and record.user.id == request.user.id)))
     def get(self, request, sol_id=None):
         return Solution, {}
     

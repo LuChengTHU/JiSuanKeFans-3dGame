@@ -14,6 +14,11 @@ import {fetch_map} from '../../interfaces/Map';
 import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
+import {create_solution} from '../../interfaces/Solution'
+import Typography from 'material-ui/Typography'
+import TextField from 'material-ui/TextField'
+import {CopyToClipboard} from 'react-copy-to-clipboard'
+
 import EnhancedInterpreter from '../EnhancedInterpreter';
 const styles = theme => ({
   root: {
@@ -33,6 +38,8 @@ class DashBoard extends Component {
             gameState: "ready", // one of 'ready', 'stepping', 'running', 'failed', 'passed'
             passedOpen: false,
             failedOpen: false,
+            sharedOpen: false,
+            solutionId: -1
         }
         fetch_map(this.props.match.params.map_id)
         .then((response) => {
@@ -66,7 +73,7 @@ class DashBoard extends Component {
     run = () => {
         window.Game.gameInit();
         this.setState({gameState: "stepping"});
-        this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode())
+        this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode());
         this.enhancedInterpreter.step();
     }
     render()
@@ -78,6 +85,9 @@ class DashBoard extends Component {
         if (this.state.map === null) welcomeMsg = '加载中...';
         else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';
         else welcomeMsg = this.state.map['welcome_msg'];
+        const solutionUrl = `${typeof(process.env.REACT_APP_AC_BASE) === 'undefined' ? 
+                            'http://localhost:3000' :
+                             process.env.REACT_APP_AC_BASE}/solution/${this.state.solutionId}/`;
         if (this.state.map) {
             gameoverMsg = this.state.map['gameover_msg'];
             passedMsg = this.state.map['passed_msg'];
@@ -93,9 +103,31 @@ class DashBoard extends Component {
                     closeText="关闭" onRequestClose={this.handleClick('welcomeOpen', false)}>
                     {welcomeMsg} 
                 </MessageDialog>
+                <MessageDialog title="提示" open={this.state.sharedOpen}
+                    closeText="好的" onRequestClose={this.handleClick('sharedOpen', false)}>
+                    <Typography type="title">解法分享成功！</Typography>
+                    <Typography type="body2">请将下面的链接分享给好友：</Typography>
+                    <TextField disabled autoFocus fullWidth
+                    defaultValue={solutionUrl}/>
+                    <CopyToClipboard text={solutionUrl}>
+                        <Button>复制链接</Button>
+                    </CopyToClipboard>
+                </MessageDialog>
                 <MessageDialog title="提示" open={this.state.passedOpen}
                     closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
-                    {passedMsg}
+                    <div><Button onClick={()=>{
+                        const code = this.blocklyContainer.getXmlText();
+                        const map_id = this.props.match.params.map_id;
+                        const shared = true;
+                        create_solution(map_id, code, shared).then(
+                            (id)=>{
+                                this.setState({
+                                    sharedOpen: true,
+                                    solutionId: id
+                                });});
+                        this.setState({passedOpen: false});
+                    }}>分享解法</Button></div>
+                    <p>通过</p>
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
                     confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); this.initMap();}}

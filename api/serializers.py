@@ -106,18 +106,18 @@ def get_solution_serializer_class(rate):
             map = MapBriefSerializer(required=False)
         else:
             user = serializers.PrimaryKeyRelatedField(many=False, read_only=False, 
-                queryset=User.objects.all())
+                queryset=User.objects.all(), required=False)
             map = serializers.PrimaryKeyRelatedField(many=False, read_only=False,
                 queryset=Map.objects.all())
         
         class Meta:
             model = Solution
             if rate == RATE_BRIEF:
-                fields = ('id', 'user', 'map')
+                fields = ('id', 'user', 'map', 'shared')
             elif rate == RATE_FULL:
-                fields = ('id', 'user', 'map', 'code')
+                fields = ('id', 'user', 'map', 'code', 'shared')
             else:
-                fields = ('user', 'map', 'code')
+                fields = ('user', 'map', 'code', 'shared')
         
     return SolutionSerializer
  

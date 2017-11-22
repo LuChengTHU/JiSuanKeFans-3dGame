@@ -87,4 +87,5 @@ class Solution(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     map = models.ForeignKey(Map, on_delete=models.CASCADE)
 
+    shared = models.BooleanField(default=False)
     code = models.TextField()
