@@ -12,11 +12,7 @@ import EnhancedInterpreter from '../EnhancedInterpreter';
 
 const SolutionViewer = createReactClass({
     getInitialState: function(){
-        fetch_solution(this.props.match.params.sol_id).then(
-            (solution) => {
-                this.solution = solution;
-            }
-        );
+        this.mapInitialised = false;
         return {};
     },
     render: function(){
@@ -30,7 +26,18 @@ const SolutionViewer = createReactClass({
             <Button onClick={this.run}>Run</Button>
             </Grid>
             <Grid item xs={12} sm={6}>
-            <BlocklyContainer readOnly refCallback={(e)=>{this.blocklyContainer = e;}}/>
+            <BlocklyContainer readOnly refCallback={(e)=>{this.blocklyContainer = e;}}
+                onLoaded={()=>{
+                    if(!this.mapInitialised){
+                        this.mapInitialised = true;
+                        fetch_solution(this.props.match.params.sol_id).then(
+                            (solution) => {
+                                this.solution = solution;
+                                this.loadSolution();
+                            }
+                        );
+                    }
+                }}/>
             </Grid>
             </Grid>
         );

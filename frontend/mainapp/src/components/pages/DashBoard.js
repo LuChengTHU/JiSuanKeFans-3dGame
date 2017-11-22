@@ -42,14 +42,8 @@ class DashBoard extends Component {
             sharedOpen: false,
             solutionId: -1
         }
-        fetch_map(this.props.match.params.map_id)
-        .then((response) => {
-            if(response && response.data && response.data.res_code === 1) {
-                this.setState({ map: response.data.map });
-            } else {
-                // TODO: Error message
-            }
-        });
+        this.mapInitialised = false;
+      
     }
     handleClick = (name, value) => () => {
         this.setState({
@@ -100,7 +94,7 @@ class DashBoard extends Component {
         //TODO
         // window.Game.gameSetMap(fetch_map(1));
 
-        return (
+        const res = (
             <div className={this.classes.root}>
                 <MessageDialog title="提示" open={this.state.welcomeOpen} 
                     closeText="关闭" onRequestClose={this.handleClick('welcomeOpen', false)}>
@@ -133,7 +127,7 @@ class DashBoard extends Component {
                     <p>通过</p>
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
-                    confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); this.initMap();}}
+                    confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); console.log('hehe'); this.initMap();}}
                     closeText="关闭" onRequestClose={this.handleClick('failedOpen', false)}>
                     {gameoverMsg}
                 </MessageDialog>
@@ -150,13 +144,33 @@ class DashBoard extends Component {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
-                        refCallback={(e) => { this.blocklyContainer = e; }}
-                        readOnly={blocklyReadOnly}
-                        defaultBlocks={defaultBlocks} toolboxXml={toolboxXml} />
+                        refCallback={(e) => { this.blocklyContainer = e; 
+                        }}
+                        onLoaded={()=>{
+                                if(!this.mapInitialised){
+                                    this.mapInitialised = true;
+                                 
+                                    fetch_map(this.props.match.params.map_id)
+                                        .then((response) => {
+                                        if(response && response.data && response.data.res_code === 1) {
+                                            this.setState({ map: response.data.map });
+                                            console.log('haha');
+                                            this.initMap();
+                                            } else {
+                                                // TODO: Error message
+                                            }
+                                        });
+                                    }
+                        }}
+                        readOnly={blocklyReadOnly} 
+                        defaultBlocks={defaultBlocks} toolboxXml={toolboxXml}
+                        />
                 </Grid>
                 </Grid>
             </div>
         );
+
+        return res;
     }
     componentDidMount = () => {
     }

@@ -4,50 +4,57 @@ import React from 'react'
 import {Component} from 'react'
 import createReactClass from 'create-react-class'
 import {fetch_map, create_map, modify_map} from '../../interfaces/Map'
+const INIT_MAP = { // initial map
+    title: 'Untitled',
+    height: 10,
+    width: 10,
+    n_max_hand_boxes: 4,
+    n_blockly: 10,
+    instr_set: [true, true, true],
+    init_AI_infos: [],
+    init_pos: [1, 1],
+    final_pos: [1, 2],
+    init_ground_colors: [[0, 0, 0], [0, 0, 0]],
+    final_ground_colors: null,
+    init_ground_boxes: [[null, null, null], [null, null, null]],
+    final_ground_boxes: null,
+    init_hand_boxes: [],
+    final_hand_boxes: [],
+    init_dir:16,
+    failed_msg: 'Failed!',
+    passed_msg: 'Passed!',
+    std_blockly_code: '',
+    welcome_msg: 'Welcome!'
+};
+
 
 const MapEditor = createReactClass({
     getInitialState: function(){
-        const INIT_MAP = { // initial map
-            title: 'Untitled',
-            height: 10,
-            width: 10,
-            n_max_hand_boxes: 4,
-            n_blockly: 10,
-            instr_set: [true, true, true],
-            init_AI_infos: [],
-            init_pos: [1, 1],
-            final_pos: [1, 2],
-            init_ground_colors: [[0, 0, 0], [0, 0, 0]],
-            final_ground_colors: null,
-            init_ground_boxes: [[null, null, null], [null, null, null]],
-            final_ground_boxes: null,
-            init_hand_boxes: [],
-            final_hand_boxes: [],
-            init_dir:16,
-            failed_msg: 'Failed!',
-            passed_msg: 'Passed!',
-            std_blockly_code: '',
-            welcome_msg: 'Welcome!'
-        };
+        this.mapInitialised = false;
 
-        let map = INIT_MAP;
-        window.map = map;
-        if('map_id' in this.props.match.params){
-            this.map_id = this.props.match.params['map_id'];
-            fetch_map(this.map_id).then(()=>{if('map' in window){
-                map = window.map;
-                this.setState({inputText: JSON.stringify(map, null, 4)});
-            }});
-        } else{
-            this.map_id = -1;
-        }
-        return {inputText: JSON.stringify(map, null, 4)};
+        return {inputText: JSON.stringify(INIT_MAP, null, 4)};
     },
     handleTextChange: function(event){
         this.setState({inputText: event.target.value});
     },
     render: function(){
-        const editorGameContainer = <EditorGameContainer/>;
+        const editorGameContainer = <EditorGameContainer onLoaded={() => {
+            if(!this.mapInitialised){
+                this.mapInitialised = true;
+                window.map = INIT_MAP;
+                if('map_id' in this.props.match.params){
+                    this.map_id = this.props.match.params['map_id'];
+                    fetch_map(this.map_id).then(()=>{if('map' in window){
+                        window.Game.gameSetMap(window.map);
+                        this.setState({inputText: JSON.stringify(window.map, null, 4)});
+                    }});
+                } else{
+                    window.Game.gameSetMap(window.map);
+                    this.setState({inputText: JSON.stringify(window.map, null, 4)});
+                    this.map_id = -1;
+                }
+            }
+        }}/>;
         this.inputBox = <TextField onChange={this.handleTextChange}
             value={this.state.inputText} 
             multiline={true} fullWidth={true} rows={30} rowsMax={30}/>;
@@ -67,7 +74,6 @@ const MapEditor = createReactClass({
     },
     updateMap: function(){
         let new_map = JSON.parse(this.state.inputText);
-        console.log(new_map);
         window.map = new_map;
         window.Game.gameSetMap(new_map);
     },
