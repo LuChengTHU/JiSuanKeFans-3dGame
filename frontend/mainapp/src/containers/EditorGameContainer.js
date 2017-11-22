@@ -21,8 +21,6 @@ export default class EditorGameContainer extends Component {
         this.state = {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, 0, 0 ),
-            // mouseInput: null, 
-            // scene: null,
             monsters: []
         };
     }
@@ -89,16 +87,6 @@ export default class EditorGameContainer extends Component {
 			return {monsters: ms};
 		});
 	}
-	
-	// setMonsterHp(id, hp)
-	// {
-	// 	if(hp < 0) hp = 0;
-	// 	this.setState((prevState, props) => {
-	// 		let ms = prevState.monsters.slice(0);
-	// 		ms[id].hp = hp;
-	// 		return {monsters: ms};
-	// 	});
-	// }
     
     setWeight = ( action, weight ) => {
         action.enabled = true;
@@ -152,7 +140,6 @@ export default class EditorGameContainer extends Component {
                     mapBlocks={ mapBlocks }
                     knightMesh={ knightMesh }
                     monsters={ monsters }
-                    // mouseInput={ mouseInput }
                 /> : 'Loading' }
             </div>
         </div>;
@@ -243,14 +230,13 @@ export default class EditorGameContainer extends Component {
     }
 
     componentDidUpdate(newProps) {
-        // const {
-        //     mouseInput,
-        // } = this.state;
 
         const {
             width,
             height,
         } = this.props;
+
+        console.log(width, height)
 
         // if (width !== newProps.width || height !== newProps.height) {
         //     mouseInput.containerResized();
@@ -323,11 +309,9 @@ export default class EditorGameContainer extends Component {
         //     });
         // }
 
-        if (this.state.camera !== this.camera) {
-            this.setState({
-                camera: this.camera,
-            });
-        }
+        this.setState({
+            camera: this.camera,
+        });
     
     };
 
