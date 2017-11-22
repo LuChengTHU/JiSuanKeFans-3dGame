@@ -380,7 +380,7 @@ export default class GameContainer extends Component {
         let loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
             (geometry, materials) => {
-                for(let i = 0; i <　materials.length; i++) {
+                for(let i = 0; i < materials.length; i++) {
                     materials[i].emissive.set(0x101010);
                     materials[i].skinning = true;
                     materials[i].morphTargets = true;
