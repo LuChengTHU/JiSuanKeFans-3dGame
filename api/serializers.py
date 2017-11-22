@@ -48,8 +48,7 @@ class MapBriefSerializer(serializers.ModelSerializer):
 class MapFullSerializer(serializers.ModelSerializer):
     author = get_user_serializer_class(RATE_BRIEF)(required=False)
 
-    JSON_FIELDS = ['init_hand_boxes', 'final_hand_boxes', 'instr_set', 'init_ground_boxes',\
-        'final_ground_boxes', 'init_ground_colors', 'final_ground_colors', 'init_AI_infos']
+    JSON_FIELDS = ['instr_set', 'init_AI_infos']
 
     @staticmethod
     def repr_inflate(odata):
@@ -111,18 +110,18 @@ def get_solution_serializer_class(rate):
             map = MapBriefSerializer(required=False)
         else:
             user = serializers.PrimaryKeyRelatedField(many=False, read_only=False, 
-                queryset=User.objects.all())
+                queryset=User.objects.all(), required=False)
             map = serializers.PrimaryKeyRelatedField(many=False, read_only=False,
                 queryset=Map.objects.all())
         
         class Meta:
             model = Solution
             if rate == RATE_BRIEF:
-                fields = ('id', 'user', 'map')
+                fields = ('id', 'user', 'map', 'shared')
             elif rate == RATE_FULL:
-                fields = ('id', 'user', 'map', 'code')
+                fields = ('id', 'user', 'map', 'code', 'shared')
             else:
-                fields = ('user', 'map', 'code')
+                fields = ('user', 'map', 'code', 'shared')
         
     return SolutionSerializer
  

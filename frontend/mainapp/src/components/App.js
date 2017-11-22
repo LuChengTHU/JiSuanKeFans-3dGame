@@ -88,6 +88,7 @@ class App extends Component {
                 <Route exact path="/game/:map_id/" component={DashBoard}/>
                 <Route exact path="/editor/:map_id/" component={MapEditor}/>
                 <Route exact path="/editor/" component={MapEditor}/>
+                <Route exact path="/solution/:sol_id/" component={SolutionViewer}/>
                 <Route exact path="/stages/" component={StageGallery}/>
                 <Route exact path="/info/" component={InfoModify}/>
                 {this.state.user ?
