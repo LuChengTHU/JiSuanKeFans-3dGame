@@ -428,8 +428,9 @@ class ForgetView(APIView):
         user.save()
 
         # Send Email
+        print(email)
         send_mail('Password Reset', random_password, '计蒜客粉丝队 <jisuankefans@163.com>',
-                 ['bill125@gmail.com'], fail_silently=False)
+                 [email], fail_silently=False)
         
         return Response({}, status=status.HTTP_200_OK), 1
         
