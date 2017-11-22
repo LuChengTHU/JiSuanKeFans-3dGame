@@ -13,13 +13,13 @@ import StageGallery from './pages/StageGallery'
 import MapLibrary from './pages/MapLibrary'
 import SolutionViewer from './pages/SolutionViewer'
 import InfoModify from './pages/InfoModify'
+import {isLoggedIn, PleaseLogin, PrivateRoute} from '../utils/Permission'
 
 const styles = theme => ({
     root: {
       flexGrow: 1,
     },
   });
-
 
 //for testing only
 const MapListView = createReactClass({
@@ -86,14 +86,15 @@ class App extends Component {
             <div className={this.classes.root}>
                 <Nav user={this.state.user} onLoginChange={this.onLoginChange}/>
                 <Route exact path="/game/:map_id/" component={DashBoard}/>
-                <Route exact path="/editor/:map_id/" component={MapEditor}/>
-                <Route exact path="/editor/" component={MapEditor}/>
+                <PrivateRoute exact path="/editor/:map_id/" component={MapEditor}/>
+                <PrivateRoute exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/solution/:sol_id/" component={SolutionViewer}/>
+                <Route path="/login" component={PleaseLogin}/>
                 <Route exact path="/searchmaps/:author_id/" component={StageGallery}/>
                 <Route exact path="/allmaps/" component={StageGallery}/>
 				<Route exact path="/stages/" component={(props) => <StageGallery
                          author_id={1} {...props}/>}/>
-                <Route exact path="/info/" component={InfoModify}/>
+                <PrivateRoute exact path="/info/" component={InfoModify}/>
                 {this.state.user ?
                     <Route exact path="/mymaps/" component={(props) => <MapLibrary
                          author={this.state.user} {...props}/>}/>

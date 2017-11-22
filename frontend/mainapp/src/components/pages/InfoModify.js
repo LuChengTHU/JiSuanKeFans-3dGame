@@ -8,16 +8,31 @@ import Typography from 'material-ui/Typography'
 import List from 'material-ui/List'
 import MenuItem from 'material-ui/Menu/MenuItem'
 import {withStyles} from 'material-ui/styles'
+import Card, { CardActions, CardContent } from 'material-ui/Card';
 
 const styles = theme => ({
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
-        width: 200,
+        // marginLeft: theme.spacing.unit,
+        // marginRight: theme.spacing.unit,
+        margin: theme.spacing.unit,
+        width: 300,
     },
     menu: {
-        width: 200,
+        width: 300,
     },
+    root: {
+        display: 'flex',
+        justifyContent: 'center',
+    },
+    buttonGroup: {
+        display: 'flex',
+        justifyContent: 'center',
+    },
+    card: {
+        '&:first-child': {
+            paddingTop: theme.spacing.unit,
+        },
+    }
 });
 
 const genders = [
@@ -75,7 +90,7 @@ class InfoModify extends React.Component {
             })
     }
     
-    submitInfo = () => {
+    submitInfo = (e) => {
         let _new_password = this.state.new_password
         if (_new_password === '')
             _new_password = this.state.old_password
@@ -86,24 +101,33 @@ class InfoModify extends React.Component {
             'new_password': _new_password,
         }
         
-        axios.post('modify/', paylord)
+        axios.post('modify/', paylord);
+        // e.preventDefault();
     }
 
     render() 
     {
         const { classes } = this.props;
         return (
-            <div>
-                <Typography type="title" align="center"> 个人信息 </Typography>
+            <div className={classes.root}>
+                <form onSubmit={this.submitInfo}>
                 {/* <List> */}
+      <Card className={classes.card}>
+        <CardContent>
+                <Typography type="headline" component="h2" align="center"> 个人信息 </Typography>
+            <div>
                     <TextField 
+                        className={classes.textField}
                         required={true}
                         id="username"
                         label="用户名"
                         value={this.state.username}
                         onChange={this.handleInputChange('username')}
                     />
+                    </div>
+                    <div>
                     <TextField
+                        className={classes.textField}
                         required={true}
                         id="gender"
                         label="性别"
@@ -122,8 +146,11 @@ class InfoModify extends React.Component {
                             </MenuItem>
                         ))}
                     </TextField>
+                    </div>
+                    <div>
                     <TextField 
-                        required={false}
+                        className={classes.textField}
+                        required={true}
                         id="old_password"
                         type="password"
                         label="原密码"
@@ -131,7 +158,10 @@ class InfoModify extends React.Component {
                         value={this.state.old_password}
                         onChange={this.handleInputChange('old_password')}
                     />
+                    </div>
+                    <div>
                     <TextField 
+                        className={classes.textField}
                         required={false}
                         id="new_password"
                         type="password"
@@ -140,13 +170,19 @@ class InfoModify extends React.Component {
                         value={this.state.new_password}
                         onChange={this.handleInputChange('new_password')}
                     />
-                    <Button onClick={this.submitInfo} color="primary">
+                    </div>
+                    <div className={classes.buttonGroup}>
+                    <Button color="primary" type={'submit'}>
                         提交
                     </Button>
                     <Button onClick={this.updateInfo} color="primary">
                         重置
                     </Button>
+                    </div>
+                    </CardContent>
+                </Card>
                 {/* </List> */}
+                </form>
             </div>
         );
     }
