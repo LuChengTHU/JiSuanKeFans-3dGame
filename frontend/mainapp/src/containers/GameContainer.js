@@ -257,6 +257,30 @@ export default class GameContainer extends Component {
 				playerDirection : new Vector3(x, 0, z),
 			}
 		);
+		if(z === 1)
+			this.setState(
+				{
+					playerRotation : new Euler(0, 0, 0),
+				}
+			);
+		if(z === -1)
+			this.setState(
+				{
+					playerRotation : new Euler(0, Math.PI, 0),
+				}
+			);
+		if(x === 1)
+			this.setState(
+				{
+					playerRotation : new Euler(0, Math.PI / 2, 0),
+				}
+			);
+		if(x === -1)
+			this.setState(
+				{
+					playerRotation : new Euler(0, -Math.PI / 2, 0),
+				}
+			);
 	}
 	
 	setMonsterDirection(id, x, z)
@@ -559,6 +583,7 @@ export default class GameContainer extends Component {
 			width = divObj.clientWidth;
 			// height = divObj.clientHeight;
 			height = window.innerHeight * .8;
+			this.props.reportHeight(height);
 		}
 
         const {

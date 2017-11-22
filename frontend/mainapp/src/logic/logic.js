@@ -28,6 +28,14 @@ export default class Game {
 		
 		window.ui.createMap(map.height, map.width);
 		window.ui.createPlayer(map.init_pos[0], map.init_pos[1], map.init_hp);
+		if(Game.map.init_dir === Game.GameUp)
+			window.ui.setPlayerDirection(-1, 0);
+		if(Game.map.init_dir === Game.GameLeft)
+			window.ui.setPlayerDirection(0, -1);
+		if(Game.map.init_dir === Game.GameDown)
+			window.ui.setPlayerDirection(1, 0);
+		if(Game.map.init_dir === Game.GameRight)
+			window.ui.setPlayerDirection(0, 1);
 		if(map.final_pos)
 			window.ui.setTargetPos(map.final_pos[0], map.final_pos[1]);
 		else
