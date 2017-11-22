@@ -62,6 +62,7 @@ class DashBoard extends Component {
     {
 		window.blocklyCallback = () => {};
 		window.blocklyShouldRun = false;
+		window.animationShouldStop = true;
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
         this.blocklyContainer.highlightBlock('');
