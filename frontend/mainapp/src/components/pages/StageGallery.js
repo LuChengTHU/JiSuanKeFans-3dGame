@@ -8,22 +8,42 @@ import {withStyles} from 'material-ui/styles'
 const styles = theme => ({});
 
 const StageGallery = createReactClass({
-    mapFetcher: {
-        fetch: pageNo => axios.get('map/?pageNo=' + pageNo).then(response =>
-            ({
-                map_list: response.data.list, has_prev: response.data.has_prev,
-                has_next: response.data.has_next
-            })
-        )
-    },
+    getInitialState: function(){
+        if(this.props.author_id)
+            this.author_id = this.props.author_id;
+        else if('author_id' in this.props.match.params){
+            this.author_id = this.props.match.params['author_id'];
+        } else{
+            this.author_id = -1;
+        }
+		console.log(this.author_id);
+		this.mapFetcher = {
+			fetch: pageNo => axios.get('map/?pageNo=' + pageNo + (this.author_id !== -1 ? "&authorId=" + this.author_id : "")).then(response =>
+				({
+					map_list: response.data.list, has_prev: response.data.has_prev,
+					has_next: response.data.has_next
+				})
+			)
+		};
+		return null;
+	},
     render: function(){
-        return (
-            <div>
-                <Typography type="title" align="center">所有关卡</Typography> 
-                <MapChooser mapFetcher={this.mapFetcher}
-                    onClick={(map) => this.props.history.push('/game/' + map.id + '/')} />
-            </div>
-        );
+		if(this.author_id === 1)
+			return (
+				<div>
+					<Typography type="title" align="center">主线关卡</Typography> 
+					<MapChooser mapFetcher={this.mapFetcher}
+						onClick={(map) => this.props.history.push('/game/' + map.id + '/')} />
+				</div>
+			);
+		else
+			return (
+				<div>
+					<Typography type="title" align="center">所有关卡</Typography> 
+					<MapChooser mapFetcher={this.mapFetcher}
+						onClick={(map) => this.props.history.push('/game/' + map.id + '/')} />
+				</div>
+			);
     }
 });
 
