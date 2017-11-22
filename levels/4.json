@@ -1,0 +1,54 @@
+{
+    "id": 4,
+    "title": "level4",
+    "height": 5,
+    "width": 5,
+    "stage": null,
+    "n_blockly": 10,
+    "instr_set": [
+		false,false,false,false,false,false,false,false,false,false,
+		true ,true ,true ,true ,true ,true ,true ,true ,true ,true ,
+		false,true ,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false
+    ],
+    "init_AI_infos": [
+		{
+			"pos": [1, 3],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCW);",
+			"dir": 17
+		},
+		{
+			"pos": [3, 1],
+			"id": "naive",
+			"hp": 1,
+			"attack": 1,
+			"code": "Game.gameTurn(Game.GameCCW);",
+			"dir": 17
+		}
+    ],
+    "init_dir": 19,
+    "init_hp": 10,
+    "init_attack": 1,
+    "final_gold": 2,
+    "welcome_msg": "disiguan",
+    "passed_msg": "guoguan4",
+    "failed_msg": "Failed!",
+    "std_blockly_code": null,
+    "init_pos": [
+        1,
+        1
+    ],
+    "final_pos": [
+        3,
+        3
+    ]
+}
