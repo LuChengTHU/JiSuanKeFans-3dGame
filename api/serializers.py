@@ -43,8 +43,7 @@ class MapBriefSerializer(serializers.ModelSerializer):
 class MapFullSerializer(serializers.ModelSerializer):
     author = get_user_serializer_class(RATE_BRIEF)(required=False)
 
-    JSON_FIELDS = ['init_hand_boxes', 'final_hand_boxes', 'instr_set', 'init_ground_boxes',\
-        'final_ground_boxes', 'init_ground_colors', 'final_ground_colors', 'init_AI_infos']
+    JSON_FIELDS = ['instr_set', 'init_AI_infos']
 
     @staticmethod
     def repr_inflate(odata):
