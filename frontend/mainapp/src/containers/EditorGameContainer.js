@@ -55,6 +55,50 @@ export default class EditorGameContainer extends Component {
 			}
 		);
     }
+
+    addMonster(id, x, z, maxHp)
+	{
+	    let mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
+        mesh.scale.set(0.15, 0.15, 0.15);
+        let mixer = new THREE.AnimationMixer(mesh);
+        let moveAction = mixer.clipAction(mesh.geometry.animations[1]);
+        let attackAction = mixer.clipAction(mesh.geometry.animations[0]);
+        this.setWeight(moveAction, 0);
+        this.setWeight(attackAction, 1);
+        let actions = [moveAction, attackAction];
+        actions.forEach(function (action) {
+            action.play();
+        });
+
+		this.setState((prevState, props) => {
+			let ms = prevState.monsters.slice(0);
+			if(id >= ms.length)
+				ms.length = id + 1;
+			ms[id] =
+			{
+				position: new Vector3(x, 0.3, z),
+				direction: new Vector3(1, 0, 0),
+				rotation: new Euler(),
+				maxHp: maxHp,
+				hp: maxHp,
+                mesh: mesh,
+                mixer: mixer,
+                actions: actions,
+                currentAction: attackAction
+			};
+			return {monsters: ms};
+		});
+	}
+	
+	// setMonsterHp(id, hp)
+	// {
+	// 	if(hp < 0) hp = 0;
+	// 	this.setState((prevState, props) => {
+	// 		let ms = prevState.monsters.slice(0);
+	// 		ms[id].hp = hp;
+	// 		return {monsters: ms};
+	// 	});
+	// }
     
     setWeight = ( action, weight ) => {
         action.enabled = true;
@@ -133,9 +177,6 @@ export default class EditorGameContainer extends Component {
         this.camera.position.x = 5;
         this.camera.position.y = 5;
         this.camera.position.z = 0;
-        // this.camera.lookAt.x = 5;
-        // this.camera.lookAt.y = 0;
-        // this.camera.lookAt.z = 5;
 
         const controls = new TracerControls(this.camera, container);
 
@@ -184,6 +225,21 @@ export default class EditorGameContainer extends Component {
                 });
                 this.requestGameLoop();
             });
+
+            let monsterLoader = new THREE.JSONLoader();
+            monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
+                (geometry, materials) => {
+                    let material = materials[0];
+                    material.emissive.set(0x101010);
+                    material.skinning = true;
+                    material.morphTargets = true;
+
+                    this.setState({
+                        monsterGeometry: geometry,
+                        monsterMaterial: material
+                    });
+                });
+
     }
 
     componentDidUpdate(newProps) {
@@ -191,10 +247,10 @@ export default class EditorGameContainer extends Component {
         //     mouseInput,
         // } = this.state;
 
-        // const {
-        //     width,
-        //     height,
-        // } = this.props;
+        const {
+            width,
+            height,
+        } = this.props;
 
         // if (width !== newProps.width || height !== newProps.height) {
         //     mouseInput.containerResized();
@@ -273,18 +329,6 @@ export default class EditorGameContainer extends Component {
             });
         }
     
-        // const oldState = this.state;
-    
-        // Apply our reducer functions to the "game state", which for this
-        // example is held in local container state. It could be moved into
-        // a redux/flux store and udpated once per game loop.
-        // const newState = playerMovement( oldState, time );
-        // if(!this.state.playerAnimateAttacking) {
-        //     newState.playerAnimateAttacking = false;
-        // }
-        // this.setState( newState );
-        // if(newState.ready)
-        //     window.blocklyCallback();
     };
 
     onTrackballChange = () => {
