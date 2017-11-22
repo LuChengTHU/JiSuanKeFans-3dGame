@@ -15,7 +15,7 @@ import MessageDialog from '../MessageDialog';
 import Button from 'material-ui/Button';
 import Logic from '../../logic/logic';
 import {getToolboxXml, getDefaultBlocks} from '../../utils/BlocklyAttribute';
-import {create_solution} from '../../interfaces/Solution'
+import {create_solution, fetch_solution_list} from '../../interfaces/Solution'
 import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
@@ -113,7 +113,14 @@ class DashBoard extends Component {
                     </CopyToClipboard>
                 </MessageDialog>
                 <MessageDialog title="提示" open={this.state.passedOpen}
-                    closeText="关闭" onRequestClose={this.handleClick('passedOpen', false)}>
+                    closeText="关闭" onRequestClose={()=>{
+                        // accepted. Store the code.
+                        const code = this.blocklyContainer.getXmlText();
+                        const map_id = this.props.match.params.map_id;
+
+                        create_solution(map_id, code, false);
+                        this.handleClick('passedOpen', false)();
+                    }}>
                     <div><Button onClick={()=>{
                         const code = this.blocklyContainer.getXmlText();
                         const map_id = this.props.match.params.map_id;
@@ -156,13 +163,22 @@ class DashBoard extends Component {
                                         .then((response) => {
                                         if(response && response.data && response.data.res_code === 1) {
                                             this.setState({ map: response.data.map });
-                                            console.log('haha');
                                             this.initMap();
                                             } else {
                                                 // TODO: Error message
                                             }
-                                        });
-                                    }
+                                    });
+
+                                    fetch_solution_list(0, this.props.match.params.map_id, 'true',
+                                        'true', 1, 1).then((list) => {
+                                            if(typeof(list) !== 'undefined' && list.length > 0){
+                                                const solution = list[0];
+                                                this.blocklyContainer.loadXmlText(solution.code);
+                                            }
+                                    });
+                                    
+                                }
+                                
                         }}
                         readOnly={blocklyReadOnly} 
                         defaultBlocks={defaultBlocks} toolboxXml={toolboxXml}
