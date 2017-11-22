@@ -74,7 +74,6 @@ const MapEditor = createReactClass({
     },
     updateMap: function(){
         let new_map = JSON.parse(this.state.inputText);
-        console.log(new_map);
         window.map = new_map;
         window.Game.gameSetMap(new_map);
     },

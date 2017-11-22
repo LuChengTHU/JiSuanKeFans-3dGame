@@ -91,7 +91,6 @@ class BlocklyContainer extends Component {
             if(typeof(this.props.onLoaded) !== 'undefined')
                 this.props.onLoaded();
         }
-        console.log('haha: ' + this.workspace);
     }
 
     update = (newProps, prevProps) => {
