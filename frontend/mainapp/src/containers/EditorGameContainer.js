@@ -115,7 +115,6 @@ export default class EditorGameContainer extends Component {
 
         const {
             camera,
-            // mouseInput,
 
             playerPosition,
             playerRotation,
@@ -159,6 +158,8 @@ export default class EditorGameContainer extends Component {
         const {
             container,
         } = this.refs;
+
+        container.addEventListener('mousedown', this.onMouseDown, false);
 
         this.camera = new PerspectiveCamera(75, 1, 0.1, 1000);
         this.camera.position.x = 5;
@@ -227,20 +228,6 @@ export default class EditorGameContainer extends Component {
                     });
                 });
 
-    }
-
-    componentDidUpdate(newProps) {
-
-        const {
-            width,
-            height,
-        } = this.props;
-
-        console.log(width, height)
-
-        // if (width !== newProps.width || height !== newProps.height) {
-        //     mouseInput.containerResized();
-        // }
     }
     
     componentWillUnmount() {
@@ -319,5 +306,47 @@ export default class EditorGameContainer extends Component {
         this.setState({
             camera: this.camera,
         });
+    }
+
+    onMouseDown = (event) => {
+        document.addEventListener('mousemove', this.onMouseMove, false);
+        document.addEventListener('mouseup', this.onMouseUp, false);
+    }
+
+    onMouseMove = () => {
+        document.removeEventListener('mouseup', this.onMouseUp, false);
+    }
+
+    onMouseUp = (event) => {
+        document.removeEventListener('mouseup', this.onMouseUp, false);
+        document.removeEventListener('mousemove', this.onMouseMove, false);
+        
+        const divObj = window.document.getElementById('editorGameContainer');
+        if (divObj) {
+            let width = divObj.clientWidth;
+            let height = window.innerHeight * .8;
+            
+            let raycaster = new THREE.Raycaster();
+            let mouse = new THREE.Vector2();
+            mouse.x =   (event.clientX / width)  * 2 - 1;
+            mouse.y = - (event.clientY / height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, this.camera);
+
+            const {
+                mapBlocks
+            } = this.state;
+
+            
+            if (mapBlocks) {
+                console.log(mapBlocks)
+                
+                let intersects = raycaster.intersectObject(this.state.mapBlocks);
+
+                if (intersects[0]) {
+                    console.log(intersects[0].object.position)
+                }
+            }
+        }
     }
 }
