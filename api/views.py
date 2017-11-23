@@ -282,7 +282,7 @@ class StageView(APIView):
     @with_res_code
     def get(self, request, stage_id = None):
         try:
-            map = Map.objects.get(stage=stage_id)
+            map = Map.objects.get(id=stage_id)
             # TODO: permission
         except:
             # not found
