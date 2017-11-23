@@ -1,0 +1,94 @@
+{
+    "id": 7,
+    "title": "level7",
+    "height": 5,
+    "width": 11,
+    "stage": null,
+    "n_blockly": 9,
+    "instr_set": [
+		false,false,false,false,false,false,false,false,false,false,
+		true ,true ,true ,true ,true ,true ,true ,true ,true ,true ,
+		false,true ,false,false,false,false,false,false,false,false,
+		false,true ,false,false,false,false,true ,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false
+    ],
+    "init_AI_infos": [
+		{
+			"pos": [2, 2],
+			"id": "naive#1",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 17
+		},
+		{
+			"pos": [2, 4],
+			"id": "naive#2",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 17
+		},
+		{
+			"pos": [2, 5],
+			"id": "naive#3",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 17
+		},
+		{
+			"pos": [2, 8],
+			"id": "naive#4",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 17
+		},
+		{
+			"pos": [2, 3],
+			"id": "suicide#1",
+			"hp": 1000,
+			"attack": 6,
+			"code": "Game.gameTurn(Game.GameCW);let id=Game.map.cur_ai;if(Game.map.cur_ai_infos[id].hp!=1000)Game.gameDealDamage(id,-1,6);let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];if(px===data.x&&py===data.y){let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dx*dx+dy*dy<=1)Game.map.cur_ai_infos[id].hp=0;}data.x=px;data.y=py;",
+			"dir": 17
+		},
+		{
+			"pos": [2, 6],
+			"id": "suicide#2",
+			"hp": 1000,
+			"attack": 6,
+			"code": "Game.gameTurn(Game.GameCW);let id=Game.map.cur_ai;if(Game.map.cur_ai_infos[id].hp!=1000)Game.gameDealDamage(id,-1,6);let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];if(px===data.x&&py===data.y){let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dx*dx+dy*dy<=1)Game.map.cur_ai_infos[id].hp=0;}data.x=px;data.y=py;",
+			"dir": 17
+		},
+		{
+			"pos": [2, 7],
+			"id": "suicide#3",
+			"hp": 1000,
+			"attack": 6,
+			"code": "Game.gameTurn(Game.GameCW);let id=Game.map.cur_ai;if(Game.map.cur_ai_infos[id].hp!=1000)Game.gameDealDamage(id,-1,6);let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];if(px===data.x&&py===data.y){let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dx*dx+dy*dy<=1)Game.map.cur_ai_infos[id].hp=0;}data.x=px;data.y=py;",
+			"dir": 17
+		}
+    ],
+    "init_dir": 19,
+    "init_hp": 10,
+    "init_attack": 1,
+    "final_gold": 7,
+    "welcome_msg": "diqiguan",
+    "passed_msg": "guoguan777",
+    "failed_msg": "Failed!",
+    "std_blockly_code": null,
+    "init_pos": [
+        2,
+        1
+    ],
+    "final_pos": [
+        2,
+        9
+    ]
+}

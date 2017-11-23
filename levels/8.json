@@ -1,0 +1,94 @@
+{
+    "id": 8,
+    "title": "level8",
+    "height": 11,
+    "width": 11,
+    "stage": null,
+    "n_blockly": 15,
+    "instr_set": [
+		false,false,false,false,false,false,false,false,false,false,
+		true ,true ,true ,true ,true ,true ,true ,true ,true ,true ,
+		false,true ,false,false,false,false,false,false,false,false,
+		false,true ,false,false,false,false,true ,false,false,false,
+		false,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		false,false,false,false,false,false,false,false,false,false
+    ],
+    "init_AI_infos": [
+		{
+			"pos": [2, 2],
+			"id": "run#1",
+			"hp": 1000,
+			"attack": 1,
+			"code": "let id=Game.map.cur_ai;if(typeof(data.a)==='undefined')data.a=2;let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];console.log(data.a);if(dy===0&&dx===-1&&data.a>0){data.a--;Game.gameMove();}if(data.a===0)Game.map.cur_ai_infos[id].hp=1;",
+			"dir": 18
+		},
+		{
+			"pos": [2, 3],
+			"id": "run#2",
+			"hp": 1000,
+			"attack": 1,
+			"code": "let id=Game.map.cur_ai;if(typeof(data.a)==='undefined')data.a=4;let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dy===0&&dx===-1&&data.a>0){data.a--;Game.gameMove();}if(data.a===0)Game.map.cur_ai_infos[id].hp=1;",
+			"dir": 18
+		},
+		{
+			"pos": [2, 4],
+			"id": "run#3",
+			"hp": 1000,
+			"attack": 1,
+			"code": "let id=Game.map.cur_ai;if(typeof(data.a)==='undefined')data.a=6;let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dy===0&&dx===-1&&data.a>0){data.a--;Game.gameMove();}if(data.a===0)Game.map.cur_ai_infos[id].hp=1;",
+			"dir": 18
+		},
+		{
+			"pos": [2, 5],
+			"id": "run#4",
+			"hp": 1000,
+			"attack": 1,
+			"code": "let id=Game.map.cur_ai;if(typeof(data.a)==='undefined')data.a=1;let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dy===0&&dx===-1&&data.a>0){data.a--;Game.gameMove();}if(data.a===0)Game.map.cur_ai_infos[id].hp=1;",
+			"dir": 18
+		},
+		{
+			"pos": [2, 6],
+			"id": "run#5",
+			"hp": 1000,
+			"attack": 1,
+			"code": "let id=Game.map.cur_ai;if(typeof(data.a)==='undefined')data.a=3;let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dy===0&&dx===-1&&data.a>0){data.a--;Game.gameMove();}if(data.a===0)Game.map.cur_ai_infos[id].hp=1;",
+			"dir": 18
+		},
+		{
+			"pos": [2, 7],
+			"id": "run#6",
+			"hp": 1000,
+			"attack": 1,
+			"code": "let id=Game.map.cur_ai;if(typeof(data.a)==='undefined')data.a=5;let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dy===0&&dx===-1&&data.a>0){data.a--;Game.gameMove();}if(data.a===0)Game.map.cur_ai_infos[id].hp=1;",
+			"dir": 18
+		},
+		{
+			"pos": [2, 8],
+			"id": "run#7",
+			"hp": 1000,
+			"attack": 1,
+			"code": "let id=Game.map.cur_ai;if(typeof(data.a)==='undefined')data.a=7;let px=Game.map.cur_pos[0];let py=Game.map.cur_pos[1];let dx=px-Game.map.cur_ai_infos[id].pos[0];let dy=py-Game.map.cur_ai_infos[id].pos[1];if(dy===0&&dx===-1&&data.a>0){data.a--;Game.gameMove();}if(data.a===0)Game.map.cur_ai_infos[id].hp=1;",
+			"dir": 18
+		}
+    ],
+    "init_dir": 19,
+    "init_hp": 10,
+    "init_attack": 1,
+    "final_gold": 7,
+    "welcome_msg": "dibaguan",
+    "passed_msg": "guoguan888",
+    "failed_msg": "Failed!",
+    "std_blockly_code": null,
+    "init_pos": [
+        1,
+        1
+    ],
+    "final_pos": [
+        1,
+        9
+    ]
+}

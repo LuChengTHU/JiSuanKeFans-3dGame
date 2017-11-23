@@ -41,6 +41,8 @@ export default class GameContainer extends Component {
 					this.props.gameSetState('failed');
 				else if(e.message === 'GameFailed')
 					this.props.gameSetState('failed');
+				else if(e.message === 'Player Dead')
+					this.props.gameSetState('failed');
 				else
 					throw e;
 			}
