@@ -63,7 +63,7 @@ export default class EditorGameContainer extends Component {
 	{
 		if(!this.state.monsterGeometry || !this.state.monsterMaterial)
 		{
-			window.setTimeOut(()=>this.addMonster(id, x, z, maxHp), 1000);
+			// window.setTimeOut(()=>this.addMonster(id, x, z, maxHp), 1000);
 			return;
 		}
 	    let mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
@@ -347,6 +347,7 @@ export default class EditorGameContainer extends Component {
             let height = this.state.height;
             let width = this.state.width;
             console.log(gridX, gridY);
+            console.log(window.map)
             if (gridX >= 0 && gridY >=0 && gridX < width && gridY < height) {
                 if (this.state.selected === "Player") {
                     let monsters = this.state.monsters;
@@ -356,11 +357,13 @@ export default class EditorGameContainer extends Component {
                     this.setState({
                         playerPosition: new THREE.Vector3(gridX, 0, gridY)
                     })
+                    window.map.init_pos = [gridX, gridY]
                 }
                 else if (this.state.selected === "Target") {
                     this.setState({
                         targetPosition: new THREE.Vector3(gridX, 0, gridY)
                     })
+                    window.map.final_pos = [gridX, gridY]
                 }
                 else if (this.state.selected === "Monster") {
                     if (this.state.playerPosition.x == gridX && this.state.playerPosition.z == gridY)
@@ -375,11 +378,23 @@ export default class EditorGameContainer extends Component {
                           && Math.round(monsters[i].position.z) == gridY) {
                             exist = true;
                             monsters[i].hp = -1;
+                            window.map.init_AI_infos[i].hp = -1;
                         }
                         
                     if (!exist) {
                         let id = monsters.length;
                         this.addMonster(id, gridX, gridY, 10);
+                        if (id > window.map.init_AI_infos.length)
+                            window.map.init_AI_infos.length = id + 1;
+                        
+                        window.map.init_AI_infos[id] = {
+                            "pos": [gridX, gridY],
+                            "id": "naive",
+                            "hp": 1,
+                            "attack": 1,
+                            "code": "Game.gameTurn(Game.GameCW);",
+                            "dir": 17
+                        };
                     }
                     else {
                         this.setState({
