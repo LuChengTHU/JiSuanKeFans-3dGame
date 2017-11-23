@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export function fetch_map(map_id){
+export function fetch_map(map_id, need_code){
     const INIT_MAP = { // initial map
         title: 'Untitled',
         height: 10,
@@ -25,7 +25,8 @@ export function fetch_map(map_id){
     };
 
     window.map = INIT_MAP;
-    return axios.get('map/' + map_id + '/')
+    const url = need_code ? 'stage/': 'map/';
+    return axios.get(url + map_id + '/')
         .then(function(response){
             if(response.data.res_code === 1){
                 window.map = response.data.map;

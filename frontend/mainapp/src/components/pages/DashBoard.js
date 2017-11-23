@@ -191,13 +191,14 @@ class DashBoard extends Component {
                                 if(!this.mapInitialised){
                                     this.mapInitialised = true;
                                  
-                                    fetch_map(this.props.match.params.map_id)
+                                    fetch_map(this.props.match.params.map_id, true)
                                         .then((response) => {
                                         if(response && response.data && response.data.res_code === 1) {
                                             this.setState({ map: response.data.map });
                                             this.initMap();
                                             } else {
-                                                // TODO: Error message
+                                                alert('没有权限！');
+                                                this.props.history.push('/');
                                             }
                                     });
 
