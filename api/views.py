@@ -278,7 +278,45 @@ class MapListView(APIView):
 
 map_list_view = MapListView.as_view()
 
+def isAdmin(user):
+    return (user is not None) and user.id == 1
+
+def getUserLatestPassedMapId(user):
+    if user is None:
+        return 1
+    user_id = user.id
+    solutions = Solution.objects.filter(user_id=user_id).order_by('-map_id').all()
+    for i in solutions:
+        if i.map.author.id == 1:
+            return i.map.id
+    return 4
+
+def mapId2StageId(map_id):
+    maps = Map.objects.filter(author_id=1).order_by("id").all()
+    for i, item in enumerate(maps):
+        if item.id == map_id:
+            return i + 1
+    return None # not found
+
+def StagePermission(map_id, request):
+    map_id = int(map_id)
+    print('StagePermission: ', request.user, map_id)
+    user = request.user
+    stage_id = mapId2StageId(map_id)
+    print('StagePermission: stage_id=', stage_id)
+    print('getUserLatestPassedMapId(user)', getUserLatestPassedMapId(user))
+    print('mapId2StageId(getUserLatestPassedMapId(user))', mapId2StageId(getUserLatestPassedMapId(user)))
+    print('isAdmin(user)',isAdmin(user))
+    return map_id <= 5 or isAdmin(user) \
+        or (# admin stage
+        user and (request.auth is not None) and \
+        stage_id is not None and mapId2StageId(getUserLatestPassedMapId(user)) + 1 >= stage_id) \
+        or ( # custom stage
+        request.auth is not None and stage_id is None
+        )
+
 class StageView(APIView):
+    authentication_classes = (TokenAuthentication,)
     @with_res_code
     def get(self, request, stage_id = None):
         try:
@@ -293,7 +331,11 @@ class StageView(APIView):
         except:
             traceback.print_exc()
             return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
-        return Response({'map' : data}), 1
+        if StagePermission(stage_id, request):
+            return Response({'map' : data}), 1
+        else:
+            return Response({'map' : ''}), -1
+
 
 stage_view = StageView.as_view()
 

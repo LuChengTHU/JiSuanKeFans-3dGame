@@ -1,1 +1,1 @@
-console.log('I am AI0');if(typeof(data.a)==='undefined')data.a=0;++data.a;console.log(data.a);if(data.a===2){Game.gameMove();data.a=0;}else Game.gameTurn(Game.GameCW);
+console.log('I am AI0');

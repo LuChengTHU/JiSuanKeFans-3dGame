@@ -193,7 +193,8 @@ class DashBoard extends Component {
                                             this.setState({ map: response.data.map });
                                             this.initMap();
                                             } else {
-                                                // TODO: Error message
+                                                alert('没有权限！');
+                                                this.props.history.push('/');
                                             }
                                     });
 
