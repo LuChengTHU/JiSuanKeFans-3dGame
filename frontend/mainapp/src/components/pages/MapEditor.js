@@ -11,7 +11,6 @@ const INIT_MAP = { // initial map
     n_max_hand_boxes: 4,
     n_blockly: 10,
     instr_set: [true, true, true],
-    init_AI_infos: [],
     init_pos: [1, 1],
     final_pos: [1, 2],
     init_ground_colors: [[0, 0, 0], [0, 0, 0]],
@@ -24,7 +23,8 @@ const INIT_MAP = { // initial map
     failed_msg: 'Failed!',
     passed_msg: 'Passed!',
     std_blockly_code: '',
-    welcome_msg: 'Welcome!'
+    welcome_msg: 'Welcome!',
+    init_AI_infos: []
 };
 
 
