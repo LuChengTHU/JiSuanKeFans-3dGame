@@ -144,7 +144,7 @@ export default class EditorGameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { knightMesh ? <EditorGame
+                { this.state.monsterGeometry ? <EditorGame
                     width={ width }
                     height={ height }
                     camera={ camera }
