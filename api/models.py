@@ -86,3 +86,4 @@ class Solution(models.Model):
 
     shared = models.BooleanField(default=False)
     code = models.TextField()
+    stars = models.IntegerField(default=1)

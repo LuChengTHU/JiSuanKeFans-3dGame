@@ -13,8 +13,8 @@ export function fetch_solution(sol_id){
     );
 }
 
-export function create_solution(map_id, code, shared){
-    return axios.post('solution/', {solution:{map: map_id, code: code, shared: shared}}).then(
+export function create_solution(map_id, code, shared, stars){
+    return axios.post('solution/', {solution:{map: map_id, code: code, shared: shared, stars: stars}}).then(
         function(response){
             //TODO: add error checking
             return response.data.sol_id;

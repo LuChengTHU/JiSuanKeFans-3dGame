@@ -113,15 +113,16 @@ def get_solution_serializer_class(rate):
                 queryset=User.objects.all(), required=False)
             map = serializers.PrimaryKeyRelatedField(many=False, read_only=False,
                 queryset=Map.objects.all())
+        stars = serializers.IntegerField(required=False)
         
         class Meta:
             model = Solution
             if rate == RATE_BRIEF:
-                fields = ('id', 'user', 'map', 'shared')
+                fields = ('id', 'user', 'map', 'shared', 'stars')
             elif rate == RATE_FULL:
-                fields = ('id', 'user', 'map', 'code', 'shared')
+                fields = ('id', 'user', 'map', 'code', 'shared', 'stars')
             else:
-                fields = ('user', 'map', 'code', 'shared')
+                fields = ('user', 'map', 'code', 'shared', 'stars')
         
     return SolutionSerializer
  
