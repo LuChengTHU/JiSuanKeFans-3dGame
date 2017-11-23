@@ -1,0 +1,102 @@
+{
+    "id": 9,
+    "title": "level9",
+    "height": 11,
+    "width": 11,
+    "stage": null,
+    "n_blockly": 9,
+    "instr_set": [
+		false,false,false,false,false,false,false,false,false,false,
+		true ,true ,true ,true ,true ,true ,true ,true ,true ,true ,
+		false,true ,false,false,false,false,false,false,false,false,
+		false,true ,false,false,false,false,true ,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false,
+		true ,false,false,false,false,false,false,false,false,false
+    ],
+    "init_AI_infos": [
+		{
+			"pos": [0, 1],
+			"id": "naive#1",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		},
+		{
+			"pos": [2, 3],
+			"id": "naive#2",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		},
+		{
+			"pos": [3, 9],
+			"id": "naive#3",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		},
+		{
+			"pos": [5, 7],
+			"id": "naive#4",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		},
+		{
+			"pos": [7, 2],
+			"id": "naive#5",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		},
+		{
+			"pos": [8, 6],
+			"id": "naive#6",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		},
+		{
+			"pos": [9, 0],
+			"id": "naive#7",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		},
+		{
+			"pos": [10, 8],
+			"id": "naive#8",
+			"hp": 1,
+			"attack": 1,
+			"code": "",
+			"dir": 18
+		}
+    ],
+    "init_dir": 16,
+    "init_hp": 10,
+    "init_attack": 1,
+    "final_gold": 8,
+    "welcome_msg": "dijiuguan",
+    "passed_msg": "guoguan999",
+    "failed_msg": "Failed!",
+    "std_blockly_code": null,
+    "init_pos": [
+        5,
+        5
+    ],
+    "final_pos": [
+        1,
+        10
+    ]
+}
