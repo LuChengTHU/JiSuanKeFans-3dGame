@@ -28,10 +28,10 @@ const styles = theme => ({
     }
 })
 const MESSAGE = {
-    0: 'Unknown error',
-    1: 'Success. Please confirm via the email then login.',
-    2: 'Email exists',
-    3: 'Data illegal',
+    0: '未知错误',
+    1: '注册成功',
+    2: '邮箱已存在',
+    3: '格式错误',
 }
 
 class RegisterFormDialog extends React.Component {
