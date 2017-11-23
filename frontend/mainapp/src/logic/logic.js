@@ -157,7 +157,7 @@ export default class Game {
 			{
 				if(tid === -1)
 					return "player";
-				else
+				else if(Game.map.cur_ai_infos[tid].hp >= 0)
 					return Game.map.cur_ai_infos[tid].id;
 			}
 			x += dx; y += dy;
