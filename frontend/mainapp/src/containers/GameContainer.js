@@ -384,11 +384,12 @@ export default class GameContainer extends Component {
         let loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
             (geometry, materials) => {
-                let material = materials[0];
-                material.emissive.set(0x101010);
-                material.skinning = true;
-                material.morphTargets = true;
-                let mesh = new THREE.SkinnedMesh(geometry, material);
+                for(let i = 0; i < materials.length; i++) {
+                    materials[i].emissive.set(0x101010);
+                    materials[i].skinning = true;
+                    materials[i].morphTargets = true;
+                }
+                let mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 mesh.scale.set(0.01, 0.01, 0.01);
                 let mixer = new THREE.AnimationMixer(mesh);
                 // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {

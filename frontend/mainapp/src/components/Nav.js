@@ -57,7 +57,7 @@ class Nav extends Component {
                     <MenuIcon />
                 </IconButton>
                 <Typography type="title" color="inherit" className={this.classes.flex}>
-                    Title
+                    JiSuanKeFans
                 </Typography>
                 <div>
                     <Button color="contrast" onClick={() => {
@@ -74,11 +74,6 @@ class Nav extends Component {
                         this.setState({loginOpen:false, registerOpen:false});
                         this.props.history.push('/editor');}}>地图编辑器</Button>
                 </div>
-                <div>
-                    <Button color="contrast" onClick={() => {
-                        this.setState({loginOpen:false, registerOpen:false});
-                        this.props.history.push('/info');}}>个人中心</Button>
-                </div>
                 { this.props.user ?
                 <div>
                     <Button color="contrast" onClick={() => {
@@ -91,14 +86,18 @@ class Nav extends Component {
                 { this.props.user
                 ? 
                     <div className="profile">
-                    {JSON.parse(localStorage.getItem('user'))['username']}
+                    <Button color="contrast" onClick={() => {
+                        this.setState({loginOpen:false, registerOpen:false});
+                        this.props.history.push('/info');}}>{JSON.parse(localStorage.getItem('user'))['username']}
+                        </Button>
                     <Button color="contrast" onClick={(e) => {
                         localStorage.removeItem("token");
                         localStorage.removeItem("user");
-                        if(this.props.onLoginChange)
+                        if(this.props.onLoginChange) {
                             this.props.onLoginChange();
                         }
-                    }>
+                        this.props.history.push('/');
+                    }}>
                         登出
                     </Button>
                     </div>
