@@ -38,7 +38,9 @@ const MapEditor = createReactClass({
         this.setState({inputText: event.target.value});
     },
     render: function(){
-        const editorGameContainer = <EditorGameContainer onLoaded={() => {
+        const editorGameContainer = <EditorGameContainer 
+            ref = {val => {this.refGame = val} }
+            onLoaded={() => {
             if(!this.mapInitialised){
                 this.mapInitialised = true;
                 window.map = INIT_MAP;
@@ -66,9 +68,20 @@ const MapEditor = createReactClass({
             <Button onClick={() => this.updateMap()}>Update</Button>
             <Button onClick={() => this.submitMap()}>Submit</Button>
             </Grid>
-            <Grid item xs={12} sm={6}>
-            {this.inputBox}
+            <Grid>
+                <div>
+                    <Button onClick={() => this.choosePlayer()}> Player </Button>
+                </div>
+                <div>
+                    <Button onClick={() => this.chooseTarget()}> Target </Button>
+                </div>
+                <div>
+                    <Button onClick={() => this.chooseMonster()}> Monster </Button>
+                </div>
             </Grid>
+            {/* <Grid>
+            {this.inputBox}
+            </Grid> */}
             </Grid>
         );
     },
@@ -90,7 +103,23 @@ const MapEditor = createReactClass({
         } else{
             modify_map(this.map_id, window.map);
         }
-    }
+    },
+    choosePlayer: function() {
+        this.refGame.setState({
+            selected: "Player"
+        })
+    },
+    chooseMonster: function() {
+        this.refGame.setState({
+            selected: "Monster"
+        })
+    },
+    chooseTarget: function() {
+        this.refGame.setState({
+            selected: "Target"
+        })
+
+    },
 });
 
 export default MapEditor;

@@ -21,11 +21,13 @@ export default class EditorGameContainer extends Component {
         this.state = {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, 0, 0 ),
-            // mouseInput: null, 
-            // scene: null,
             monsters: []
         };
 
+        this.createMap = this.createMap.bind(this);
+        this.setPlayerDirection = this.setPlayerDirection.bind(this);
+        this.createPlayer = this.createPlayer.bind(this);
+        this.addMonster = this.addMonster.bind(this);
     }
 
     createMap(height, width)
@@ -34,7 +36,7 @@ export default class EditorGameContainer extends Component {
 		for(let i = 0; i < height; ++i)
 			for(let j = 0; j < width; ++j)
 				bs.push(<MapBlock x={i} z={j}/>);
-		this.setState({mapBlocks: bs, monsters: []});
+		this.setState({mapBlocks: bs, monsters: [], height: height, width: width});
 	}
 	
 	createPlayer(x, z)
@@ -95,16 +97,6 @@ export default class EditorGameContainer extends Component {
 			return {monsters: ms};
 		});
 	}
-	
-	// setMonsterHp(id, hp)
-	// {
-	// 	if(hp < 0) hp = 0;
-	// 	this.setState((prevState, props) => {
-	// 		let ms = prevState.monsters.slice(0);
-	// 		ms[id].hp = hp;
-	// 		return {monsters: ms};
-	// 	});
-	// }
     
     setWeight = ( action, weight ) => {
         action.enabled = true;
@@ -133,10 +125,10 @@ export default class EditorGameContainer extends Component {
 
         const {
             camera,
-            // mouseInput,
 
             playerPosition,
             playerRotation,
+            targetPosition,
             
             mapBlocks,
             
@@ -149,16 +141,16 @@ export default class EditorGameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { this.state.monsterGeometry&&this.state.monsterMaterial ? <EditorGame
+                { this.state.monsterGeometry&&this.state.monsterMaterial&&knightMesh ? <EditorGame ref={val => { this.gameRef = val; }}
                     width={ width }
                     height={ height }
                     camera={ camera }
                     playerPosition={ playerPosition }
                     playerRotation={ playerRotation }
+                    targetPosition={ targetPosition }
                     mapBlocks={ mapBlocks }
                     knightMesh={ knightMesh }
                     monsters={ monsters }
-                    // mouseInput={ mouseInput }
                 /> : 'Loading' }
             </div>
         </div>;
@@ -175,16 +167,14 @@ export default class EditorGameContainer extends Component {
         // Load the geometry in didMount, which is only executed server side.
         // Note we can pass our JSON file paths to webpack!
 
-        const {
-            container,
-        } = this.refs;
+        this.refs.container.addEventListener('mousedown', this.onMouseDown, false);
+        const divObj = window.document.getElementById('editorGameContainer');
+        const screenWidth = divObj.clientWidth;
+        const screenHeight = window.innerHeight * .8;
+        this.camera = new PerspectiveCamera(60, screenWidth/screenHeight, 1, 100);
+        this.camera.position.set(5, 5, 0);
 
-        this.camera = new PerspectiveCamera(75, 1, 0.1, 1000);
-        this.camera.position.x = 5;
-        this.camera.position.y = 5;
-        this.camera.position.z = 0;
-
-        const controls = new TracerControls(this.camera, container);
+        const controls = new TracerControls(this.camera, this.refs.container);
 
         controls.slideSpeed = 2.0;
         controls.zoomSpeed = 1.2;
@@ -193,7 +183,8 @@ export default class EditorGameContainer extends Component {
         controls.noPan = false;
         controls.staticMoving = true;
         controls.dynamicDampingFactor = 0.3;
-        controls.maxDistance = 10;
+        controls.minDistance = 1;
+        // controls.maxDistance = 10;
 
         this.controls = controls;            
         this.controls.addEventListener('change', this.onTrackballChange);       
@@ -249,21 +240,6 @@ export default class EditorGameContainer extends Component {
 		if(typeof(this.props.onLoaded) !== 'undefined')
 			this.props.onLoaded();
     }
-
-    componentDidUpdate(newProps) {
-        // const {
-        //     mouseInput,
-        // } = this.state;
-
-        const {
-            width,
-            height,
-        } = this.props;
-
-        // if (width !== newProps.width || height !== newProps.height) {
-        //     mouseInput.containerResized();
-        // }
-    }
     
     componentWillUnmount() {
     
@@ -273,6 +249,8 @@ export default class EditorGameContainer extends Component {
         this.controls.removeEventListener('change', this.onTrackballChange);
         this.controls.dispose();
         delete this.controls;
+
+        this.refs.container.removeEventListener('mousedown', this.onMouseDown);
 
         // Cancel
         this.cancelGameLoop();
@@ -300,42 +278,10 @@ export default class EditorGameContainer extends Component {
         }
     
         this.requestGameLoop();
-
-        // const {
-        //     mouseInput,
-        // } = this.refs;
-
-        // console.log(this.camera.position);
-
         this.controls.update();
-        // const {
-        //     // mouseInput,
-        //     camera,
-        // } = this.state;
-        
-        // console.log(this.statcamera);
-
-        // if (!mouseInput.isReady()) {
-        //     const {
-        //         scene,
-        //         container,
-        //     } = this.refs;
-
-        //     mouseInput.ready(scene, container, camera);
-        //     mouseInput.setActive(false);
-        // }
-        
-        // if (this.state.mouseInput !== mouseInput) {
-        //     this.setState({
-        //         mouseInput,
-        //     });
-        // }
-
-        if (this.state.camera !== this.camera) {
-            this.setState({
-                camera: this.camera,
-            });
-        }
+        this.setState({
+            camera: this.camera,
+        });
     
     };
 
@@ -343,5 +289,104 @@ export default class EditorGameContainer extends Component {
         this.setState({
             camera: this.camera,
         });
+    }
+
+    onMouseDown = (event) => {
+        event.preventDefault();
+        document.addEventListener('mousemove', this.onMouseMove, false);
+        document.addEventListener('mouseup', this.onMouseUp, false);
+        // this.initClientX = event.clientX;
+        // this.initClientY = event.clientY
+        // console.log(event.clientX, event.clientY)
+    }
+
+    onMouseMove = (event) => {
+        event.preventDefault();
+        document.removeEventListener('mouseup', this.onMouseUp, false);
+    }
+
+    onMouseUp = (event) => {
+        event.preventDefault();
+        document.removeEventListener('mouseup', this.onMouseUp, false);
+        document.removeEventListener('mousemove', this.onMouseMove, false);
+        
+        const divObj = window.document.getElementById('editorGameContainer');
+        if (divObj) {
+            const screenWidth = divObj.clientWidth;
+            const screenHeight = window.innerHeight * .8;
+            this.camera.aspect = screenWidth/screenHeight;
+            this.camera.updateProjectionMatrix();
+            this.camera.updateMatrixWorld();
+
+            const mouse = new THREE.Vector2();
+            mouse.x =   (event.offsetX / screenWidth)  * 2 - 1;
+            mouse.y =  -(event.offsetY / screenHeight) * 2 + 1;
+
+            console.log(mouse.x, mouse.y)
+
+            // const raycaster = new THREE.Raycaster();
+            // raycaster.setFromCamera( mouse, this.camera );
+            // const intersects = raycaster.intersectObjects( this.gameRef.sceneRef.children );
+            // console.log(this.gameRef.sceneRef.children)
+            
+            // console.log(intersects);
+            
+            
+            const standardVector = new THREE.Vector3(mouse.x, mouse.y, 0.5);//标准设备坐标
+            const worldVector = standardVector.unproject(this.camera);
+            const ray = worldVector.sub(this.camera.position).normalize();
+            const pos = this.camera.position;
+
+            const t = -pos.y / ray.y;
+            const interX = pos.x + t * ray.x;
+            const interZ = pos.z + t * ray.z;
+
+            let gridX = Math.round(interX);
+            let gridY = Math.round(interZ);
+            let height = this.state.height;
+            let width = this.state.width;
+            console.log(gridX, gridY);
+            if (gridX >= 0 && gridY >=0 && gridX < width && gridY < height) {
+                if (this.state.selected === "Player") {
+                    let monsters = this.state.monsters;
+                    for (let i = 0; i < monsters.length; ++ i) 
+                        if (monsters[i].hp > 0 && monsters[i].position.x == gridX && monsters[i].position.z == gridY)
+                            return ;
+                    this.setState({
+                        playerPosition: new THREE.Vector3(gridX, 0, gridY)
+                    })
+                }
+                else if (this.state.selected === "Target") {
+                    this.setState({
+                        targetPosition: new THREE.Vector3(gridX, 0, gridY)
+                    })
+                }
+                else if (this.state.selected === "Monster") {
+                    if (this.state.playerPosition.x == gridX && this.state.playerPosition.z == gridY)
+                        return ;
+                    
+                    let ms = [];
+                    let exist = false;
+                    let monsters = this.state.monsters;
+
+                    for (let i = 0; i < monsters.length; ++ i) 
+                        if (monsters[i].hp > 0 && Math.round(monsters[i].position.x) == gridX 
+                          && Math.round(monsters[i].position.z) == gridY) {
+                            exist = true;
+                            monsters[i].hp = -1;
+                        }
+                        
+                    if (!exist) {
+                        let id = monsters.length;
+                        this.addMonster(id, gridX, gridY, 10);
+                    }
+                    else {
+                        this.setState({
+                            monsters: monsters
+                        })
+                    }
+                }
+            }
+        }
     }
 }

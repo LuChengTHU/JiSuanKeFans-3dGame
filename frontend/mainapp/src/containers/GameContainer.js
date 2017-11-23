@@ -612,7 +612,7 @@ export default class GameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
 			<div>
-				{ monsterGeometry ? <Game
+				{ this.state.monsterGeometry&&this.state.monsterMaterial&&knightMesh ? <Game
 					width={ width }
 					height={ height }
 					cameraPosition={ cameraPosition }
