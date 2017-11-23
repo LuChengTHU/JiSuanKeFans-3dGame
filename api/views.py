@@ -244,13 +244,24 @@ class MapListView(APIView):
     @with_pagination(serializer_class=MapBriefSerializer)
     def get(self, request):
         author_id = request.query_params.get('authorId', None)
+
+        res = Map.objects
+
+        if request.auth is not None:
+            res = res.extra(select = {'high_stars': '''
+                    SELECT MAX(api_solution.stars)
+                    FROM api_solution 
+                    WHERE api_solution.map_id = api_map.id
+                    AND api_solution.user_id = %d
+            ''' % (request.user.id)})
+
         if author_id:
             try:
                 author_id = int(author_id)
-                return Map.objects.filter(author_id=author_id).all(), {}
+                return res.filter(author_id=author_id).all(), {}
             except TypeError:
-                return Map.objects.all(), {}
-        return Map.objects.all(), {}
+                return res.all(), {}
+        return res.all(), {}
 
     @with_res_code
     def post(self, request):
