@@ -175,8 +175,8 @@ class DashBoard extends Component {
                 <Grid container spacing={8} justify='center'>
                 <Grid item xs={12} sm={12} >
                     <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
-                    <Button onClick={this.initMap}>Init</Button>
-                    <Button onClick={this.run}>Play</Button>
+                    <Button onClick={this.initMap}>重置</Button>
+                    <Button onClick={this.run}>运行</Button>
                 </Grid>
                 <Grid item xs={12} sm={6} >
                     <div id={'gameContainer'}>
@@ -191,13 +191,14 @@ class DashBoard extends Component {
                                 if(!this.mapInitialised){
                                     this.mapInitialised = true;
                                  
-                                    fetch_map(this.props.match.params.map_id)
+                                    fetch_map(this.props.match.params.map_id, true)
                                         .then((response) => {
                                         if(response && response.data && response.data.res_code === 1) {
                                             this.setState({ map: response.data.map });
                                             this.initMap();
                                             } else {
-                                                // TODO: Error message
+                                                alert('没有权限！');
+                                                this.props.history.push('/');
                                             }
                                     });
 

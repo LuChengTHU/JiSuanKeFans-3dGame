@@ -94,8 +94,9 @@ class StageSerializer(MapFullSerializer):
         data = super().repr_inflate(data)
         for ai_obj in data['init_AI_infos']:
             name = ai_obj['id']
-            with open(os.path.join(settings.AI_URL, name, 'code.js')) as fin:
-                ai_obj['code'] = fin.read()
+            if os.path.exists(os.path.join(settings.AI_URL, name, 'code.js')):
+                with open(os.path.join(settings.AI_URL, name, 'code.js')) as fin:
+                    ai_obj['code'] = fin.read()
         return data
 
 

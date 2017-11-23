@@ -28,10 +28,10 @@ const styles = theme => ({
     }
 })
 const MESSAGE = {
-    0: 'Unknown error',
-    1: 'Success. Reloading...',
-    2: 'Password error',
-    3: 'User does not exist',
+    0: '未知错误',
+    1: '登录成功',
+    2: '密码错误',
+    3: '用户不存在',
 }
 
 class LoginFormDialog extends React.Component {
@@ -123,7 +123,7 @@ class LoginFormDialog extends React.Component {
     const { classes, onRequestClose, ...other } = this.props;
     return (
         <Dialog {...other} onRequestClose={onRequestClose} >
-          <DialogTitle>Login</DialogTitle>
+          <DialogTitle>登录</DialogTitle>
           {this.state.messages.map((message) => {
             return <SnackbarContent key={message[1]} 
                 className={classes.snackbar}
