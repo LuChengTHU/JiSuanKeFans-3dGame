@@ -59,6 +59,11 @@ export default class EditorGameContainer extends Component {
 
     addMonster(id, x, z, maxHp)
 	{
+		if(!this.state.monsterGeometry || !this.state.monsterMaterial)
+		{
+			window.setTimeOut(()=>this.addMonster(id, x, z, maxHp), 1000);
+			return;
+		}
 	    let mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
         mesh.scale.set(0.15, 0.15, 0.15);
         let mixer = new THREE.AnimationMixer(mesh);
@@ -144,7 +149,7 @@ export default class EditorGameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { this.state.monsterGeometry ? <EditorGame
+                { this.state.monsterGeometry&&this.state.monsterMaterial ? <EditorGame
                     width={ width }
                     height={ height }
                     camera={ camera }
