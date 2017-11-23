@@ -52,6 +52,27 @@ class DashBoard extends Component {
     }
     gameSetState = (gameState) =>
     {
+        if(gameState === 'passed'){
+            let starNum = 3;
+            try {
+                const blockNumber = window.Game.map.n_blockly;
+                const userNumber = this.blocklyContainer.getNBlocks();
+                if(userNumber <= blockNumber) {
+                    starNum = 3;
+                } else if(userNumber <= 2 * blockNumber) {
+                    starNum = 2;
+                } else {
+                    starNum = 1;
+                }
+                if(blockNumber === 0) {
+                    starNum = 3;
+                }
+            } catch(e) {
+                starNum = 3;
+            }
+            this.stars = starNum;
+        }
+
         this.setState((prevState, props) => {
             let passedOpen = (prevState.gameState !== gameState && gameState === "passed");
             let failedOpen = (prevState.gameState !== gameState && gameState === "failed");
@@ -95,24 +116,7 @@ class DashBoard extends Component {
         }
         let blocklyReadOnly = (this.state.gameState === 'stepping');
 
-        let starNum = 3;
-        try {
-            const blockNumber = window.Game.map.n_blockly;
-            const userNumber = this.blocklyContainer.getNBlocks();
-            if(userNumber <= blockNumber) {
-                starNum = 3;
-            } else if(userNumber <= 2 * blockNumber) {
-                starNum = 2;
-            } else {
-                starNum = 1;
-            }
-            if(blockNumber === 0) {
-                starNum = 3;
-            }
-        } catch(e) {
-            starNum = 3;
-        }
-
+        const starNum = this.stars;
         let starImg = [];
         for(let i = 0; i < starNum; i++) {
             starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_true.jpg`}/>)
@@ -145,14 +149,14 @@ class DashBoard extends Component {
                         const code = this.blocklyContainer.getXmlText();
                         const map_id = this.props.match.params.map_id;
 
-                        create_solution(map_id, code, false);
+                        create_solution(map_id, code, false, this.stars);
                         this.handleClick('passedOpen', false)();
                     }}>
                     <div><Button onClick={()=>{
                         const code = this.blocklyContainer.getXmlText();
                         const map_id = this.props.match.params.map_id;
                         const shared = true;
-                        create_solution(map_id, code, shared).then(
+                        create_solution(map_id, code, shared, this.stars).then(
                             (id)=>{
                                 this.setState({
                                     sharedOpen: true,
