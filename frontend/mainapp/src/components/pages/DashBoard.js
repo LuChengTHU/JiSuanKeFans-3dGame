@@ -40,6 +40,7 @@ class DashBoard extends Component {
             passedOpen: false,
             failedOpen: false,
             sharedOpen: false,
+            sharedStageOpen: false,
             solutionId: -1
         }
         this.mapInitialised = false;
@@ -133,6 +134,16 @@ class DashBoard extends Component {
                     closeText="关闭" onRequestClose={this.handleClick('welcomeOpen', false)}>
                     {welcomeMsg} 
                 </MessageDialog>
+                <MessageDialog title="提示" open={this.state.sharedStageOpen}
+                    closeText="好的" onRequestClose={this.handleClick('sharedStageOpen', false)}>
+                    <Typography type="title">关卡分享成功！</Typography>
+                    <Typography type="body2">请将下面的链接分享给好友：</Typography>
+                    <TextField disabled autoFocus fullWidth
+                    defaultValue={window.location}/>
+                    <CopyToClipboard text={window.location}>
+                        <Button>复制链接</Button>
+                    </CopyToClipboard>
+                </MessageDialog>
                 <MessageDialog title="提示" open={this.state.sharedOpen}
                     closeText="好的" onRequestClose={this.handleClick('sharedOpen', false)}>
                     <Typography type="title">解法分享成功！</Typography>
@@ -174,6 +185,12 @@ class DashBoard extends Component {
                 </MessageDialog>
                 <Grid container spacing={8} justify='center'>
                 <Grid item xs={12} sm={12} >
+                    <Button onClick={()=>{
+                        const map_id = this.props.match.params.map_id;
+                        this.setState({
+                            sharedStageOpen: true,
+                        })
+                    }}>分享关卡</Button>
                     <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
                     <Button onClick={this.initMap}>重置</Button>
                     <Button onClick={this.run}>运行</Button>
