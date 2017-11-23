@@ -183,7 +183,7 @@ class DashBoard extends Component {
                     closeText="关闭" onRequestClose={this.handleClick('failedOpen', false)}>
                     {gameoverMsg}
                 </MessageDialog>
-                <Grid container spacing={8} justify='center'>
+                <Grid container spacing={0} justify='center'>
                 <Grid item xs={12} sm={12} >
                     <Button onClick={()=>{
                         const map_id = this.props.match.params.map_id;
