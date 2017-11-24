@@ -367,9 +367,7 @@ export default class EditorGameContainer extends Component {
                 }
                 else if (this.state.selected === "Monster") {
                     if (this.state.playerPosition.x == gridX && this.state.playerPosition.z == gridY)
-                        return ;
-                    
-                    let ms = [];
+                        return;
                     let exist = false;
                     let monsters = this.state.monsters;
 

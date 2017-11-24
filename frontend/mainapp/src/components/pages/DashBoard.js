@@ -175,7 +175,7 @@ class DashBoard extends Component {
                                 });});
                         this.setState({passedOpen: false});
                     }}>分享解法</Button></div>
-                    <p>通过</p>
+                    <p>{passedMsg}</p>
                     {starImg}
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
@@ -186,7 +186,6 @@ class DashBoard extends Component {
                 <Grid container spacing={0} justify='center'>
                 <Grid item xs={12} sm={12} >
                     <Button onClick={()=>{
-                        const map_id = this.props.match.params.map_id;
                         this.setState({
                             sharedStageOpen: true,
                         })

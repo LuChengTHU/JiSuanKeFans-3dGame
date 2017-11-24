@@ -186,7 +186,7 @@ class InfoModify extends React.Component {
             </div>
         );
     }
-};
+}
 
 
 export default withStyles(styles)(InfoModify);

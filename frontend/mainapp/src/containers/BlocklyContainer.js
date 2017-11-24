@@ -138,7 +138,6 @@ BlocklyContainer.propTypes = {
     // blocklyHeight: PropTypes.number,
     readOnly: PropTypes.bool.isRequired,
     onError: PropTypes.func.isRequired,
-    readOnly: PropTypes.bool,
     defaultBlocks: PropTypes.string,
     toolboxXml: PropTypes.string,
 };

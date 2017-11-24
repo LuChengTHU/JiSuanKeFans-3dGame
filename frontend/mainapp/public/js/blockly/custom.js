@@ -45,7 +45,6 @@ Blockly.Blocks['game_attack'] = {
 	}
 };
 Blockly.JavaScript['game_attack'] = function(block) {
-	var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
 	var code = 'gameAttack();\n';
 	return code;
 };
@@ -61,7 +60,6 @@ Blockly.Blocks['game_lookahead_name'] = {
 	}
 };
 Blockly.JavaScript['game_lookahead_name'] = function(block) {
-	var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
 	var code = 'gameLookAheadName()';
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };

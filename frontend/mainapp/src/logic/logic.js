@@ -417,20 +417,18 @@ export default class Game {
 		{
 			// AI playing
 			let id = Game.map.cur_ai;
-			let callback = null;
 			if(way === Game.GameCW)
 			{
 				Game.map.cur_ai_infos[id].dir = (Game.map.cur_ai_infos[id].dir + 1) % 4 + 16;
-				callback = window.ui.monsterTurnCW;
+				window.ui.monsterTurnCW(id);
 			}
 			else if(way === Game.GameCCW)
 			{
 				Game.map.cur_ai_infos[id].dir = (Game.map.cur_ai_infos[id].dir + 3) % 4 + 16;
-				callback = window.ui.monsterTurnCCW;
+				window.ui.monsterTurnCCW(id);
 			}
 			else
 				throw new Error('IllegalInstruction');
-			callback(id);
 		}
 	}
 
