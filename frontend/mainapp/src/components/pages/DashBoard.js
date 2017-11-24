@@ -138,119 +138,115 @@ class DashBoard extends Component {
         }
         // TODO window.Game.gameSetMap(fetch_map(1));
 
-        const res = (
-            <div className={this.classes.root}>
-                <MessageDialog title="提示" open={this.state.welcomeOpen} 
-                    closeText="关闭" onRequestClose={this.handleClick('welcomeOpen', false)}>
-                    {welcomeMsg} 
-                </MessageDialog>
-                <MessageDialog title="提示" open={this.state.sharedStageOpen}
-                    closeText="好的" onRequestClose={this.handleClick('sharedStageOpen', false)}>
-                    <Typography type="title">关卡分享成功！</Typography>
-                    <Typography type="body2">请将下面的链接分享给好友：</Typography>
-                    <TextField disabled autoFocus fullWidth
-                    defaultValue={window.location}/>
-                    <CopyToClipboard text={window.location}>
-                        <Button>复制链接</Button>
-                    </CopyToClipboard>
-                </MessageDialog>
-                <MessageDialog title="提示" open={this.state.sharedOpen}
-                    closeText="好的" onRequestClose={this.handleClick('sharedOpen', false)}>
-                    <Typography type="title">解法分享成功！</Typography>
-                    <Typography type="body2">请将下面的链接分享给好友：</Typography>
-                    <TextField disabled autoFocus fullWidth
-                    defaultValue={solutionUrl}/>
-                    <CopyToClipboard text={solutionUrl}>
-                        <Button>复制链接</Button>
-                    </CopyToClipboard>
-                </MessageDialog>
-                <MessageDialog title="提示" open={this.state.passedOpen}
-                    closeText="关闭" onRequestClose={()=>{
-                        // accepted. Store the code.
-                        const code = this.blocklyContainer.getXmlText();
-                        const map_id = this.props.match.params.map_id;
+        return <div className={this.classes.root}>
+            <MessageDialog title="提示" open={this.state.welcomeOpen} 
+                closeText="关闭" onRequestClose={this.handleClick('welcomeOpen', false)}>
+                {welcomeMsg} 
+            </MessageDialog>
+            <MessageDialog title="提示" open={this.state.sharedStageOpen}
+                closeText="好的" onRequestClose={this.handleClick('sharedStageOpen', false)}>
+                <Typography type="title">关卡分享成功！</Typography>
+                <Typography type="body2">请将下面的链接分享给好友：</Typography>
+                <TextField disabled autoFocus fullWidth
+                defaultValue={window.location}/>
+                <CopyToClipboard text={window.location}>
+                    <Button>复制链接</Button>
+                </CopyToClipboard>
+            </MessageDialog>
+            <MessageDialog title="提示" open={this.state.sharedOpen}
+                closeText="好的" onRequestClose={this.handleClick('sharedOpen', false)}>
+                <Typography type="title">解法分享成功！</Typography>
+                <Typography type="body2">请将下面的链接分享给好友：</Typography>
+                <TextField disabled autoFocus fullWidth
+                defaultValue={solutionUrl}/>
+                <CopyToClipboard text={solutionUrl}>
+                    <Button>复制链接</Button>
+                </CopyToClipboard>
+            </MessageDialog>
+            <MessageDialog title="提示" open={this.state.passedOpen}
+                closeText="关闭" onRequestClose={()=>{
+                    // accepted. Store the code.
+                    const code = this.blocklyContainer.getXmlText();
+                    const map_id = this.props.match.params.map_id;
 
-                        create_solution(map_id, code, false, this.stars);
-                        this.handleClick('passedOpen', false)();
-                    }}>
-                    <div><Button onClick={()=>{
-                        const code = this.blocklyContainer.getXmlText();
-                        const map_id = this.props.match.params.map_id;
-                        const shared = true;
-                        create_solution(map_id, code, shared, this.stars).then(
-                            (id)=>{
-                                this.setState({
-                                    sharedOpen: true,
-                                    solutionId: id
-                                });});
-                        this.setState({passedOpen: false});
-                    }}>分享解法</Button></div>
-                    <p>{passedMsg}</p>
-                    {starImg}
-                </MessageDialog>
-                <MessageDialog title="游戏失败" open={this.state.failedOpen}
-                    confirmText="重试" onRequestConfirm={() => {
-                        this.setState({failedOpen: false});
-                        this.initMap();
+                    create_solution(map_id, code, false, this.stars);
+                    this.handleClick('passedOpen', false)();
+                }}>
+                <div><Button onClick={()=>{
+                    const code = this.blocklyContainer.getXmlText();
+                    const map_id = this.props.match.params.map_id;
+                    const shared = true;
+                    create_solution(map_id, code, shared, this.stars).then(
+                        (id)=>{
+                            this.setState({
+                                sharedOpen: true,
+                                solutionId: id
+                            });});
+                    this.setState({passedOpen: false});
+                }}>分享解法</Button></div>
+                <p>{passedMsg}</p>
+                {starImg}
+            </MessageDialog>
+            <MessageDialog title="游戏失败" open={this.state.failedOpen}
+                confirmText="重试" onRequestConfirm={() => {
+                    this.setState({failedOpen: false});
+                    this.initMap();
+                }}
+                closeText="关闭" onRequestClose={this.handleClick('failedOpen', false)}>
+                {gameoverMsg}
+            </MessageDialog>
+            <Grid container spacing={0} justify='center'>
+            <Grid item xs={12} sm={12} >
+                <Button onClick={()=>{
+                    this.setState({
+                        sharedStageOpen: true,
+                    })
+                }}>分享关卡</Button>
+                <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
+                <Button onClick={this.initMap}>重置</Button>
+                <Button onClick={this.run}>运行</Button>
+            </Grid>
+            <Grid item xs={12} sm={6} >
+                <div id={'gameContainer'}>
+                    {gameContainer}    
+                </div>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
+                    refCallback={(e) => { this.blocklyContainer = e; 
                     }}
-                    closeText="关闭" onRequestClose={this.handleClick('failedOpen', false)}>
-                    {gameoverMsg}
-                </MessageDialog>
-                <Grid container spacing={0} justify='center'>
-                <Grid item xs={12} sm={12} >
-                    <Button onClick={()=>{
-                        this.setState({
-                            sharedStageOpen: true,
-                        })
-                    }}>分享关卡</Button>
-                    <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
-                    <Button onClick={this.initMap}>重置</Button>
-                    <Button onClick={this.run}>运行</Button>
-                </Grid>
-                <Grid item xs={12} sm={6} >
-                    <div id={'gameContainer'}>
-                        {gameContainer}    
-                    </div>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <BlocklyContainer onError={()=> {throw Error('JS load failed.');}}
-                        refCallback={(e) => { this.blocklyContainer = e; 
-                        }}
-                        onLoaded={()=>{
-                                if(!this.mapInitialised){
-                                    this.mapInitialised = true;
-                                 
-                                    fetch_map(this.props.match.params.map_id, true)
-                                        .then((response) => {
-                                        if(response && response.data && response.data.res_code === 1) {
-                                            this.setState({ map: response.data.map });
-                                            this.initMap();
-                                            } else {
-                                                alert('没有权限！');
-                                                this.props.history.push('/');
-                                            }
-                                    });
+                    onLoaded={()=>{
+                            if(!this.mapInitialised){
+                                this.mapInitialised = true;
+                             
+                                fetch_map(this.props.match.params.map_id, true)
+                                    .then((response) => {
+                                    if(response && response.data && response.data.res_code === 1) {
+                                        this.setState({ map: response.data.map });
+                                        this.initMap();
+                                        } else {
+                                            alert('没有权限！');
+                                            this.props.history.push('/');
+                                        }
+                                });
 
-                                    fetch_solution_list(0, this.props.match.params.map_id, 'true',
-                                        'true', 1, 1).then((list) => {
-                                            if(typeof(list) !== 'undefined' && list.length > 0){
-                                                const solution = list[0];
-                                                this.blocklyContainer.loadXmlText(solution.code);
-                                            }
-                                    });
-                                    
-                                }
+                                fetch_solution_list(0, this.props.match.params.map_id, 'true',
+                                    'true', 1, 1).then((list) => {
+                                        if(typeof(list) !== 'undefined' && list.length > 0){
+                                            const solution = list[0];
+                                            this.blocklyContainer.loadXmlText(solution.code);
+                                        }
+                                });
                                 
-                        }}
-                        readOnly={blocklyReadOnly} 
-                        defaultBlocks={defaultBlocks} toolboxXml={toolboxXml}
-                        />
-                </Grid>
-                </Grid>
-            </div>
-        );
-
-        return res;
+                            }
+                            
+                    }}
+                    readOnly={blocklyReadOnly} 
+                    defaultBlocks={defaultBlocks} toolboxXml={toolboxXml}
+                    />
+            </Grid>
+            </Grid>
+        </div>;
     }
     componentDidMount = () => {
         /* currently do nothing */

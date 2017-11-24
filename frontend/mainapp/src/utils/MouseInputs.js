@@ -308,18 +308,19 @@ class MouseInput extends Module {
     });
 
     // find first intersection that does not ignore pointer events
-    let depth, object = null;
+    let depth, intersection = null;
     for (depth = 0; depth < intersections.length; ++depth) {
-      const intersection = intersections[depth];
-      object = intersection.object;
+      intersection = intersections[depth];
+      const object = intersection.object;
 
       if (object.userData && object.userData.ignorePointerEvents) {
         continue;
       }
     }
     
-    if(object)
+    if(intersection)
     {
+        const object = intersection.object;
         const uuid = object.uuid;
 
         if (this._hoverObjectMap[uuid]) {

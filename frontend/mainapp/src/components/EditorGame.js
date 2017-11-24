@@ -84,7 +84,7 @@ export default class EditorGame extends Component {
 			</group>;
 		}
 
-		const ans = <React3
+		return <React3
             mainCamera="camera"
             width={ width }
             height={ height }
@@ -147,7 +147,6 @@ export default class EditorGame extends Component {
                 />
             </scene>
         </React3>;
-		return ans;
     }
 
 }

@@ -5,7 +5,7 @@ import axios from 'axios'
 import Typography from 'material-ui/Typography'
 import {withStyles} from 'material-ui/styles'
 
-const styles = theme => ({});
+const styles = (/*theme*/) => ({});
 
 const StageGallery = createReactClass({
     getInitialState: function(){
