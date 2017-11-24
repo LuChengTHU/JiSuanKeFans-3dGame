@@ -308,35 +308,32 @@ class MouseInput extends Module {
     });
 
     // find first intersection that does not ignore pointer events
-    for (let depth = 0; depth < intersections.length; ++depth) {
+    let depth, object;
+    for (depth = 0; depth < intersections.length; ++depth) {
       const intersection = intersections[depth];
-      const object = intersection.object;
+      object = intersection.object;
 
       if (object.userData && object.userData.ignorePointerEvents) {
         continue;
       }
+    }
 
-      const uuid = object.uuid;
+    const uuid = object.uuid;
 
-      if (this._hoverObjectMap[uuid]) {
+    if (this._hoverObjectMap[uuid]) {
         delete hoverMapToUpdate[uuid];
 
         // just update that intersection
         this._hoverObjectMap[uuid].intersection = intersection;
-      } else {
+    } else {
         this._hoverObjectMap[uuid] = {
-          object,
-          intersection,
+            object,
+            intersection,
         };
-
         if (!(mouseEnterEvent.isDefaultPrevented() || mouseEnterEvent.isPropagationStopped())) {
-          React3.eventDispatcher.dispatchEvent(object, 'onMouseEnter',
-            mouseEnterEvent, intersection, depth);
+            React3.eventDispatcher.dispatchEvent(object, 'onMouseEnter',
+                mouseEnterEvent, intersection, depth);
         }
-      }
-
-      // we have found the first solid intersection, don't go further
-      break;
     }
 
     const mouseLeaveEvent = this._createSyntheticMouseEvent('mouseLeave', {
@@ -366,9 +363,6 @@ class MouseInput extends Module {
     const relativeMouseCoords = screenMouseCoords.clone()
       .sub(tempVector2.set(containerRect.left, containerRect.top))
       .divide(tempVector2.set(containerRect.width, containerRect.height));
-
-    // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
     relativeMouseCoords.x = relativeMouseCoords.x * 2 - 1;
     relativeMouseCoords.y = -relativeMouseCoords.y * 2 + 1;

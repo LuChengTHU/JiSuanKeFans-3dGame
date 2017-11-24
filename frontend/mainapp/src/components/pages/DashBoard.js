@@ -74,7 +74,7 @@ class DashBoard extends Component {
             this.stars = starNum;
         }
 
-        this.setState((prevState, props) => {
+        this.setState((prevState/*, props*/) => {
             const passedOpen = (prevState.gameState !== gameState && gameState === "passed");
             const failedOpen = (prevState.gameState !== gameState && gameState === "failed");
             return {passedOpen: passedOpen, gameState: gameState, failedOpen: failedOpen};
@@ -127,8 +127,7 @@ class DashBoard extends Component {
         for(let i = starNum; i < 3; i++) {
             starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_false.png`}/>)
         }
-        //TODO
-        // window.Game.gameSetMap(fetch_map(1));
+        // TODO window.Game.gameSetMap(fetch_map(1));
 
         const res = (
             <div className={this.classes.root}>

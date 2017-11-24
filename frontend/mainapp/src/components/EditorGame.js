@@ -56,7 +56,8 @@ export default class EditorGame extends Component {
 		for(let i = 0; i < monsters.length; ++i)
 			if(monsters[i].hp <= 0)
 			{
-				ms.push(null); mbar.push(null);
+				ms.push(null);
+                mbar.push(null);
 			}
 			else
 			{

@@ -5,7 +5,7 @@ import {withStyles} from 'material-ui/styles'
 import MapChooser from '../../containers/MapChooser'
 import Typography from 'material-ui/Typography'
 
-const styles = theme => ({});
+const styles = (/*theme*/) => ({});
 
 const mapFetcher = author_id => ({
     fetch: pageNo => {

@@ -214,7 +214,7 @@ export default class GameContainer extends Component {
 
         const that = this;
 
-        function onEndLoopFinished(event) {
+        function onEndLoopFinished(/*event*/) {
             oldState.playerAnimateAttacking = false;
             oldState.mixer.removeEventListener('loop', onEndLoopFinished);
             that.setWeight(oldState.monsters.slice(0)[id].currentAction, 0);

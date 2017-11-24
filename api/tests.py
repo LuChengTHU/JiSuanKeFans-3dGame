@@ -1,4 +1,4 @@
-# encoding=utf-8
+# -*- coding:utf-8 -*-  
 from django.urls import reverse
 from rest_framework.test import APITestCase as TestCase
 from django.utils.timezone import now

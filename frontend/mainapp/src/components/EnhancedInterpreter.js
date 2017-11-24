@@ -7,9 +7,6 @@ export default class EnhancedInterpreter {
         this.continuous = null;
         this.stepsAllowed = null; // Initialized by loadProgram()
         this.myInterpreter = null; // Initialized by loadProgram()
-        // this._statementDelay = statementDelay;
-        // this._parallelOperationInProgress = false;
-        // this._pendingState = null;
         this.stateListenerCallback = stateListenerCallback;
         this.Game = runtimeLibrary;
     }

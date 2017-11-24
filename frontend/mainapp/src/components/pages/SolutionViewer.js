@@ -43,7 +43,7 @@ const SolutionViewer = createReactClass({
         );
     },
     loadSolution: function(){
-        fetch_map(this.solution.map.id).then((response) => {
+        fetch_map(this.solution.map.id).then((/*response*/) => {
             Logic.gameSetMap(window.map);
             this.setState({gameState: "ready"});
             this.blocklyContainer.highlightBlock('');

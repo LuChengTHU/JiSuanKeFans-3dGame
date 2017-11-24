@@ -183,7 +183,6 @@ export default class EditorGameContainer extends Component {
         controls.staticMoving = true;
         controls.dynamicDampingFactor = 0.3;
         controls.minDistance = 1;
-        // controls.maxDistance = 10;
 
         this.controls = controls;            
         this.controls.addEventListener('change', this.onTrackballChange);       
@@ -271,7 +270,7 @@ export default class EditorGameContainer extends Component {
     
     // Our game loop, which is managed as the window's requestAnimationFrame
     // callback
-    gameLoop = (time) => {
+    gameLoop = (/*time*/) => {
     
         if( !this.mounted ) {
             return;
@@ -295,9 +294,6 @@ export default class EditorGameContainer extends Component {
         event.preventDefault();
         document.addEventListener('mousemove', this.onMouseMove, false);
         document.addEventListener('mouseup', this.onMouseUp, false);
-        // this.initClientX = event.clientX;
-        // this.initClientY = event.clientY
-        // console.log(event.clientX, event.clientY)
     }
 
     onMouseMove = (event) => {
