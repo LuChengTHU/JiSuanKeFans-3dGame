@@ -42,7 +42,7 @@ export function fetch_solution_list(user_id, map_id, self, details, page_no, pag
             return response.data.list;
         }
     ).catch(
-        function(error){
+        function(/*error*/){
             return undefined;
         }
     );

@@ -47,9 +47,6 @@ class BlocklyContainer extends Component {
         } else {
             this.workspace.options.maxBlocks = this.props.maxBlocks ? this.props.maxBlocks : 99999;
         }
-        // this.workspace.updateToolbox(this.props.toolboxXml);
-        // this._blocklyDiv.getElementsByClassName('blocklyToolboxDiv')[0].style.display = readOnly ? 'none' : '';
-        // window.Blockly.svgResize(this.workspace);
         if (typeof(this.workspace.toolbox_) !== 'undefined') {
             this.workspace.toolbox_.flyout_.hide(); // This solution is found in the source code....
         }
@@ -65,7 +62,7 @@ class BlocklyContainer extends Component {
         }
         if (this.workspace != null) {
             if (newProps !== this.props) {
-                // this.props.toolboxXml TODO 
+                // TODO this.props.toolboxXml
                 this.update(newProps, this.props);
             }
         }
@@ -84,7 +81,7 @@ class BlocklyContainer extends Component {
     {
         if (this.mounted && this.isScriptLoadSucceed && !this.initialized) {
             this.initialized = true;
-            let Blockly = window.Blockly;
+            const Blockly = window.Blockly;
             Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
             Blockly.JavaScript.addReservedWords('highlightBlock');
             this.workspace = Blockly.inject(this._blocklyDiv,
@@ -103,13 +100,6 @@ class BlocklyContainer extends Component {
         if (newProps.defaultBlocks !== prevProps.defaultBlocks) {
             this.loadXmlText(newProps.defaultBlocks);
         }
-        // let blocklyHeight;
-        // if ('blocklyHeight' in newProps && newProps.blocklyHeight !== null) {
-        //     blocklyHeight = newProps.blocklyHeight;
-        // } else {
-        //     blocklyHeight = this._blocklyArea.offsetHeight;
-        // }
-        // this.resize(blocklyHeight);
         this.setReadOnly(newProps.readOnly);
         window.Blockly.svgResize(this.workspace);
     }

@@ -6,7 +6,7 @@ import { Vector3, Euler, } from 'three';
  **/
 export default function playerMovement( oldState, time ) {
 
-	let state = { ...oldState };
+	const state = { ...oldState };
 	if(window.animationShouldStop)
 	{
 		state.playerAnimateForward = false;
@@ -32,7 +32,7 @@ export default function playerMovement( oldState, time ) {
 	if(state.playerAnimateForward)
 	{
 		state.playerAnimateForwardStart = state.playerPosition.clone();
-		let tmp = state.playerPosition.clone();
+		const tmp = state.playerPosition.clone();
 		tmp.add(state.playerDirection);
 		state.playerAnimateForwardStop = tmp;
 		state.playerAnimateForwardCurrent = 0;
@@ -61,7 +61,7 @@ export default function playerMovement( oldState, time ) {
 			state.playerAnimateTurnDiff = -Math.PI / 2;
 		else
 			state.playerAnimateTurnDiff = Math.PI / 2;
-		let tmp = state.playerRotation.clone();
+		const tmp = state.playerRotation.clone();
 		tmp.y += state.playerAnimateTurnDiff;
 		state.playerAnimateTurnStop = tmp;
 		state.playerAnimateTurnCurrent = 0;
@@ -80,7 +80,7 @@ export default function playerMovement( oldState, time ) {
 		}
 		else
 		{
-			let tmp = state.playerAnimateTurnStart.clone();
+			const tmp = state.playerAnimateTurnStart.clone();
 			tmp.y += state.playerAnimateTurnDiff * ++state.playerAnimateTurnCurrent / state.playerAnimateTurnTotal;
 			state.playerRotation = tmp;
 		}
@@ -88,10 +88,8 @@ export default function playerMovement( oldState, time ) {
 	if(state.playerAnimateTurning)
 		++animationCount;
 
-	// console.log(animationCount);
 
     if(state.playerAnimateAttacking) {
-        // console.log('continue');
 	    ++animationCount;
     }
 
@@ -101,7 +99,7 @@ export default function playerMovement( oldState, time ) {
 		if(state.monsters[i].animateForward)
 		{
 			state.monsters[i].animateForwardStart = state.monsters[i].position.clone();
-			let tmp = state.monsters[i].position.clone();
+			const tmp = state.monsters[i].position.clone();
 			tmp.add(state.monsters[i].direction);
 			state.monsters[i].animateForwardStop = tmp;
 			state.monsters[i].animateForwardCurrent = 0;
@@ -133,7 +131,7 @@ export default function playerMovement( oldState, time ) {
 				state.monsters[i].animateTurnDiff = -Math.PI / 2;
 			else
 				state.monsters[i].animateTurnDiff = Math.PI / 2;
-			let tmp = state.monsters[i].rotation.clone();
+			const tmp = state.monsters[i].rotation.clone();
 			tmp.y += state.monsters[i].animateTurnDiff;
 			state.monsters[i].animateTurnStop = tmp;
 			state.monsters[i].animateTurnCurrent = 0;
@@ -152,7 +150,7 @@ export default function playerMovement( oldState, time ) {
 			}
 			else
 			{
-				let tmp = state.monsters[i].animateTurnStart.clone();
+				const tmp = state.monsters[i].animateTurnStart.clone();
 				tmp.y += state.monsters[i].animateTurnDiff * ++state.monsters[i].animateTurnCurrent / state.monsters[i].animateTurnTotal;
 				state.monsters[i].rotation = tmp;
 			}

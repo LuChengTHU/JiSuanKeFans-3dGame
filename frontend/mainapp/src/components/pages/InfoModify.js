@@ -74,25 +74,26 @@ class InfoModify extends React.Component {
         });
     };
 
-    updateInfo = () => {
+    updateInfo = () =>
+    {
         axios.get('modify/', {})
-            .then((response) => {
-                if (response.data.res_code !== null) {
-                    if (response.data.res_code === 1) {
-                        this.setState({
-                            username: response.data['username'],
-                            gender: response.data['gender'],
-                        })
-                    }
+            .then((response) =>
+            {
+                if (response.data.res_code !== null && response.data.res_code === 1)
+                {
+                    this.setState({
+                        username: response.data['username'],
+                        gender: response.data['gender'],
+                    });
                 }
             })
     }
     
-    submitInfo = (e) => {
+    submitInfo = (/*e*/) => {
         let _new_password = this.state.new_password
         if (_new_password === '')
             _new_password = this.state.old_password
-        let paylord = {
+        const paylord = {
             'username': this.state.username,
             'gender': this.state.gender,
             'old_password': this.state.old_password,
@@ -100,7 +101,6 @@ class InfoModify extends React.Component {
         }
         
         axios.post('modify/', paylord);
-        // e.preventDefault();
     }
 
     render() 

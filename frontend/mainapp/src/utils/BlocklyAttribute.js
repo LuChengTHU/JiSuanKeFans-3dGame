@@ -13,17 +13,46 @@ export function getToolboxXml(map) {
 	var ans = ``;
 	ans += `<xml id="toolbox" style="display: none">`
 	ans += `<category name="游戏">`;
-	if(S[11]) ans += `<block type="game_move"></block>`;
-	if(S[12]) ans += `<block type="game_turn"></block>`;
-	if(S[21]) ans += `<block type="game_attack"></block>`;
-	if(S[31]) ans += `<block type="game_lookahead_name"></block>`;
-	if(S[32]) ans += `<block type="game_get_pos_x"></block>`;
-	if(S[33]) ans += `<block type="game_get_pos_y"></block>`;
-	if(S[34]) ans += `<block type="game_get_dir"></block>`;
-	if(S[35]) ans += `<block type="game_get_attack"></block>`;
-	if(S[36]) ans += `<block type="game_get_hp"></block>`;
-	ans += `</category>`;
-	if(S[70]) ans += `
+	if(S[11])
+    {
+        ans += `<block type="game_move"></block>`;
+	}
+    if(S[12])
+    {
+        ans += `<block type="game_turn"></block>`;
+	}
+    if(S[21])
+    {
+        ans += `<block type="game_attack"></block>`;
+	}
+    if(S[31])
+    {
+        ans += `<block type="game_lookahead_name"></block>`;
+	}
+    if(S[32])
+    {
+        ans += `<block type="game_get_pos_x"></block>`;
+	}
+    if(S[33])
+    {
+        ans += `<block type="game_get_pos_y"></block>`;
+	}
+    if(S[34])
+    {
+        ans += `<block type="game_get_dir"></block>`;
+	}
+    if(S[35])
+    {
+        ans += `<block type="game_get_attack"></block>`;
+	}
+    if(S[36])
+    {
+        ans += `<block type="game_get_hp"></block>`;
+	}
+    ans += `</category>`;
+	if(S[70])
+    {
+        ans += `
 		<category name="循环">
 			<block type="controls_repeat_ext">
 				<value name="TIMES">
@@ -54,8 +83,11 @@ export function getToolboxXml(map) {
 			<block type="controls_forEach"></block>
 			<block type="controls_flow_statements"></block>
 		</category>
-	`;
-	if(S[50]) ans += `
+        `;
+    }
+	if(S[50])
+    {
+        ans += `
 		<category name="逻辑">
 			<block type="controls_if"></block>
 			<block type="logic_compare"></block>
@@ -71,20 +103,32 @@ export function getToolboxXml(map) {
 			<mutation elseif="1" else="1"></mutation>
 			</block>
 		</category>
-	`;
-	if(S[0]) ans += `
+        `;
+    }
+	if(S[0])
+    {
+        ans += `
 		<category name="文本">
 			<block type="text_print"></block>
 			<block type="text"></block>
 		</category>
-	`;
-	if(S[60]) ans += `
+        `;
+    }
+	if(S[60])
+    {
+        ans += `
 		<category name="函数" custom="PROCEDURE"></category>
-	`;
-	if(S[90]) ans += `
+        `;
+    }
+	if(S[90])
+    {
+        ans += `
 		<category name="变量" custom="VARIABLE"></category>
-	`;
-	if(S[40]) ans += `
+        `;
+    }
+	if(S[40])
+    {
+        ans += `
 		<category name="数学">
 			<block type="math_number"></block>
 			<block type="math_arithmetic"></block>
@@ -121,8 +165,11 @@ export function getToolboxXml(map) {
 			</block>
 			<block type="math_random_float"></block>
 		</category>
-	`;
-	if(S[80]) ans += `
+        `;
+    }
+	if(S[80])
+    {
+        ans += `
 		<category name="列表">
 			<block type="lists_create_empty"></block>
 			<block type="lists_create_with"></block>
@@ -139,8 +186,11 @@ export function getToolboxXml(map) {
 			<block type="lists_getIndex"></block>
 			<block type="lists_setIndex"></block>
 		</category>
-	`;
-	if(S[1]) ans += `
+        `;
+    }
+	if(S[1])
+    {
+        ans += `
 		<category name="库" expanded="true">
 			<category name="随机打乱列表">
 				<block type="procedures_defnoreturn">
@@ -270,26 +320,14 @@ export function getToolboxXml(map) {
 				</block>
 			</category>
 		</category>
-	`;
+        `;
+    }
 	ans += `</xml>`;
 	return ans;
 }
 
-export function getDefaultBlocks(map) {
+export function getDefaultBlocks(/*map*/) {
 	return `<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display: none">
 	<variables></variables>
 	</xml>`;
-	// return `<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display: none">
-	// <variables></variables>
-	// <block type="controls_repeat_ext" id="XXW{mM|V)O4t}b%c\`k=Y" x="13" y="13">
-		// <value name="TIMES">
-		// <shadow type="math_number" id="t6[VMer(7eCVqRMEX2ez">
-			// <field name="NUM">2</field>
-		// </shadow>
-		// </value>
-		// <statement name="DO">
-		// <block type="game_move" id="+!cL)/7;TB9NG)vuHr+;"></block>
-		// </statement>
-	// </block>
-	// </xml>`;
 }

@@ -22,7 +22,7 @@ export default class GameContainer extends Component {
         super(props);
 		window.ui = this;
 		window.Game = Logic.default;
-		window.blocklyCallback = () => {};
+		window.blocklyCallback = () => {/* default no callback */};
 		window.blocklyShouldRun = false;
 		
 		window.blocklyAutoRun = () =>
@@ -75,7 +75,7 @@ export default class GameContainer extends Component {
     };
 
     prepareCrossFade = (startAction, endAction, duration) => {
-        let oldState = this.state;
+        const oldState = this.state;
         oldState.actions.forEach( function (action) {
             action.paused = false;
         });
@@ -89,7 +89,7 @@ export default class GameContainer extends Component {
         oldState.currentAction = endAction;
         this.setState(oldState);
 
-        let that = this;
+        const that = this;
 
         function onEndLoopFinished(event) {
             if (event.action === endAction) {
@@ -114,20 +114,20 @@ export default class GameContainer extends Component {
 	
 	addMonster(id, x, z, maxHp)
 	{
-	    let mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
+	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
         mesh.scale.set(0.15, 0.15, 0.15);
-        let mixer = new THREE.AnimationMixer(mesh);
-        let moveAction = mixer.clipAction(mesh.geometry.animations[1]);
-        let attackAction = mixer.clipAction(mesh.geometry.animations[0]);
+        const mixer = new THREE.AnimationMixer(mesh);
+        const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
+        const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
         this.setWeight(moveAction, 0);
         this.setWeight(attackAction, 1);
-        let actions = [moveAction, attackAction];
+        const actions = [moveAction, attackAction];
         actions.forEach(function (action) {
             action.play();
         });
 
 		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
 			if(id >= ms.length)
 				ms.length = id + 1;
 			ms[id] =
@@ -150,7 +150,7 @@ export default class GameContainer extends Component {
 	{
 		if(hp < 0) hp = 0;
 		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
 			ms[id].hp = hp;
 			return {monsters: ms};
 		});
@@ -159,7 +159,7 @@ export default class GameContainer extends Component {
 	monsterMoveForward(id)
 	{
  		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
  			ms[id].animateForward = true;
  			return {monsters: ms};
  		});
@@ -169,7 +169,7 @@ export default class GameContainer extends Component {
 	monsterTurnCCW(id)
 	{
  		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
  			ms[id].animateCCW = true;
  			if(ms[id].direction.x === 1)
  				ms[id].direction = new Vector3(0, 0, -1);
@@ -187,7 +187,7 @@ export default class GameContainer extends Component {
 	monsterTurnCW(id)
 	{
 		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
  			ms[id].animateCW = true;
  			if(ms[id].direction.x === 1)
  				ms[id].direction = new Vector3(0, 0, 1);
@@ -204,7 +204,7 @@ export default class GameContainer extends Component {
 
     monsterAttack(id)
     {
-        let oldState = this.state;
+        const oldState = this.state;
         oldState.monsters.slice(0)[id].mixer.addEventListener('loop', onEndLoopFinished);
         this.setWeight(oldState.monsters.slice(0)[id].currentAction, 1);
         oldState.monsters.slice(0)[id].currentAction.play();
@@ -212,7 +212,7 @@ export default class GameContainer extends Component {
         this.setState({monsterAnimateAttacking: true});
         window.blocklyShouldRun = false;
 
-        let that = this;
+        const that = this;
 
         function onEndLoopFinished(event) {
             oldState.playerAnimateAttacking = false;
@@ -224,7 +224,7 @@ export default class GameContainer extends Component {
 	
 	createMap(height, width)
 	{
-		let bs = [];
+		const bs = [];
 		for(let i = 0; i < height; ++i)
 			for(let j = 0; j < width; ++j)
 				bs.push(<MapBlock x={i} z={j}/>);
@@ -286,7 +286,7 @@ export default class GameContainer extends Component {
 	setMonsterDirection(id, x, z)
 	{
 		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
 			ms[id].direction = new Vector3(x, 0, z);
 			return {monsters: ms};
 		});
@@ -377,7 +377,7 @@ export default class GameContainer extends Component {
 		// document.addEventListener('mouseup', this.onGameMouseUp, false);
 		// document.addEventListener('mouseout', this.onGameMouseOut, false);
 
-        let loader = new THREE.JSONLoader();
+        const loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
             (geometry, materials) => {
                 for(let i = 0; i < materials.length; i++) {
@@ -385,19 +385,15 @@ export default class GameContainer extends Component {
                     materials[i].skinning = true;
                     materials[i].morphTargets = true;
                 }
-                let mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+                const mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 mesh.scale.set(0.01, 0.01, 0.01);
-                let mixer = new THREE.AnimationMixer(mesh);
-                // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
-                //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
-                //     action.play();
-                // }
-                let moveAction = mixer.clipAction(mesh.geometry.animations[0]);
-                let attackAction = mixer.clipAction(mesh.geometry.animations[2]);
+                const mixer = new THREE.AnimationMixer(mesh);
+                const moveAction = mixer.clipAction(mesh.geometry.animations[0]);
+                const attackAction = mixer.clipAction(mesh.geometry.animations[2]);
                 //attackAction.setLoop(THREE.LoopOnce, 0);
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
-                let actions = [moveAction, attackAction];
+                const actions = [moveAction, attackAction];
 
                 actions.forEach(function (action) {
                     action.play();
@@ -412,35 +408,13 @@ export default class GameContainer extends Component {
                 });
 
 
-                let monsterLoader = new THREE.JSONLoader();
+                const monsterLoader = new THREE.JSONLoader();
                 monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
                     (geometry, materials) => {
-                        let material = materials[0];
+                        const material = materials[0];
                         material.emissive.set(0x101010);
                         material.skinning = true;
                         material.morphTargets = true;
-                        // let mesh = new THREE.SkinnedMesh(geometry, material);
-                        // let mixer = new THREE.AnimationMixer(mesh);
-                        // // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
-                        // //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
-                        // //     action.play();
-                        // // }
-                        // let moveAction = mixer.clipAction(mesh.geometry.animations[6]);
-                        // let attackAction = mixer.clipAction(mesh.geometry.animations[0]);
-                        // //attackAction.setLoop(THREE.LoopOnce, 0);
-                        // this.setWeight(moveAction, 0);
-                        // this.setWeight(attackAction, 1);
-                        // let actions = [moveAction, attackAction];
-                        // actions.forEach(function (action) {
-                        //     action.play();
-                        // });
-                        //
-                        // this.setState({
-                        //     monsterMesh: mesh,
-                        //     monsterMixer: mixer,
-                        //     monsterActions: actions,
-                        //     monsterCurrentAction: attackAction
-                        // });
 
                         this.setState({
                             monsterGeometry: geometry,
@@ -514,16 +488,13 @@ export default class GameContainer extends Component {
 		this.mouseX = event.clientX;
 		this.mouseY = event.clientY;
 
-		let DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.002;
-		let DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.002;
-		let SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
-		let SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
+		const DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.002;
+		const DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.002;
+		const SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
+		const SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
 		
-		//var SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
-		//SightX = 1. * SightX / SightLen;
-		//SightZ = 1. * SightZ / SightLen;
-		let vSightX = SightZ;
-		let vSightZ = -SightX;
+		const vSightX = SightZ;
+		const vSightZ = -SightX;
 
 		this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
 		this.cameraY = this.cameraYOnMouseDown;

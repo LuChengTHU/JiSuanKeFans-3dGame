@@ -75,14 +75,16 @@ class DashBoard extends Component {
         }
 
         this.setState((prevState, props) => {
-            let passedOpen = (prevState.gameState !== gameState && gameState === "passed");
-            let failedOpen = (prevState.gameState !== gameState && gameState === "failed");
+            const passedOpen = (prevState.gameState !== gameState && gameState === "passed");
+            const failedOpen = (prevState.gameState !== gameState && gameState === "failed");
             return {passedOpen: passedOpen, gameState: gameState, failedOpen: failedOpen};
         });
     }
     initMap = () => 
     {
-		window.blocklyCallback = () => {};
+		window.blocklyCallback = () => {
+            // Remove any callback before start playing
+        };
 		window.blocklyShouldRun = false;
 		window.animationShouldStop = true;
         Logic.gameSetMap(window.map);
@@ -115,10 +117,10 @@ class DashBoard extends Component {
             gameoverMsg = this.state.map['gameover_msg'];
             passedMsg = this.state.map['passed_msg'];
         }
-        let blocklyReadOnly = (this.state.gameState === 'stepping');
+        const blocklyReadOnly = (this.state.gameState === 'stepping');
 
         const starNum = this.stars;
-        let starImg = [];
+        const starImg = [];
         for(let i = 0; i < starNum; i++) {
             starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_true.jpg`}/>)
         }
@@ -179,7 +181,10 @@ class DashBoard extends Component {
                     {starImg}
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
-                    confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); this.initMap();}}
+                    confirmText="重试" onRequestConfirm={() => {
+                        this.setState({failedOpen: false});
+                        this.initMap();
+                    }}
                     closeText="关闭" onRequestClose={this.handleClick('failedOpen', false)}>
                     {gameoverMsg}
                 </MessageDialog>
@@ -240,6 +245,7 @@ class DashBoard extends Component {
         return res;
     }
     componentDidMount = () => {
+        /* currently do nothing */
     }
 }
 

@@ -50,9 +50,6 @@ class TracerContols extends THREE.EventDispatcher {
     const _eye = new THREE.Vector3();
     const _movePrev = new THREE.Vector2();
     const _moveCurr = new THREE.Vector2();
-    const _lastAxis = new THREE.Vector3();
-
-    let _lastAngle = 0;
 
     const _zoomStart = new THREE.Vector2();
     const _zoomEnd = new THREE.Vector2();
@@ -139,8 +136,6 @@ class TracerContols extends THREE.EventDispatcher {
     }() );
 
     this.slideCamera = ( function wrapper() {
-      const axis = new THREE.Vector3();
-      const quaternion = new THREE.Quaternion();
       const eyeDirection = new THREE.Vector3();
       const upDirection = new THREE.Vector3();
       const sidewaysDirection = new THREE.Vector3();
@@ -162,8 +157,6 @@ class TracerContols extends THREE.EventDispatcher {
         moveDirection.copy(eyeDirection);
         moveDirection.setY(0.0).normalize();
         sidewaysDirection.setY(0.0).normalize();
-        // console.log("x=", deltaX, "y=", deltaY);
-        // console.log(sidewaysDirection.x, sidewaysDirection.y, sidewaysDirection.z);
         
         _this.target.addScaledVector(sidewaysDirection, -deltaX);   
         _this.target.addScaledVector(moveDirection, -deltaY);     
@@ -414,9 +407,6 @@ class TracerContols extends THREE.EventDispatcher {
       if (_this.enabled === false) return;
 
       switch (event.touches.length) {
-        default:
-          // no touches
-          break;
         case 1:
           _moveCurr.copy(getMouseOnCircle(event.touches[0].pageX, event.touches[0].pageY));
           _movePrev.copy(_moveCurr);
@@ -431,6 +421,9 @@ class TracerContols extends THREE.EventDispatcher {
           _panStart.copy(_panEnd);
           break;
 
+        default:
+          // no touches
+          break;
       }
 
       _state = STATE.NONE;

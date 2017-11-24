@@ -32,7 +32,7 @@ export default class EditorGameContainer extends Component {
 
     createMap(height, width)
 	{
-		let bs = [];
+		const bs = [];
 		for(let i = 0; i < height; ++i)
 			for(let j = 0; j < width; ++j)
 				bs.push(<MapBlock x={i} z={j}/>);
@@ -63,23 +63,22 @@ export default class EditorGameContainer extends Component {
 	{
 		if(!this.state.monsterGeometry || !this.state.monsterMaterial)
 		{
-			// window.setTimeOut(()=>this.addMonster(id, x, z, maxHp), 1000);
 			return;
 		}
-	    let mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
+	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
         mesh.scale.set(0.15, 0.15, 0.15);
-        let mixer = new THREE.AnimationMixer(mesh);
-        let moveAction = mixer.clipAction(mesh.geometry.animations[1]);
-        let attackAction = mixer.clipAction(mesh.geometry.animations[0]);
+        const mixer = new THREE.AnimationMixer(mesh);
+        const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
+        const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
         this.setWeight(moveAction, 0);
         this.setWeight(attackAction, 1);
-        let actions = [moveAction, attackAction];
+        const actions = [moveAction, attackAction];
         actions.forEach(function (action) {
             action.play();
         });
 
-		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+		this.setState((prevState/*, props*/) => {
+			const ms = prevState.monsters.slice(0);
 			if(id >= ms.length)
 				ms.length = id + 1;
 			ms[id] =
@@ -193,7 +192,7 @@ export default class EditorGameContainer extends Component {
             camera: this.camera,
         })
 
-        let loader = new THREE.JSONLoader();
+        const loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
             (geometry, materials) => {
                 for(let i = 0; i < materials.length; i++) {
@@ -201,14 +200,14 @@ export default class EditorGameContainer extends Component {
                     materials[i].skinning = true;
                     materials[i].morphTargets = true;
                 }
-                let mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+                const mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 mesh.scale.set( 0.01, 0.01, 0.01 );
-                let mixer = new THREE.AnimationMixer( mesh );
-                let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
-                let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
+                const mixer = new THREE.AnimationMixer( mesh );
+                const moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
+                const attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
-                let actions = [ moveAction, attackAction];
+                const actions = [ moveAction, attackAction];
 
                 actions.forEach( function ( action ) {
                     action.play();
@@ -224,10 +223,10 @@ export default class EditorGameContainer extends Component {
                 this.requestGameLoop();
             });
 
-            let monsterLoader = new THREE.JSONLoader();
+            const monsterLoader = new THREE.JSONLoader();
             monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
                 (geometry, materials) => {
-                    let material = materials[0];
+                    const material = materials[0];
                     material.emissive.set(0x101010);
                     material.skinning = true;
                     material.morphTargets = true;
@@ -312,92 +311,90 @@ export default class EditorGameContainer extends Component {
         document.removeEventListener('mousemove', this.onMouseMove, false);
         
         const divObj = window.document.getElementById('editorGameContainer');
-        if (divObj) {
-            const screenWidth = divObj.clientWidth;
-            const screenHeight = window.innerHeight * .8;
-            this.camera.aspect = screenWidth/screenHeight;
-            this.camera.updateProjectionMatrix();
-            this.camera.updateMatrixWorld();
+        if(!divObj)
+        {
+            return;
+        }
+        const screenWidth = divObj.clientWidth;
+        const screenHeight = window.innerHeight * .8;
+        this.camera.aspect = screenWidth/screenHeight;
+        this.camera.updateProjectionMatrix();
+        this.camera.updateMatrixWorld();
 
-            const mouse = new THREE.Vector2();
-            mouse.x =   (event.offsetX / screenWidth)  * 2 - 1;
-            mouse.y =  -(event.offsetY / screenHeight) * 2 + 1;
+        const mouse = new THREE.Vector2();
+        mouse.x =   (event.offsetX / screenWidth)  * 2 - 1;
+        mouse.y =  -(event.offsetY / screenHeight) * 2 + 1;
 
+        const standardVector = new THREE.Vector3(mouse.x, mouse.y, 0.5);//标准设备坐标
+        const worldVector = standardVector.unproject(this.camera);
+        const ray = worldVector.sub(this.camera.position).normalize();
+        const pos = this.camera.position;
 
-            // const raycaster = new THREE.Raycaster();
-            // raycaster.setFromCamera( mouse, this.camera );
-            // const intersects = raycaster.intersectObjects( this.gameRef.sceneRef.children );
-            // console.log(this.gameRef.sceneRef.children)
-            
-            // console.log(intersects);
-            
-            
-            const standardVector = new THREE.Vector3(mouse.x, mouse.y, 0.5);//标准设备坐标
-            const worldVector = standardVector.unproject(this.camera);
-            const ray = worldVector.sub(this.camera.position).normalize();
-            const pos = this.camera.position;
+        const t = -pos.y / ray.y;
+        const interX = pos.x + t * ray.x;
+        const interZ = pos.z + t * ray.z;
 
-            const t = -pos.y / ray.y;
-            const interX = pos.x + t * ray.x;
-            const interZ = pos.z + t * ray.z;
+        const gridX = Math.round(interX);
+        const gridY = Math.round(interZ);
+        const height = this.state.height;
+        const width = this.state.width;
+        if(!(gridX >= 0 && gridY >=0 && gridX < width && gridY < height))
+        {
+            return;
+        }
+        if (this.state.selected === "Player") {
+            const monsters = this.state.monsters;
+            for (let i = 0; i < monsters.length; ++ i) 
+                if (monsters[i].hp > 0 && monsters[i].position.x == gridX && monsters[i].position.z == gridY)
+                    return ;
+            this.setState({
+                playerPosition: new THREE.Vector3(gridX, 0, gridY)
+            })
+            window.map.init_pos = [gridX, gridY];
+            return;
+        }
+        else if (this.state.selected === "Target") {
+            this.setState({
+                targetPosition: new THREE.Vector3(gridX, 0, gridY)
+            })
+            window.map.final_pos = [gridX, gridY];
+            return;
+        }
+        if(this.state.selected !== "Monster")
+        {
+            return;
+        }
+        if (this.state.playerPosition.x == gridX && this.state.playerPosition.z == gridY)
+            return;
+        let exist = false;
+        const monsters = this.state.monsters;
 
-            let gridX = Math.round(interX);
-            let gridY = Math.round(interZ);
-            let height = this.state.height;
-            let width = this.state.width;
-            if (gridX >= 0 && gridY >=0 && gridX < width && gridY < height) {
-                if (this.state.selected === "Player") {
-                    let monsters = this.state.monsters;
-                    for (let i = 0; i < monsters.length; ++ i) 
-                        if (monsters[i].hp > 0 && monsters[i].position.x == gridX && monsters[i].position.z == gridY)
-                            return ;
-                    this.setState({
-                        playerPosition: new THREE.Vector3(gridX, 0, gridY)
-                    })
-                    window.map.init_pos = [gridX, gridY]
-                }
-                else if (this.state.selected === "Target") {
-                    this.setState({
-                        targetPosition: new THREE.Vector3(gridX, 0, gridY)
-                    })
-                    window.map.final_pos = [gridX, gridY]
-                }
-                else if (this.state.selected === "Monster") {
-                    if (this.state.playerPosition.x == gridX && this.state.playerPosition.z == gridY)
-                        return;
-                    let exist = false;
-                    let monsters = this.state.monsters;
-
-                    for (let i = 0; i < monsters.length; ++ i) 
-                        if (monsters[i].hp > 0 && Math.round(monsters[i].position.x) == gridX 
-                          && Math.round(monsters[i].position.z) == gridY) {
-                            exist = true;
-                            monsters[i].hp = -1;
-                            window.map.init_AI_infos[i].hp = -1;
-                        }
-                        
-                    if (!exist) {
-                        let id = monsters.length;
-                        this.addMonster(id, gridX, gridY, 10);
-                        if (id > window.map.init_AI_infos.length)
-                            window.map.init_AI_infos.length = id + 1;
-                        
-                        window.map.init_AI_infos[id] = {
-                            "pos": [gridX, gridY],
-                            "id": "naive",
-                            "hp": 1,
-                            "attack": 1,
-                            "code": "Game.gameTurn(Game.GameCW);",
-                            "dir": 17
-                        };
-                    }
-                    else {
-                        this.setState({
-                            monsters: monsters
-                        })
-                    }
-                }
+        for (let i = 0; i < monsters.length; ++ i) 
+            if (monsters[i].hp > 0 && Math.round(monsters[i].position.x) == gridX 
+              && Math.round(monsters[i].position.z) == gridY) {
+                exist = true;
+                monsters[i].hp = -1;
+                window.map.init_AI_infos[i].hp = -1;
             }
+            
+        if (exist) {
+            this.setState({
+                monsters: monsters
+            })
+        } else {
+            const id = monsters.length;
+            this.addMonster(id, gridX, gridY, 10);
+            if (id > window.map.init_AI_infos.length)
+                window.map.init_AI_infos.length = id + 1;
+            
+            window.map.init_AI_infos[id] = {
+                "pos": [gridX, gridY],
+                "id": "naive",
+                "hp": 1,
+                "attack": 1,
+                "code": "Game.gameTurn(Game.GameCW);",
+                "dir": 17
+            };
         }
     }
 }

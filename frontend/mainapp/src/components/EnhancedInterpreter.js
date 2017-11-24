@@ -57,23 +57,24 @@ export default class EnhancedInterpreter {
             interpreter.createNativeFunction((x) => {
                 return Game.gameGetHp(x);     
             }));
-        let alertWrapper = function(text) {
+        const alertWrapper = function(text) {
             text = text ? text.toString() : '';
             return alert(text);
         };
         interpreter.setProperty(scope, 'alert',
             interpreter.createNativeFunction(alertWrapper));
 
-        let promptWrapper = function(text) {
+        const promptWrapper = function(text) {
             text = text ? text.toString() : '';
             return prompt(text);
         };
         interpreter.setProperty(scope, 'prompt',
             interpreter.createNativeFunction(promptWrapper));
 
-        let consoleObj = interpreter.createObject(interpreter.OBJECT);
+        const consoleObj = interpreter.createObject(interpreter.OBJECT);
         interpreter.setProperty(scope, 'console', consoleObj);
-        let logWrapper = function(text) {
+        const logWrapper = function(/*text*/) {
+            // Do nothing when the player calls console.log
         };
         interpreter.setProperty(consoleObj, 'log',
             interpreter.createNativeFunction(logWrapper));
@@ -99,14 +100,16 @@ export default class EnhancedInterpreter {
     step = () => {
         if(this.stepsAllowed <= 0)
 		{
-            window.blocklyCallback = () => {};
+            window.blocklyCallback = () => {/* clear callback */};
             window.blocklyShouldRun = false;
             throw new Error('GameFailedLoop');
 		}
         this.stepsAllowed--;
         if(!this.myInterpreter.step())
         {
-            window.blocklyCallback = () => {};
+            window.blocklyCallback = () => {
+                // Clear the callback
+            };
             window.blocklyShouldRun = false;
             throw new Error('GameFailed');
         }

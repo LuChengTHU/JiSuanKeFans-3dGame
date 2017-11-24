@@ -67,7 +67,7 @@ class LoginFormDialog extends React.Component {
   }
 
   handleRequestSubmit = (e) => {
-    let payload={
+    const payload={
         "email":this.state.email,
         "password":this.state.password
     }
@@ -97,7 +97,7 @@ class LoginFormDialog extends React.Component {
   };
 
   handleRequestForget = (e) => {
-    let payload={
+    const payload={
         "email":this.state.email
     }
     axios.post('forget/', payload)

@@ -44,7 +44,6 @@ class Map(models.Model):
 
     # ------------ restrictions -------------
 
-    # n_max_hand_boxes = models.IntegerField()
     n_blockly = models.IntegerField()
     instr_set = models.TextField()
 
@@ -52,7 +51,6 @@ class Map(models.Model):
     init_AI_infos = models.TextField(default="[]")
     # temporary solution: storing all arrays using json strings
     # TODO: find a more efficient solution 
-    # init_ground_boxes = models.TextField()
 
     # initial position
     init_pos_x = models.IntegerField()
@@ -61,8 +59,6 @@ class Map(models.Model):
     init_dir = models.IntegerField(default=16)
     init_hp = models.IntegerField(default=10)
     init_attack = models.IntegerField(default=1)
-
-    # init_hand_boxes = models.TextField()
 
     # ------------ final states -------------
 
