@@ -124,7 +124,7 @@ export default class Game {
 	static gameLookAheadName()
 	{
 		// No "Call After Move" needed!
-		let id = Game.map.cur_ai;
+		const id = Game.map.cur_ai;
 		let x, y, dir;
 		if(id === -1)
 		{
@@ -152,7 +152,7 @@ export default class Game {
 		x += dx; y += dy;
 		while(x >= 0 && x < Game.map.height && y >= 0 && y < Game.map.width)
 		{
-			let tid = Game.map.grids[x][y];
+			const tid = Game.map.grids[x][y];
 			if(tid !== null)
 			{
 				if(tid === -1)
@@ -268,8 +268,8 @@ export default class Game {
 		else
 		{
 			// AI playing
-			let id = Game.map.cur_ai;
-			let dir = Game.map.cur_ai_infos[id].dir;
+			const id = Game.map.cur_ai;
+			const dir = Game.map.cur_ai_infos[id].dir;
 			let shouldCall = false;
 			console.assert(Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1]] === id);
 			Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1]] = null;
@@ -351,8 +351,8 @@ export default class Game {
 		else
 		{
 			// AI playing
-			let id = Game.map.cur_ai;
-			let dir = Game.map.cur_ai_infos[id].dir;
+			const id = Game.map.cur_ai;
+			const dir = Game.map.cur_ai_infos[id].dir;
 			let target = null;
 			if(dir === Game.GameUp && Game.map.cur_ai_infos[id].pos[0] > 0)
 				target = Game.map.grids[Game.map.cur_ai_infos[id].pos[0] - 1][Game.map.cur_ai_infos[id].pos[1]];
@@ -409,7 +409,7 @@ export default class Game {
 		else
 		{
 			// AI playing
-			let id = Game.map.cur_ai;
+			const id = Game.map.cur_ai;
 			if(way === Game.GameCW)
 			{
 				Game.map.cur_ai_infos[id].dir = (Game.map.cur_ai_infos[id].dir + 1) % 4 + 16;
@@ -443,7 +443,7 @@ export default class Game {
 				gold++;
 		if(gold < Game.map.final_gold)
 			return;
-		window.blocklyCallback = () => {};
+		window.blocklyCallback = () => {/* clear the callback */};
 		throw new Error('GameFinished');
 	}
 }

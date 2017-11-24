@@ -75,7 +75,7 @@ export default class GameContainer extends Component {
     };
 
     prepareCrossFade = (startAction, endAction, duration) => {
-        let oldState = this.state;
+        const oldState = this.state;
         oldState.actions.forEach( function (action) {
             action.paused = false;
         });
@@ -89,7 +89,7 @@ export default class GameContainer extends Component {
         oldState.currentAction = endAction;
         this.setState(oldState);
 
-        let that = this;
+        const that = this;
 
         function onEndLoopFinished(event) {
             if (event.action === endAction) {
@@ -377,7 +377,7 @@ export default class GameContainer extends Component {
 		// document.addEventListener('mouseup', this.onGameMouseUp, false);
 		// document.addEventListener('mouseout', this.onGameMouseOut, false);
 
-        let loader = new THREE.JSONLoader();
+        const loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
             (geometry, materials) => {
                 for(let i = 0; i < materials.length; i++) {
@@ -385,19 +385,15 @@ export default class GameContainer extends Component {
                     materials[i].skinning = true;
                     materials[i].morphTargets = true;
                 }
-                let mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+                const mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 mesh.scale.set(0.01, 0.01, 0.01);
-                let mixer = new THREE.AnimationMixer(mesh);
-                // for ( let i = 0; i < mesh.geometry.animations.length; i ++ ) {
-                //     let action = mixer.clipAction( mesh.geometry.animations[ i ] );
-                //     action.play();
-                // }
-                let moveAction = mixer.clipAction(mesh.geometry.animations[0]);
-                let attackAction = mixer.clipAction(mesh.geometry.animations[2]);
+                const mixer = new THREE.AnimationMixer(mesh);
+                const moveAction = mixer.clipAction(mesh.geometry.animations[0]);
+                const attackAction = mixer.clipAction(mesh.geometry.animations[2]);
                 //attackAction.setLoop(THREE.LoopOnce, 0);
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
-                let actions = [moveAction, attackAction];
+                const actions = [moveAction, attackAction];
 
                 actions.forEach(function (action) {
                     action.play();
@@ -492,16 +488,13 @@ export default class GameContainer extends Component {
 		this.mouseX = event.clientX;
 		this.mouseY = event.clientY;
 
-		let DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.002;
-		let DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.002;
-		let SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
-		let SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
+		const DeltaX = (this.mouseX - this.mouseXOnMouseDown) * 0.002;
+		const DeltaY = (this.mouseY - this.mouseYOnMouseDown) * 0.002;
+		const SightX = (this.state.lookAt.x - this.state.cameraPosition.x);
+		const SightZ = (this.state.lookAt.z - this.state.cameraPosition.z);
 		
-		//var SightLen = Math.sqrt(SightX * SightX + SightZ * SightZ);
-		//SightX = 1. * SightX / SightLen;
-		//SightZ = 1. * SightZ / SightLen;
-		let vSightX = SightZ;
-		let vSightZ = -SightX;
+		const vSightX = SightZ;
+		const vSightZ = -SightX;
 
 		this.cameraX = this.cameraXOnMouseDown + (DeltaY * SightX + DeltaX * vSightX);
 		this.cameraY = this.cameraYOnMouseDown;

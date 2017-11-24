@@ -39,8 +39,8 @@ export default class Game extends Component {
 		// return <div> width={ width }, height={ height }
                     // lookAt={ lookAt.x } </div>
 
-		let ms = [];
-		let mbar = [];
+		const ms = [];
+		const mbar = [];
 		for(let i = 0; i < monsters.length; ++i)
 			if(monsters[i].hp <= 0)
 			{
@@ -71,7 +71,7 @@ export default class Game extends Component {
 			</group>;
 		}
 
-		let ans = <React3
+		const ans = <React3
             mainCamera="camera"
             width={ width }
             height={ height }

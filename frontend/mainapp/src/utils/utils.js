@@ -1,12 +1,12 @@
 import { JSONLoader, TextureLoader } from 'three';
 import React, { Component } from 'react';
-let THREE = require('three');
-let OBJLoader = require('three-obj-loader');
+const THREE = require('three');
+const OBJLoader = require('three-obj-loader');
 OBJLoader(THREE);
 
-let jsonLoader = new JSONLoader();
-let textureLoader = new TextureLoader();
-let objLoader = new THREE.OBJLoader();
+const jsonLoader = new JSONLoader();
+const textureLoader = new TextureLoader();
+const objLoader = new THREE.OBJLoader();
 
 export function loadJsonModel( path ) {
     return new Promise( ( resolve, reject ) => {
