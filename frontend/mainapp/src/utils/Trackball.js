@@ -453,9 +453,6 @@ class TrackballControls extends THREE.EventDispatcher {
       if (_this.enabled === false) return;
 
       switch (event.touches.length) {
-        default:
-          // no touches
-          break;
         case 1:
           _moveCurr.copy(getMouseOnCircle(event.touches[0].pageX, event.touches[0].pageY));
           _movePrev.copy(_moveCurr);
@@ -469,7 +466,10 @@ class TrackballControls extends THREE.EventDispatcher {
           _panEnd.copy(getMouseOnScreen(x, y));
           _panStart.copy(_panEnd);
           break;
-
+          
+        default:
+          // no touches
+          break;
       }
 
       _state = STATE.NONE;

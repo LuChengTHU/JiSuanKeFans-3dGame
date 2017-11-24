@@ -9,7 +9,7 @@ Blockly.Blocks['game_move'] = {
 		this.setHelpUrl("");
 	}
 };
-Blockly.JavaScript['game_move'] = function(block) {
+Blockly.JavaScript['game_move'] = function(/*block*/) {
 	var code = 'gameMove();\n';
 	return code;
 };
@@ -43,7 +43,7 @@ Blockly.Blocks['game_attack'] = {
 		this.setHelpUrl("");
 	}
 };
-Blockly.JavaScript['game_attack'] = function(block) {
+Blockly.JavaScript['game_attack'] = function(/*block*/) {
 	var code = 'gameAttack();\n';
 	return code;
 };
@@ -58,7 +58,7 @@ Blockly.Blocks['game_lookahead_name'] = {
 		this.setHelpUrl("");
 	}
 };
-Blockly.JavaScript['game_lookahead_name'] = function(block) {
+Blockly.JavaScript['game_lookahead_name'] = function(/*block*/) {
 	var code = 'gameLookAheadName()';
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };

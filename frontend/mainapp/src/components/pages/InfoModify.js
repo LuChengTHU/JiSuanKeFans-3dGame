@@ -92,7 +92,7 @@ class InfoModify extends React.Component {
         let _new_password = this.state.new_password
         if (_new_password === '')
             _new_password = this.state.old_password
-        let paylord = {
+        const paylord = {
             'username': this.state.username,
             'gender': this.state.gender,
             'old_password': this.state.old_password,

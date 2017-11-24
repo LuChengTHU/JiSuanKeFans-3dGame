@@ -51,8 +51,8 @@ export default class EditorGame extends Component {
             knightMesh
         } = this.props;
 
-		let ms = [];
-		let mbar = [];
+		const ms = [];
+		const mbar = [];
 		for(let i = 0; i < monsters.length; ++i)
 			if(monsters[i].hp <= 0)
 			{
@@ -83,7 +83,7 @@ export default class EditorGame extends Component {
 			</group>;
 		}
 
-		let ans = <React3
+		const ans = <React3
             mainCamera="camera"
             width={ width }
             height={ height }

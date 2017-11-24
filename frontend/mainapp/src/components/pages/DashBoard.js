@@ -75,8 +75,8 @@ class DashBoard extends Component {
         }
 
         this.setState((prevState, props) => {
-            let passedOpen = (prevState.gameState !== gameState && gameState === "passed");
-            let failedOpen = (prevState.gameState !== gameState && gameState === "failed");
+            const passedOpen = (prevState.gameState !== gameState && gameState === "passed");
+            const failedOpen = (prevState.gameState !== gameState && gameState === "failed");
             return {passedOpen: passedOpen, gameState: gameState, failedOpen: failedOpen};
         });
     }
@@ -117,7 +117,7 @@ class DashBoard extends Component {
             gameoverMsg = this.state.map['gameover_msg'];
             passedMsg = this.state.map['passed_msg'];
         }
-        let blocklyReadOnly = (this.state.gameState === 'stepping');
+        const blocklyReadOnly = (this.state.gameState === 'stepping');
 
         const starNum = this.stars;
         const starImg = [];
@@ -242,6 +242,7 @@ class DashBoard extends Component {
         return res;
     }
     componentDidMount = () => {
+        /* currently do nothing */
     }
 }
 

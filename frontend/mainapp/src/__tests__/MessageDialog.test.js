@@ -25,7 +25,7 @@ const setup = (props) => {
 describe('components/MessageDialog', () => {
   
   test('renders correctly && click callback correctly', () => {
-    let props = {
+    const props = {
       onRequestClose: jest.fn(),
       onRequestConfirm: jest.fn(),
       closeText:'close',
@@ -46,7 +46,7 @@ describe('components/MessageDialog', () => {
   });
 
   test('renders without close correctly', () => {
-    let props = {
+    const props = {
       onRequestConfirm: jest.fn(),
       confirmText:'confirm',
       open:true,
@@ -57,7 +57,7 @@ describe('components/MessageDialog', () => {
   });
 
   test('renders without confirm correctly', () => {
-    let props = {
+    const props = {
       onRequestClose: jest.fn(),
       closeText:'close',
       open:true,
@@ -68,7 +68,7 @@ describe('components/MessageDialog', () => {
   });
 
   test('renders without confirm nor close correctly', () => {
-    let props = {
+    const props = {
       open:true,
       title:'title'
     }

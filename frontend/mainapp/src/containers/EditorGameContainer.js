@@ -32,7 +32,7 @@ export default class EditorGameContainer extends Component {
 
     createMap(height, width)
 	{
-		let bs = [];
+		const bs = [];
 		for(let i = 0; i < height; ++i)
 			for(let j = 0; j < width; ++j)
 				bs.push(<MapBlock x={i} z={j}/>);
@@ -66,20 +66,20 @@ export default class EditorGameContainer extends Component {
 			// window.setTimeOut(()=>this.addMonster(id, x, z, maxHp), 1000);
 			return;
 		}
-	    let mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
+	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
         mesh.scale.set(0.15, 0.15, 0.15);
-        let mixer = new THREE.AnimationMixer(mesh);
-        let moveAction = mixer.clipAction(mesh.geometry.animations[1]);
-        let attackAction = mixer.clipAction(mesh.geometry.animations[0]);
+        const mixer = new THREE.AnimationMixer(mesh);
+        const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
+        const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
         this.setWeight(moveAction, 0);
         this.setWeight(attackAction, 1);
-        let actions = [moveAction, attackAction];
+        const actions = [moveAction, attackAction];
         actions.forEach(function (action) {
             action.play();
         });
 
 		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
 			if(id >= ms.length)
 				ms.length = id + 1;
 			ms[id] =
@@ -193,7 +193,7 @@ export default class EditorGameContainer extends Component {
             camera: this.camera,
         })
 
-        let loader = new THREE.JSONLoader();
+        const loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
             (geometry, materials) => {
                 for(let i = 0; i < materials.length; i++) {
@@ -201,14 +201,14 @@ export default class EditorGameContainer extends Component {
                     materials[i].skinning = true;
                     materials[i].morphTargets = true;
                 }
-                let mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+                const mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 mesh.scale.set( 0.01, 0.01, 0.01 );
-                let mixer = new THREE.AnimationMixer( mesh );
-                let moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
-                let attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
+                const mixer = new THREE.AnimationMixer( mesh );
+                const moveAction = mixer.clipAction( mesh.geometry.animations[ 0 ] );
+                const attackAction = mixer.clipAction( mesh.geometry.animations[ 2 ] );
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
-                let actions = [ moveAction, attackAction];
+                const actions = [ moveAction, attackAction];
 
                 actions.forEach( function ( action ) {
                     action.play();
@@ -224,10 +224,10 @@ export default class EditorGameContainer extends Component {
                 this.requestGameLoop();
             });
 
-            let monsterLoader = new THREE.JSONLoader();
+            const monsterLoader = new THREE.JSONLoader();
             monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
                 (geometry, materials) => {
-                    let material = materials[0];
+                    const material = materials[0];
                     material.emissive.set(0x101010);
                     material.skinning = true;
                     material.morphTargets = true;
