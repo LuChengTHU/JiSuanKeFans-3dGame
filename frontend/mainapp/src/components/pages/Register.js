@@ -65,7 +65,7 @@ class RegisterFormDialog extends React.Component {
   }
 
   handleRequestSubmit = (e) => {
-    let payload={
+    const payload={
         "username":this.state.username,
         "email":this.state.email,
         "password":this.state.password

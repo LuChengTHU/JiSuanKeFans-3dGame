@@ -181,7 +181,10 @@ class DashBoard extends Component {
                     {starImg}
                 </MessageDialog>
                 <MessageDialog title="游戏失败" open={this.state.failedOpen}
-                    confirmText="重试" onRequestConfirm={() => {this.setState({failedOpen: false}); this.initMap();}}
+                    confirmText="重试" onRequestConfirm={() => {
+                        this.setState({failedOpen: false});
+                        this.initMap();
+                    }}
                     closeText="关闭" onRequestClose={this.handleClick('failedOpen', false)}>
                     {gameoverMsg}
                 </MessageDialog>

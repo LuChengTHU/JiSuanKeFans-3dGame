@@ -35,7 +35,7 @@ export function fetch_map(map_id, need_code){
 				//error
 			}
             return response;
-        }).catch(function(error){
+        }).catch(function(/*error*/){
             // error
         });
 }
@@ -48,7 +48,7 @@ export function create_map(map){
             }
             return -1;
         }).catch(function(error){
-
+            // TODO: deal with error
         });
 }
 
@@ -56,9 +56,9 @@ export function modify_map(map_id, map){
     axios.put('map/' + map_id + '/', {new_map_info: map})
         .then(function(response){
             if(response.data.res_code === 1){
-                //Succeeded!
+                // TODO: deal with success
             }
         }).catch(function(error){
-
+            // TODO: deal with error
         });
 }

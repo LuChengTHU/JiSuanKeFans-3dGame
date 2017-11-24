@@ -67,7 +67,7 @@ class LoginFormDialog extends React.Component {
   }
 
   handleRequestSubmit = (e) => {
-    let payload={
+    const payload={
         "email":this.state.email,
         "password":this.state.password
     }

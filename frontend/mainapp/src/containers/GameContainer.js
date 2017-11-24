@@ -22,7 +22,7 @@ export default class GameContainer extends Component {
         super(props);
 		window.ui = this;
 		window.Game = Logic.default;
-		window.blocklyCallback = () => {};
+		window.blocklyCallback = () => {/* default no callback */};
 		window.blocklyShouldRun = false;
 		
 		window.blocklyAutoRun = () =>
@@ -127,7 +127,7 @@ export default class GameContainer extends Component {
         });
 
 		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
 			if(id >= ms.length)
 				ms.length = id + 1;
 			ms[id] =
@@ -159,7 +159,7 @@ export default class GameContainer extends Component {
 	monsterMoveForward(id)
 	{
  		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
  			ms[id].animateForward = true;
  			return {monsters: ms};
  		});
@@ -169,7 +169,7 @@ export default class GameContainer extends Component {
 	monsterTurnCCW(id)
 	{
  		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
  			ms[id].animateCCW = true;
  			if(ms[id].direction.x === 1)
  				ms[id].direction = new Vector3(0, 0, -1);
@@ -187,7 +187,7 @@ export default class GameContainer extends Component {
 	monsterTurnCW(id)
 	{
 		this.setState((prevState, props) => {
-			let ms = prevState.monsters.slice(0);
+			const ms = prevState.monsters.slice(0);
  			ms[id].animateCW = true;
  			if(ms[id].direction.x === 1)
  				ms[id].direction = new Vector3(0, 0, 1);
@@ -224,7 +224,7 @@ export default class GameContainer extends Component {
 	
 	createMap(height, width)
 	{
-		let bs = [];
+		const bs = [];
 		for(let i = 0; i < height; ++i)
 			for(let j = 0; j < width; ++j)
 				bs.push(<MapBlock x={i} z={j}/>);

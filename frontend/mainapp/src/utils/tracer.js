@@ -157,8 +157,6 @@ class TracerContols extends THREE.EventDispatcher {
         moveDirection.copy(eyeDirection);
         moveDirection.setY(0.0).normalize();
         sidewaysDirection.setY(0.0).normalize();
-        // console.log("x=", deltaX, "y=", deltaY);
-        // console.log(sidewaysDirection.x, sidewaysDirection.y, sidewaysDirection.z);
         
         _this.target.addScaledVector(sidewaysDirection, -deltaX);   
         _this.target.addScaledVector(moveDirection, -deltaY);     

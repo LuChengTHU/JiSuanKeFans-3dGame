@@ -107,7 +107,7 @@ export default class Game {
 				window.ui.setMonsterDirection(i, 1, 0);
 			if(Game.map.init_AI_infos[i].dir === Game.GameRight)
 				window.ui.setMonsterDirection(i, 0, 1);
-			let dat = {};
+			const dat = {};
 			Game.map.ai_callbacks.push(() =>
 			{
 				let data = dat;
@@ -222,7 +222,7 @@ export default class Game {
 			// Player playing
 			if(!Game.map.instr_set[11])
 				throw new Error('IllegalInstruction');
-			let dir = Game.map.cur_dir;
+			const dir = Game.map.cur_dir;
 			let shouldCall = false;
 			console.assert(Game.map.grids[Game.map.cur_pos[0]][Game.map.cur_pos[1]] === -1);
 			Game.map.grids[Game.map.cur_pos[0]][Game.map.cur_pos[1]] = null;
@@ -333,7 +333,7 @@ export default class Game {
 			// Player playing
 			if(!Game.map.instr_set[21])
 				throw new Error('IllegalInstruction');
-			let dir = Game.map.cur_dir;
+			const dir = Game.map.cur_dir;
 			let target = null;
 			if(dir === Game.GameUp && Game.map.cur_pos[0] > 0)
 				target = Game.map.grids[Game.map.cur_pos[0] - 1][Game.map.cur_pos[1]];

@@ -120,7 +120,7 @@ const MapEditor = createReactClass({
         );
     },
     updateMap: function(){
-        let new_map = JSON.parse(this.state.inputText);
+        const new_map = JSON.parse(this.state.inputText);
         window.map = new_map;
         window.Game.gameSetMap(new_map);
     },

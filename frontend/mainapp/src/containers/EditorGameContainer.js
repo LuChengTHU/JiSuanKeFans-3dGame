@@ -63,7 +63,6 @@ export default class EditorGameContainer extends Component {
 	{
 		if(!this.state.monsterGeometry || !this.state.monsterMaterial)
 		{
-			// window.setTimeOut(()=>this.addMonster(id, x, z, maxHp), 1000);
 			return;
 		}
 	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
@@ -78,7 +77,7 @@ export default class EditorGameContainer extends Component {
             action.play();
         });
 
-		this.setState((prevState, props) => {
+		this.setState((prevState/*, props*/) => {
 			const ms = prevState.monsters.slice(0);
 			if(id >= ms.length)
 				ms.length = id + 1;
