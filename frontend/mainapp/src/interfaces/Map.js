@@ -31,20 +31,19 @@ export function fetch_map(map_id, need_code){
             if(response.data.res_code === 1){
                 window.map = response.data.map;
                 delete window.map.author;
-            } else
-                console.log('ERROR ' + response.data.res_code);
+            } else {
+				//error
+			}
             return response;
         }).catch(function(error){
-            console.log(error); // only for testing
+            // error
         });
 }
 
 export function create_map(map){
-    console.log(map);
     return axios.post('map/', {map:map})
         .then(function(response){
             if(response.data.res_code === 1){
-                console.log('Succeeded!');
                 return response.data.map_id;
             }
             return -1;
@@ -57,7 +56,7 @@ export function modify_map(map_id, map){
     axios.put('map/' + map_id + '/', {new_map_info: map})
         .then(function(response){
             if(response.data.res_code === 1){
-                console.log('Succeeded!');
+                //Succeeded!
             }
         }).catch(function(error){
 

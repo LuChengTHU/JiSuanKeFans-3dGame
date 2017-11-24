@@ -25,6 +25,5 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls, name='admin'),
-    url(r'^api/v0.1/', include('api.urls'), name='api'),
-    url(r'^', include('web_game.urls'))
+    url(r'^api/v0.1/', include('api.urls'), name='api')
 ]

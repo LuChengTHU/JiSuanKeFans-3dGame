@@ -35,7 +35,6 @@ function StarBar(props){
 
 const MapLink = createReactClass({
     render: function(){
-        console.log(this.props.map.high_stars);
         return (<GridListTile className={this.props.classes.grid_list_tile} key={this.props.key}>
                 <div className={this.props.classes.tile_paper}>
                     <img src="/assets/map_thumbnail.png" height={200}/>

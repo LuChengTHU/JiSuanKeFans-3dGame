@@ -42,7 +42,6 @@ class Nav extends Component {
         }
     }
     handleClick = (name, value) => () => {
-        console.log('setState',name,value,this)
         this.setState({
             [name]: value
         })

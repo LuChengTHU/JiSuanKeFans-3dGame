@@ -70,10 +70,8 @@ class RegisterFormDialog extends React.Component {
         "email":this.state.email,
         "password":this.state.password
     }
-    console.log(payload);
     axios.post('user/', payload)
         .then((response) => {
-            console.log(response);
             if(response.data.res_code !== null) {
                 this.addMessgae(MESSAGE[response.data.res_code]);
                 if (response.data.res_code === 1) {
@@ -84,7 +82,6 @@ class RegisterFormDialog extends React.Component {
             }
         })
         .catch((error) => {
-            console.log(error)
             if (error.response !== undefined && error.response.data !== undefined && 
                 error.response.data.res_code !== undefined) {
                 this.addMessgae(MESSAGE[error.response.data.res_code]);

@@ -223,8 +223,6 @@ export default class Game {
 			if(!Game.map.instr_set[11])
 				throw new Error('IllegalInstruction');
 			let dir = Game.map.cur_dir;
-			console.log(dir);
-			console.log(Game.GameUp);
 			let shouldCall = false;
 			console.assert(Game.map.grids[Game.map.cur_pos[0]][Game.map.cur_pos[1]] === -1);
 			Game.map.grids[Game.map.cur_pos[0]][Game.map.cur_pos[1]] = null;
@@ -272,8 +270,6 @@ export default class Game {
 			// AI playing
 			let id = Game.map.cur_ai;
 			let dir = Game.map.cur_ai_infos[id].dir;
-			console.log(id);
-			console.log(dir);
 			let shouldCall = false;
 			console.assert(Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1]] === id);
 			Game.map.grids[Game.map.cur_ai_infos[id].pos[0]][Game.map.cur_ai_infos[id].pos[1]] = null;
@@ -347,7 +343,6 @@ export default class Game {
 				target = Game.map.grids[Game.map.cur_pos[0] + 1][Game.map.cur_pos[1]];
 			if(dir === Game.GameRight && Game.map.cur_pos[1] < Game.map.width - 1)
 				target = Game.map.grids[Game.map.cur_pos[0]][Game.map.cur_pos[1] + 1];
-			console.log(target);
 			if(target !== null)
 				Game.gameDealDamage(-1, target, Game.map.cur_attack);
 			window.ui.playerAttack();

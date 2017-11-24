@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'api',
-    'web_game',
     'rest_framework',
     'rest_framework.authtoken',
 ]
@@ -86,7 +85,7 @@ DATABASES = {
         'NAME': os.getenv('MYSQL_DB_NAME'),
         'USER': 'root',
         'PASSWORD': os.getenv('MYSQL_ROOT_PASSWORD'),
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '3306'
     }
 }

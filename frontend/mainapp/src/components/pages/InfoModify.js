@@ -77,8 +77,6 @@ class InfoModify extends React.Component {
     updateInfo = () => {
         axios.get('modify/', {})
             .then((response) => {
-                console.log(response.data.res_code)
-                console.log(response.data)
                 if (response.data.res_code !== null) {
                     if (response.data.res_code === 1) {
                         this.setState({

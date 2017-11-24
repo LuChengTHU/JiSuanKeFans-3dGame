@@ -323,7 +323,6 @@ export default class EditorGameContainer extends Component {
             mouse.x =   (event.offsetX / screenWidth)  * 2 - 1;
             mouse.y =  -(event.offsetY / screenHeight) * 2 + 1;
 
-            console.log(mouse.x, mouse.y)
 
             // const raycaster = new THREE.Raycaster();
             // raycaster.setFromCamera( mouse, this.camera );
@@ -346,8 +345,6 @@ export default class EditorGameContainer extends Component {
             let gridY = Math.round(interZ);
             let height = this.state.height;
             let width = this.state.width;
-            console.log(gridX, gridY);
-            console.log(window.map)
             if (gridX >= 0 && gridY >=0 && gridX < width && gridY < height) {
                 if (this.state.selected === "Player") {
                     let monsters = this.state.monsters;

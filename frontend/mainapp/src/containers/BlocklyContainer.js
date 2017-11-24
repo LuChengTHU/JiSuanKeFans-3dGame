@@ -73,7 +73,6 @@ class BlocklyContainer extends Component {
 
     resize = (h) => {
         if (this.height === h) return;
-        console.log(`blockly: resize(${h})`);
         this.height = h;
         this._blocklyDiv.style.height = h + 'px';
         if (this.workspace) {

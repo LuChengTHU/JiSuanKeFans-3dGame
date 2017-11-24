@@ -71,10 +71,8 @@ class LoginFormDialog extends React.Component {
         "email":this.state.email,
         "password":this.state.password
     }
-    console.log(payload);
     axios.post('token/', payload)
         .then((response) => {
-            console.log(response);
             if(response.data.res_code !== null) {
                 this.addMessage(MESSAGE[response.data.res_code]);
                 if (response.data.res_code === 1) {
@@ -87,7 +85,6 @@ class LoginFormDialog extends React.Component {
             }
         })
         .catch((error) => {
-            console.log(error)
             if (error.response !== undefined && error.response.data !== undefined && 
                 error.response.data.res_code !== undefined) {
                 this.addMessage(MESSAGE[error.response.data.res_code]);
@@ -103,7 +100,6 @@ class LoginFormDialog extends React.Component {
     let payload={
         "email":this.state.email
     }
-    console.log(payload);
     axios.post('forget/', payload)
 
     e.preventDefault();
@@ -111,7 +107,6 @@ class LoginFormDialog extends React.Component {
 
   myUpdate(newState) {
       this.setState(newState);
-      console.log('myUpdate');
   }
   handleInputChange = name => event => {
     this.setState({
