@@ -10,8 +10,7 @@ Blockly.Blocks['game_move'] = {
 	}
 };
 Blockly.JavaScript['game_move'] = function(/*block*/) {
-	var code = 'gameMove();\n';
-	return code;
+	return 'gameMove();\n';
 };
 
 Blockly.Blocks['game_turn'] = {
@@ -28,8 +27,7 @@ Blockly.Blocks['game_turn'] = {
 };
 Blockly.JavaScript['game_turn'] = function(block) {
 	var dropdown_turn = block.getFieldValue('Turn');
-	var code = `gameTurn(${dropdown_turn});\n`;
-	return code;
+	return `gameTurn(${dropdown_turn});\n`;
 };
 
 Blockly.Blocks['game_attack'] = {
@@ -44,8 +42,7 @@ Blockly.Blocks['game_attack'] = {
 	}
 };
 Blockly.JavaScript['game_attack'] = function(/*block*/) {
-	var code = 'gameAttack();\n';
-	return code;
+	return 'gameAttack();\n';
 };
 
 Blockly.Blocks['game_lookahead_name'] = {
