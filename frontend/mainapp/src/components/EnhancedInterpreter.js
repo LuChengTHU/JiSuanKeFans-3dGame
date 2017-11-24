@@ -74,6 +74,7 @@ export default class EnhancedInterpreter {
         let consoleObj = interpreter.createObject(interpreter.OBJECT);
         interpreter.setProperty(scope, 'console', consoleObj);
         let logWrapper = function(text) {
+            // Do nothing when the player calls console.log
         };
         interpreter.setProperty(consoleObj, 'log',
             interpreter.createNativeFunction(logWrapper));

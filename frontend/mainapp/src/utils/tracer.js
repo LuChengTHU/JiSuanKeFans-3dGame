@@ -50,9 +50,6 @@ class TracerContols extends THREE.EventDispatcher {
     const _eye = new THREE.Vector3();
     const _movePrev = new THREE.Vector2();
     const _moveCurr = new THREE.Vector2();
-    const _lastAxis = new THREE.Vector3();
-
-    let _lastAngle = 0;
 
     const _zoomStart = new THREE.Vector2();
     const _zoomEnd = new THREE.Vector2();
@@ -139,8 +136,6 @@ class TracerContols extends THREE.EventDispatcher {
     }() );
 
     this.slideCamera = ( function wrapper() {
-      const axis = new THREE.Vector3();
-      const quaternion = new THREE.Quaternion();
       const eyeDirection = new THREE.Vector3();
       const upDirection = new THREE.Vector3();
       const sidewaysDirection = new THREE.Vector3();

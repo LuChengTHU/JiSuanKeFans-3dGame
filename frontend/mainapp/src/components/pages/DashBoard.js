@@ -82,7 +82,9 @@ class DashBoard extends Component {
     }
     initMap = () => 
     {
-		window.blocklyCallback = () => {};
+		window.blocklyCallback = () => {
+            // Remove any callback before start playing
+        };
 		window.blocklyShouldRun = false;
 		window.animationShouldStop = true;
         Logic.gameSetMap(window.map);
@@ -118,7 +120,7 @@ class DashBoard extends Component {
         let blocklyReadOnly = (this.state.gameState === 'stepping');
 
         const starNum = this.stars;
-        let starImg = [];
+        const starImg = [];
         for(let i = 0; i < starNum; i++) {
             starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_true.jpg`}/>)
         }

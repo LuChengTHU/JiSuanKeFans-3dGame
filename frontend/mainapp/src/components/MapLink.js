@@ -26,9 +26,9 @@ const styles = function(theme){
 };
 
 function StarBar(props){
-    let v = []
+    const v = [];
     for(let i = 0; i < props.stars; i ++){
-        v[i] = 0
+        v[i] = 0;
     }
     return <span>{v.map((x) => <StarIcon color="rgba(255, 255, 255, 0.6"/>)}</span>;
 }
