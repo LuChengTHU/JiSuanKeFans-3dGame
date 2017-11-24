@@ -21,7 +21,7 @@ import TextField from 'material-ui/TextField'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 
 import EnhancedInterpreter from '../EnhancedInterpreter';
-const styles = theme => ({
+const styles = (/*theme*/) => ({
   root: {
     flexGrow: 1,
   },
@@ -107,9 +107,18 @@ class DashBoard extends Component {
             gameState={this.state.gameState}
             reportHeight={(h)=>{this.blocklyContainer.resize(h)}}/>;
         let welcomeMsg, gameoverMsg = 'GAME OVER', passedMsg = '通过';
-        if (this.state.map === null) welcomeMsg = '加载中...';
-        else if (!('welcome_msg' in this.state.map)) welcomeMsg = '无';
-        else welcomeMsg = this.state.map['welcome_msg'];
+        if (this.state.map === null)
+        {
+            welcomeMsg = '加载中...';
+        }
+        else if (!('welcome_msg' in this.state.map))
+        {
+            welcomeMsg = '无';
+        }
+        else
+        {
+            welcomeMsg = this.state.map['welcome_msg'];
+        }
         const solutionUrl = `${typeof(process.env.REACT_APP_AC_BASE) === 'undefined' ? 
                             'http://localhost:3000' :
                              process.env.REACT_APP_AC_BASE}/solution/${this.state.solutionId}/`;

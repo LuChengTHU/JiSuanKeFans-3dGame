@@ -47,7 +47,7 @@ export function create_map(map){
                 return response.data.map_id;
             }
             return -1;
-        }).catch(function(error){
+        }).catch(function(/*error*/){
             // TODO: deal with error
         });
 }
@@ -58,7 +58,7 @@ export function modify_map(map_id, map){
             if(response.data.res_code === 1){
                 // TODO: deal with success
             }
-        }).catch(function(error){
+        }).catch(function(/*error*/){
             // TODO: deal with error
         });
 }

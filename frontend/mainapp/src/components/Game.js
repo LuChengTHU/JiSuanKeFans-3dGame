@@ -36,15 +36,13 @@ export default class Game extends Component {
             playerMaxHp, targetPosition, knightMesh
         } = this.props;
 
-		// return <div> width={ width }, height={ height }
-                    // lookAt={ lookAt.x } </div>
-
 		const ms = [];
 		const mbar = [];
 		for(let i = 0; i < monsters.length; ++i)
 			if(monsters[i].hp <= 0)
 			{
-				ms.push(null); mbar.push(null);
+				ms.push(null);
+                mbar.push(null);
 			}
 			else
 			{

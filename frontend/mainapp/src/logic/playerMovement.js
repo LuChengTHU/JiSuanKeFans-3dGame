@@ -4,7 +4,7 @@ import { Vector3, Euler, } from 'three';
  * We can manage our game state in a series of small, easy to reason about
  * functions
  **/
-export default function playerMovement( oldState, time ) {
+export default function playerMovement( oldState/*, time*/ ) {
 
 	const state = { ...oldState };
 	if(window.animationShouldStop)
@@ -164,8 +164,6 @@ export default function playerMovement( oldState, time ) {
 
     const delta = state.clock.getDelta();
 	state.mixer.update(delta);
-    // let action = state.mixer.existingAction( state.knightMesh.geometry.animations[ 0 ] );
-    // action._update(state.clock.getDelta())
     for(let i = 0; i < state.monsters.length; i++) {
         state.monsters[i].mixer.update(delta);
     }

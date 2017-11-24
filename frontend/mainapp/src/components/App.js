@@ -15,7 +15,7 @@ import SolutionViewer from './pages/SolutionViewer'
 import InfoModify from './pages/InfoModify'
 import {isLoggedIn, PleaseLogin, PrivateRoute} from '../utils/Permission'
 
-const styles = theme => ({
+const styles = (/*theme*/) => ({
     root: {
       flexGrow: 1,
     },

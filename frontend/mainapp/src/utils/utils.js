@@ -14,7 +14,7 @@ export function loadJsonModel( path ) {
             path,
             resolve,
             () => null,
-            error => reject
+            (/*error*/) => reject
         );
 
     });
@@ -26,7 +26,7 @@ export function loadObjModel( path ) {
             path,
             resolve,
             () => null,
-            error => reject
+            (/*error*/) => reject
         );
     });
 }
