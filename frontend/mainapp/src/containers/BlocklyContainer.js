@@ -60,11 +60,9 @@ class BlocklyContainer extends Component {
           }
           else this.props.onError()
         }
-        if (this.workspace != null) {
-            if (newProps !== this.props) {
-                // TODO this.props.toolboxXml
-                this.update(newProps, this.props);
-            }
+        if (this.workspace != null && newProps !== this.props) {
+            // TODO this.props.toolboxXml
+            this.update(newProps, this.props);
         }
     }
 

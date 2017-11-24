@@ -308,7 +308,7 @@ class MouseInput extends Module {
     });
 
     // find first intersection that does not ignore pointer events
-    let depth, object;
+    let depth, object = null;
     for (depth = 0; depth < intersections.length; ++depth) {
       const intersection = intersections[depth];
       object = intersection.object;
@@ -317,22 +317,25 @@ class MouseInput extends Module {
         continue;
       }
     }
+    
+    if(object)
+    {
+        const uuid = object.uuid;
 
-    const uuid = object.uuid;
+        if (this._hoverObjectMap[uuid]) {
+            delete hoverMapToUpdate[uuid];
 
-    if (this._hoverObjectMap[uuid]) {
-        delete hoverMapToUpdate[uuid];
-
-        // just update that intersection
-        this._hoverObjectMap[uuid].intersection = intersection;
-    } else {
-        this._hoverObjectMap[uuid] = {
-            object,
-            intersection,
-        };
-        if (!(mouseEnterEvent.isDefaultPrevented() || mouseEnterEvent.isPropagationStopped())) {
-            React3.eventDispatcher.dispatchEvent(object, 'onMouseEnter',
-                mouseEnterEvent, intersection, depth);
+            // just update that intersection
+            this._hoverObjectMap[uuid].intersection = intersection;
+        } else {
+            this._hoverObjectMap[uuid] = {
+                object,
+                intersection,
+            };
+            if (!(mouseEnterEvent.isDefaultPrevented() || mouseEnterEvent.isPropagationStopped())) {
+                React3.eventDispatcher.dispatchEvent(object, 'onMouseEnter',
+                    mouseEnterEvent, intersection, depth);
+            }
         }
     }
 
