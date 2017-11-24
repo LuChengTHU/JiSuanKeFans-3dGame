@@ -65,8 +65,12 @@ const MapChooser = createReactClass(
                 </div>
                 );
         },
-        goToPrev: () => this.setState({pageNo: this.state.pageNo - 1, ready: false}),
-        goToNext: () => this.setState({pageNo: this.state.pageNo + 1, ready: false})
+        goToPrev: function(){
+            this.setState({pageNo: this.state.pageNo - 1, ready: false});
+        },
+        goToNext: function(){
+            this.setState({pageNo: this.state.pageNo + 1, ready: false});
+        }
 
     }
 );
