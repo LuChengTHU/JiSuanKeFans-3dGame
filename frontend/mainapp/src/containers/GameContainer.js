@@ -364,18 +364,9 @@ export default class GameContainer extends Component {
     
         // Expose the global THREE object for use in debugging console
         window.THREE = THREE;
-    
-        // Load the geometry in didMount, which is only executed server side.
-        // Note we can pass our JSON file paths to webpack!
-        // loadModel( require( '../assets/sitepoint-robot.json' ) ).then(geometry =>
-            // this.setState({ geometry })
-		// );
 
 		const container = this.refs.container;
 		container.addEventListener('mousedown', this.onGameMouseDown, false);
-		// document.addEventListener('mousemove', this.onGameMouseMove, false);
-		// document.addEventListener('mouseup', this.onGameMouseUp, false);
-		// document.addEventListener('mouseout', this.onGameMouseOut, false);
 
         const loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
@@ -390,7 +381,6 @@ export default class GameContainer extends Component {
                 const mixer = new THREE.AnimationMixer(mesh);
                 const moveAction = mixer.clipAction(mesh.geometry.animations[0]);
                 const attackAction = mixer.clipAction(mesh.geometry.animations[2]);
-                //attackAction.setLoop(THREE.LoopOnce, 0);
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
                 const actions = [moveAction, attackAction];
