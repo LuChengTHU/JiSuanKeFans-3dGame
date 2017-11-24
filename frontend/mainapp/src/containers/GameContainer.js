@@ -37,11 +37,7 @@ export default class GameContainer extends Component {
 			{
 				if(e.message === 'GameFinished')
 					this.props.gameSetState('passed');
-				else if(e.message === 'GameFailedLoop')
-					this.props.gameSetState('failed');
-				else if(e.message === 'GameFailed')
-					this.props.gameSetState('failed');
-				else if(e.message === 'Player Dead')
+				else if(e.message === 'GameFailedLoop' || e.message === 'GameFailed' || e.message === 'Player Dead')
 					this.props.gameSetState('failed');
 				else
 					throw e;
@@ -599,7 +595,7 @@ export default class GameContainer extends Component {
         const {
 
             cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition,
-            monsterGeometry
+            monsterGeometry, monsterMaterial
         } = this.state;
 
 		
@@ -612,7 +608,7 @@ export default class GameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
 			<div>
-				{ this.state.monsterGeometry&&this.state.monsterMaterial&&knightMesh ? <Game
+				{ monsterGeometry&&monsterMaterial&&knightMesh ? <Game
 					width={ width }
 					height={ height }
 					cameraPosition={ cameraPosition }

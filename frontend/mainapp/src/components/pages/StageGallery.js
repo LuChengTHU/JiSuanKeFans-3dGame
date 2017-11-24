@@ -16,7 +16,6 @@ const StageGallery = createReactClass({
         } else{
             this.author_id = -1;
         }
-		console.log(this.author_id);
 		this.mapFetcher = {
 			fetch: pageNo => axios.get('map/?pageNo=' + pageNo + (this.author_id !== -1 ? "&authorId=" + this.author_id : "")).then(response =>
 				({

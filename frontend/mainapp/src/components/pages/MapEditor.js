@@ -58,8 +58,7 @@ const INIT_MAP = { // initial map
     failed_msg: 'Failed!',
     passed_msg: 'Passed!',
     std_blockly_code: '',
-    welcome_msg: 'Welcome!',
-    init_AI_infos: []
+    welcome_msg: 'Welcome!'
 };
 
 

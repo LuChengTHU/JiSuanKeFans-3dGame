@@ -74,8 +74,6 @@ export default class EnhancedInterpreter {
         let consoleObj = interpreter.createObject(interpreter.OBJECT);
         interpreter.setProperty(scope, 'console', consoleObj);
         let logWrapper = function(text) {
-            text = text ? text.toString() : '';
-            return console.log(text);
         };
         interpreter.setProperty(consoleObj, 'log',
             interpreter.createNativeFunction(logWrapper));
@@ -99,7 +97,6 @@ export default class EnhancedInterpreter {
         window.blocklyShouldRun = true;
     }
     step = () => {
-        console.log('calling ' + this.stepsAllowed);
         if(this.stepsAllowed <= 0)
 		{
             window.blocklyCallback = () => {};
