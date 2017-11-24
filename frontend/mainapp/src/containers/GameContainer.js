@@ -595,7 +595,7 @@ export default class GameContainer extends Component {
         const {
 
             cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition,
-            monsterGeometry
+            monsterGeometry, monsterMaterial
         } = this.state;
 
 		

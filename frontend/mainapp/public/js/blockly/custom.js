@@ -10,7 +10,6 @@ Blockly.Blocks['game_move'] = {
 	}
 };
 Blockly.JavaScript['game_move'] = function(block) {
-	var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
 	var code = 'gameMove();\n';
 	return code;
 };

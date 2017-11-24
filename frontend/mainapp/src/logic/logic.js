@@ -397,20 +397,18 @@ export default class Game {
 			// Player playing
 			if(!Game.map.instr_set[12])
 				throw new Error('IllegalInstruction');
-			let callback = null;
 			if(way === Game.GameCW && Game.map.instr_set[Game.GameCW])
 			{
 				Game.map.cur_dir = (Game.map.cur_dir + 1) % 4 + 16;
-				callback = window.ui.playerTurnCW;
+				window.ui.playerTurnCW();
 			}
 			else if(way === Game.GameCCW && Game.map.instr_set[Game.GameCCW])
 			{
 				Game.map.cur_dir = (Game.map.cur_dir + 3) % 4 + 16;
-				callback = window.ui.playerTurnCCW;
+				window.ui.playerTurnCCW();
 			}
 			else
 				throw new Error('IllegalInstruction');
-			callback();
 			Game.gameCallAfterPlayerMove();
 		}
 		else
