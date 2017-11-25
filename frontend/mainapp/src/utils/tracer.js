@@ -45,7 +45,6 @@ class TracerContols extends THREE.EventDispatcher {
     const lastPosition = new THREE.Vector3();
 
     let _state = STATE.NONE;
-    let _prevState = STATE.NONE;
 
     const _eye = new THREE.Vector3();
     const _movePrev = new THREE.Vector2();
@@ -225,7 +224,6 @@ class TracerContols extends THREE.EventDispatcher {
 
     this.reset = () => {
       _state = STATE.NONE;
-      _prevState = STATE.NONE;
 
       _this.target.copy(_this.target0);
       _this.object.position.copy(_this.position0);
@@ -249,8 +247,6 @@ class TracerContols extends THREE.EventDispatcher {
       }
 
       window.removeEventListener('keydown', keydown);
-
-      _prevState = _state;
 
       if (_state !== STATE.NONE) {
         return;
