@@ -13,7 +13,6 @@ def get_user_serializer_class(rate):
     class UserSerializer(serializers.ModelSerializer):
         if rate == RATE_BRIEF or rate == RATE_FULL:
             privilege = serializers.ReadOnlyField(source='get_privilege')
-        #is_admin = serializers.IntegerField(source='user_profile.is_admin')
 
         if rate == RATE_FULL:
             expiration = serializers.DateField()
@@ -26,7 +25,6 @@ def get_user_serializer_class(rate):
             if rate == RATE_BRIEF:
                 fields = ('id', 'username', 'email', 'gender', 'privilege')
             elif rate == RATE_FULL:
-                # fields = ('id', 'username', 'email', 'gender', 'is_admin', 'privilege', 'expiration', 'join_date')
                 fields = ('id', 'username', 'email', 'gender', 'privilege', 'expiration', 'join_date')
             else:
                 fields = ('id', 'username', 'email', 'password')

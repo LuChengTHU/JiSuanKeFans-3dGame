@@ -126,7 +126,7 @@ export default class GameContainer extends Component {
             action.play();
         });
 
-		this.setState((prevState, props) => {
+		this.setState((prevState/*, props*/) => {
 			const ms = prevState.monsters.slice(0);
 			if(id >= ms.length)
 				ms.length = id + 1;
@@ -148,8 +148,11 @@ export default class GameContainer extends Component {
 	
 	setMonsterHp(id, hp)
 	{
-		if(hp < 0) hp = 0;
-		this.setState((prevState, props) => {
+		if(hp < 0)
+        {
+            hp = 0;
+        }
+		this.setState((prevState/*, props*/) => {
 			const ms = prevState.monsters.slice(0);
 			ms[id].hp = hp;
 			return {monsters: ms};
@@ -158,7 +161,7 @@ export default class GameContainer extends Component {
 	
 	monsterMoveForward(id)
 	{
- 		this.setState((prevState, props) => {
+ 		this.setState((prevState/*, props*/) => {
 			const ms = prevState.monsters.slice(0);
  			ms[id].animateForward = true;
  			return {monsters: ms};
@@ -168,7 +171,7 @@ export default class GameContainer extends Component {
 	
 	monsterTurnCCW(id)
 	{
- 		this.setState((prevState, props) => {
+ 		this.setState((prevState/*, props*/) => {
 			const ms = prevState.monsters.slice(0);
  			ms[id].animateCCW = true;
  			if(ms[id].direction.x === 1)
@@ -186,7 +189,7 @@ export default class GameContainer extends Component {
 	
 	monsterTurnCW(id)
 	{
-		this.setState((prevState, props) => {
+		this.setState((prevState/*, props*/) => {
 			const ms = prevState.monsters.slice(0);
  			ms[id].animateCW = true;
  			if(ms[id].direction.x === 1)
@@ -214,7 +217,7 @@ export default class GameContainer extends Component {
 
         const that = this;
 
-        function onEndLoopFinished(event) {
+        function onEndLoopFinished(/*event*/) {
             oldState.playerAnimateAttacking = false;
             oldState.mixer.removeEventListener('loop', onEndLoopFinished);
             that.setWeight(oldState.monsters.slice(0)[id].currentAction, 0);
@@ -246,7 +249,10 @@ export default class GameContainer extends Component {
 	
 	setPlayerHp(hp)
 	{
-		if(hp < 0) hp = 0;
+		if(hp < 0)
+        {
+            hp = 0;
+        }
 		this.setState({playerHp: hp});
 	}
 	
@@ -285,7 +291,7 @@ export default class GameContainer extends Component {
 	
 	setMonsterDirection(id, x, z)
 	{
-		this.setState((prevState, props) => {
+		this.setState((prevState/*, props*/) => {
 			const ms = prevState.monsters.slice(0);
 			ms[id].direction = new Vector3(x, 0, z);
 			return {monsters: ms};
@@ -310,7 +316,7 @@ export default class GameContainer extends Component {
 	
 	playerTurnCW()
 	{
-		this.setState((prevState, props) => {
+		this.setState((prevState/*, props*/) => {
 			if(prevState.playerDirection.x === 1)
 				return {playerDirection: new Vector3(0, 0, 1)};
 			else if(prevState.playerDirection.z === 1)
@@ -327,7 +333,7 @@ export default class GameContainer extends Component {
 	
 	playerTurnCCW()
 	{
-		this.setState((prevState, props) => {
+		this.setState((prevState/*, props*/) => {
 			if(prevState.playerDirection.x === 1)
 				return {playerDirection: new Vector3(0, 0, -1)};
 			else if(prevState.playerDirection.z === -1)
@@ -364,18 +370,9 @@ export default class GameContainer extends Component {
     
         // Expose the global THREE object for use in debugging console
         window.THREE = THREE;
-    
-        // Load the geometry in didMount, which is only executed server side.
-        // Note we can pass our JSON file paths to webpack!
-        // loadModel( require( '../assets/sitepoint-robot.json' ) ).then(geometry =>
-            // this.setState({ geometry })
-		// );
 
 		const container = this.refs.container;
 		container.addEventListener('mousedown', this.onGameMouseDown, false);
-		// document.addEventListener('mousemove', this.onGameMouseMove, false);
-		// document.addEventListener('mouseup', this.onGameMouseUp, false);
-		// document.addEventListener('mouseout', this.onGameMouseOut, false);
 
         const loader = new THREE.JSONLoader();
         loader.load(`${process.env.PUBLIC_URL}/assets/guitongzi_action.json`,
@@ -390,7 +387,6 @@ export default class GameContainer extends Component {
                 const mixer = new THREE.AnimationMixer(mesh);
                 const moveAction = mixer.clipAction(mesh.geometry.animations[0]);
                 const attackAction = mixer.clipAction(mesh.geometry.animations[2]);
-                //attackAction.setLoop(THREE.LoopOnce, 0);
                 this.setWeight(moveAction, 1);
                 this.setWeight(attackAction, 0);
                 const actions = [moveAction, attackAction];
@@ -556,7 +552,6 @@ export default class GameContainer extends Component {
 		if(divObj)
 		{
 			width = divObj.clientWidth;
-			// height = divObj.clientHeight;
 			height = window.innerHeight * .8;
 			if(typeof(this.props.reportHeight) !== 'undefined') {
 				this.props.reportHeight(height);
@@ -568,11 +563,6 @@ export default class GameContainer extends Component {
             cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition,
             monsterGeometry, monsterMaterial
         } = this.state;
-
-		
-		// console.log(cameraPosition);
-		// console.log(lookAt);
-
 
         // Pass the data <Game /> needs to render. Note we don't show the game
         // until the geometry model file is loaded. This could be replaced with

@@ -7,7 +7,7 @@ export function fetch_solution(sol_id){
             return response.data.solution;
         }
     ).catch(
-        function(error){
+        function(/*error*/){
             return undefined;
         }
     );
@@ -18,7 +18,7 @@ export function create_solution(map_id, code, shared, stars){
         function(response){
             //TODO: add error checking
             return response.data.sol_id;
-        }).catch(function(error)
+        }).catch(function(/*error*/)
         {
             return undefined;
         }

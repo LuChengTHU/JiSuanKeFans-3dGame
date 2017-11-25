@@ -1,3 +1,5 @@
+import Vm from 'vm.js';
+
 export default class Game {
 	/**
 	 * Fields cared by logic:
@@ -110,8 +112,19 @@ export default class Game {
 			const dat = {};
 			Game.map.ai_callbacks.push(() =>
 			{
-				let data = dat;
-				return eval(Game.map.init_AI_infos[i].code);
+                let vm = new Vm();
+                vm.realm.global.Game = Game;
+                vm.realm.global.data = dat;
+                vm.realm.global.console = console;
+                try
+                {
+                    return vm.eval(Game.map.init_AI_infos[i].code);
+                }
+                catch(e)
+                {
+                    // ignore ai errors
+                    return undefined;
+                }
 			});
 		}
 	}
@@ -149,7 +162,8 @@ export default class Game {
 			dy = 1;
 		else
 			throw new Error('IllegalState');
-		x += dx; y += dy;
+		x += dx;
+        y += dy;
 		while(x >= 0 && x < Game.map.height && y >= 0 && y < Game.map.width)
 		{
 			const tid = Game.map.grids[x][y];
@@ -160,7 +174,8 @@ export default class Game {
 				else if(Game.map.cur_ai_infos[tid].hp >= 0)
 					return Game.map.cur_ai_infos[tid].id;
 			}
-			x += dx; y += dy;
+			x += dx;
+            y += dy;
 		}
 		return "";
 	}
@@ -432,10 +447,9 @@ export default class Game {
 	 */
 	static gameCheckFinished()
 	{
-		if(Game.map.final_pos)
-		{
-			if(Game.map.cur_pos[0] !== Game.map.final_pos[0] || Game.map.cur_pos[1] !== Game.map.final_pos[1])
-				return;
+		if(Game.map.final_pos && (Game.map.cur_pos[0] !== Game.map.final_pos[0] || Game.map.cur_pos[1] !== Game.map.final_pos[1]))
+        {
+			return;
 		}
 		let gold = 0;
 		for(let i = 0; i < Game.map.cur_ai_infos.length; i++)

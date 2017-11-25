@@ -80,10 +80,13 @@ const MapEditor = createReactClass({
                 window.map = INIT_MAP;
                 if('map_id' in this.props.match.params){
                     this.map_id = this.props.match.params['map_id'];
-                    fetch_map(this.map_id).then(()=>{if('map' in window){
-                        window.Game.gameSetMap(window.map);
-                        this.setState({inputText: JSON.stringify(window.map, null, 4)});
-                    }});
+                    fetch_map(this.map_id).then(()=>{
+                        if('map' in window)
+                        {
+                            window.Game.gameSetMap(window.map);
+                            this.setState({inputText: JSON.stringify(window.map, null, 4)});
+                        }
+                    });
                 } else{
                     window.Game.gameSetMap(window.map);
                     this.setState({inputText: JSON.stringify(window.map, null, 4)});

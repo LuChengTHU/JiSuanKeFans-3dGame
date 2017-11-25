@@ -50,7 +50,7 @@ class RegisterFormDialog extends React.Component {
 
   addMessgae(msg)
   {
-    this.setState((prevState, props) => {
+    this.setState((prevState/*, props*/) => {
         prevState.messages.push([msg, this.num_msg++]);
         return { messages: prevState.messages };
     });
@@ -58,7 +58,7 @@ class RegisterFormDialog extends React.Component {
 
   removeMessage(msg)
   {
-    this.setState((prevState, props) => {
+    this.setState((prevState/*, props*/) => {
         const messages = prevState.messages.filter(item => item !== msg);
         return { messages: messages };
     });
@@ -75,9 +75,7 @@ class RegisterFormDialog extends React.Component {
             if(response.data.res_code !== null) {
                 this.addMessgae(MESSAGE[response.data.res_code]);
                 if (response.data.res_code === 1) {
-                    // localStorage.token = response.data['token'];
-                    // localStorage.user = JSON.stringify(response.data['user']);
-                    // window.location.reload();
+                    // TODO: response
                 }
             }
         })

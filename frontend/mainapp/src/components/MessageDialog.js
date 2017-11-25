@@ -13,7 +13,7 @@ import Dialog, {
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-const styles = theme => ({
+const styles = (/*theme*/) => ({
 })
 
 class MessageDialog extends React.Component {
@@ -26,14 +26,18 @@ class MessageDialog extends React.Component {
   render() {
     const { onRequestClose, closeText, onRequestConfirm, confirmText, title, ...other } = this.props;
     let confirmButton = null, closeButton = null;
-    if (onRequestConfirm) confirmButton =
-        <Button id={'confirm'} onClick={onRequestConfirm} color="primary">
-            { confirmText }
-        </Button>
-    if (onRequestClose) closeButton =
-        <Button id={'cancel'} onClick={onRequestClose} color="primary">
-            { closeText }
-        </Button>
+    if (onRequestConfirm)
+    {
+        confirmButton = <Button id={'confirm'} onClick={onRequestConfirm} color="primary">
+                { confirmText }
+            </Button>;
+    }
+    if (onRequestClose)
+    {
+        closeButton = <Button id={'cancel'} onClick={onRequestClose} color="primary">
+                { closeText }
+            </Button>;
+    }
     return (
         <Dialog {...other} onRequestClose={onRequestClose} >
           <DialogTitle>{ title }</DialogTitle>

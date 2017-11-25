@@ -12,7 +12,6 @@ import MenuIcon from 'material-ui-icons/Menu';
 import LoginFormDialog from './pages/Login.js';
 import RegisterFormDialog from './pages/Register.js';
 import {withRouter} from 'react-router-dom'
-// import FormDialog from './Login.js';
 
 const styles = theme => ({
   root: {
@@ -89,7 +88,7 @@ class Nav extends Component {
                         this.setState({loginOpen:false, registerOpen:false});
                         this.props.history.push('/info');}}>{JSON.parse(localStorage.getItem('user'))['username']}
                         </Button>
-                    <Button color="contrast" onClick={(e) => {
+                    <Button color="contrast" onClick={(/*e*/) => {
                         localStorage.removeItem("token");
                         localStorage.removeItem("user");
                         if(this.props.onLoginChange) {

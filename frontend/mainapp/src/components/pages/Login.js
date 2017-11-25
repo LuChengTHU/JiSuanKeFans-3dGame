@@ -52,7 +52,7 @@ class LoginFormDialog extends React.Component {
 
   addMessage(msg)
   {
-    this.setState((prevState, props) => {
+    this.setState((prevState/*, props*/) => {
         prevState.messages.push([msg, this.num_msg++]);
         return { messages: prevState.messages };
     });
@@ -60,7 +60,7 @@ class LoginFormDialog extends React.Component {
 
   removeMessage(msg)
   {
-    this.setState((prevState, props) => {
+    this.setState((prevState/*, props*/) => {
         const messages = prevState.messages.filter(item => item !== msg);
         return { messages: messages };
     });

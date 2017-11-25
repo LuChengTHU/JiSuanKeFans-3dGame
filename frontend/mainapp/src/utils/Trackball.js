@@ -284,7 +284,10 @@ class TrackballControls extends THREE.EventDispatcher {
     // listeners
 
     function keydown(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       window.removeEventListener('keydown', keydown);
 
@@ -304,7 +307,10 @@ class TrackballControls extends THREE.EventDispatcher {
     }
 
     function keyup() {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       _state = _prevState;
 
@@ -313,7 +319,10 @@ class TrackballControls extends THREE.EventDispatcher {
 
 
     function mousemove(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       event.preventDefault();
       event.stopPropagation();
@@ -329,7 +338,10 @@ class TrackballControls extends THREE.EventDispatcher {
     }
 
     function mouseup(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       event.preventDefault();
       event.stopPropagation();
@@ -342,7 +354,10 @@ class TrackballControls extends THREE.EventDispatcher {
     }
 
     function mousedown(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       event.preventDefault();
       event.stopPropagation();
@@ -370,7 +385,10 @@ class TrackballControls extends THREE.EventDispatcher {
 
 
     function mousewheel(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       event.preventDefault();
       event.stopPropagation();
@@ -393,7 +411,10 @@ class TrackballControls extends THREE.EventDispatcher {
     }
 
     function touchstart(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       switch (event.touches.length) {
         case 1:
@@ -422,7 +443,10 @@ class TrackballControls extends THREE.EventDispatcher {
     }
 
     function touchmove(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       event.preventDefault();
       event.stopPropagation();
@@ -450,7 +474,10 @@ class TrackballControls extends THREE.EventDispatcher {
     }
 
     function touchend(event) {
-      if (_this.enabled === false) return;
+      if (_this.enabled === false)
+      {
+          return;
+      }
 
       switch (event.touches.length) {
         case 1:

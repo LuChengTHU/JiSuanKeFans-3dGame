@@ -6,7 +6,7 @@ import {withStyles} from 'material-ui/styles'
 import Button from 'material-ui/Button'
 import Grid from 'material-ui/Grid'
 
-const styles = function(theme){
+const styles = function(/*theme*/){
     return {
         map_chooser:{
             display: 'flex',
@@ -22,7 +22,7 @@ const styles = function(theme){
 
 const MapChooser = createReactClass(
     {
-        getInitialState: function(props){
+        getInitialState: function(/*props*/){
             return {pageNo: 1, ready: false, mapList: []};
         },
         

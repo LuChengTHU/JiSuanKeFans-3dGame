@@ -56,7 +56,8 @@ export default class EditorGame extends Component {
 		for(let i = 0; i < monsters.length; ++i)
 			if(monsters[i].hp <= 0)
 			{
-				ms.push(null); mbar.push(null);
+				ms.push(null);
+                mbar.push(null);
 			}
 			else
 			{
@@ -83,7 +84,7 @@ export default class EditorGame extends Component {
 			</group>;
 		}
 
-		const ans = <React3
+		return <React3
             mainCamera="camera"
             width={ width }
             height={ height }
@@ -146,7 +147,6 @@ export default class EditorGame extends Component {
                 />
             </scene>
         </React3>;
-		return ans;
     }
 
 }

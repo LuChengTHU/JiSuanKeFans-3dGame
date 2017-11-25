@@ -19,7 +19,11 @@ export default class Monster extends Component {
             position, rotation
         } = this.props;
 		
-		this.group = <group ref={val => { this.groupRef = val; }}
+		this.group = <group ref={
+                val => {
+                    this.groupRef = val;
+                }
+            }
 			position={ position }
 			rotation={ rotation }
 		>
