@@ -115,7 +115,16 @@ export default class Game {
                 let vm = new Vm();
                 vm.realm.global.Game = Game;
                 vm.realm.global.data = dat;
-                return vm.eval(Game.map.init_AI_infos[i].code);
+                vm.realm.global.console = console;
+                try
+                {
+                    return vm.eval(Game.map.init_AI_infos[i].code);
+                }
+                catch(e)
+                {
+                    // ignore ai errors
+                    return undefined;
+                }
 			});
 		}
 	}
