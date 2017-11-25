@@ -92,13 +92,11 @@ export default class GameContainer extends Component {
         const that = this;
 
         function onEndLoopFinished(event) {
-            if (event.action === endAction) {
-                if (endAction === oldState.actions[1]) {
-                    oldState.playerAnimateAttacking = false;
-                    oldState.mixer.removeEventListener('loop', onEndLoopFinished);
-                    that.setState(oldState);
-                    that.prepareCrossFade(endAction, oldState.actions[0], duration);
-                }
+            if (event.action === endAction && endAction === oldState.actions[1]) {
+                oldState.playerAnimateAttacking = false;
+                oldState.mixer.removeEventListener('loop', onEndLoopFinished);
+                that.setState(oldState);
+                that.prepareCrossFade(endAction, oldState.actions[0], duration);
             }
         }
 

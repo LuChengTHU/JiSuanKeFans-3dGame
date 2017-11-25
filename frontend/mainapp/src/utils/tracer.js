@@ -141,8 +141,6 @@ class TracerContols extends THREE.EventDispatcher {
       const sidewaysDirection = new THREE.Vector3();
       const moveDirection = new THREE.Vector3();
 
-      let angle;
-
       return function slideCamera() {
         
         let deltaX = _moveCurr.x - _movePrev.x;
@@ -263,17 +261,6 @@ class TracerContols extends THREE.EventDispatcher {
       } else if (event.keyCode === _this.keys[STATE.ZOOM] && !_this.noZoom) {
         _state = STATE.ZOOM;
       }
-    }
-
-    function keyup() {
-      if (_this.enabled === false)
-      {
-          return;
-      }
-
-      _state = _prevState;
-
-      window.addEventListener('keydown', keydown, false);
     }
 
 
