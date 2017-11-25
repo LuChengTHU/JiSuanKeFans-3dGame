@@ -1,3 +1,5 @@
+import Vm from 'vm.js';
+
 export default class Game {
 	/**
 	 * Fields cared by logic:
@@ -110,8 +112,10 @@ export default class Game {
 			const dat = {};
 			Game.map.ai_callbacks.push(() =>
 			{
-				let data = dat;
-				return eval(Game.map.init_AI_infos[i].code);
+                let vm = new Vm();
+                vm.realm.global.Game = Game;
+                vm.realm.global.data = dat;
+                return vm.eval(Game.map.init_AI_infos[i].code);
 			});
 		}
 	}
