@@ -7,10 +7,10 @@ import Typography from 'material-ui/Typography'
 
 const styles = (/*theme*/) => ({});
 
-const mapFetcher = author_id => ({
+const mapFetcher = (author_id, self) => ({
     fetch: pageNo => {
         return axios.get('/map/', {params: {pageNo: pageNo, 
-            authorId: author_id}}).then(response => ({
+            authorId: author_id, self: self}}).then(response => ({
             has_prev: response.data.has_prev,
             has_next: response.data.has_next,
             map_list: response.data.list
@@ -22,7 +22,7 @@ const MapLibrary = createReactClass({
         return (
             <div>
                 <Typography type="title" align="center">{this.props.author.username}的地图库</Typography>
-                <MapChooser mapFetcher={mapFetcher(this.props.author.id)} onClick={(map) => this.props.history.push('/editor/' + map.id + '/')}/>
+                <MapChooser mapFetcher={mapFetcher(this.props.author.id, this.props.self)} onClick={(map) => this.props.history.push('/editor/' + map.id + '/')}/>
             </div>
         );
     }

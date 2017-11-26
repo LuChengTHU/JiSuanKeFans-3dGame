@@ -4,6 +4,9 @@ import React from 'react'
 import {Component} from 'react'
 import createReactClass from 'create-react-class'
 import {fetch_map, create_map, modify_map} from '../../interfaces/Map'
+import Checkbox from 'material-ui/Checkbox'
+import {FormControlLabel} from 'material-ui/Form'
+
 const INIT_MAP = { // initial map
     title: 'Untitled',
     height: 10,
@@ -58,7 +61,8 @@ const INIT_MAP = { // initial map
     failed_msg: 'Failed!',
     passed_msg: 'Passed!',
     std_blockly_code: '',
-    welcome_msg: 'Welcome!'
+    welcome_msg: 'Welcome!',
+    shared: false
 };
 
 
@@ -66,7 +70,8 @@ const MapEditor = createReactClass({
     getInitialState: function(){
         this.mapInitialised = false;
 
-        return {inputText: JSON.stringify(INIT_MAP, null, 4)};
+        return {inputText: JSON.stringify(INIT_MAP, null, 4), map_id : -1, mapShared : false,
+            mapSharedSetting: false};
     },
     handleTextChange: function(event){
         this.setState({inputText: event.target.value});
@@ -79,18 +84,20 @@ const MapEditor = createReactClass({
                 this.mapInitialised = true;
                 window.map = INIT_MAP;
                 if('map_id' in this.props.match.params){
-                    this.map_id = this.props.match.params['map_id'];
-                    fetch_map(this.map_id).then(()=>{
+                    const map_id = this.props.match.params.map_id;
+                    fetch_map(map_id).then(()=>{
                         if('map' in window)
                         {
                             window.Game.gameSetMap(window.map);
-                            this.setState({inputText: JSON.stringify(window.map, null, 4)});
+                            this.setState({inputText: JSON.stringify(window.map, null, 4), 
+                                map_id : map_id,
+                                mapShared : window.map.shared,
+                                mapSharedSetting : window.map.shared});
                         }
                     });
                 } else{
                     window.Game.gameSetMap(window.map);
                     this.setState({inputText: JSON.stringify(window.map, null, 4)});
-                    this.map_id = -1;
                 }
             }
         }}/>;
@@ -100,10 +107,21 @@ const MapEditor = createReactClass({
         return (
             <Grid container spacing={25} justify='center'>
             <Grid item xs={12} sm={6} >
+            <div>
+                <Button onClick={() => this.updateMap()}>Update</Button>
+                <Button onClick={() => this.submitMap()}>Submit</Button>
+                <FormControlLabel control={
+                    <Checkbox checked={this.state.mapSharedSetting}
+                            onChange={(event) => {
+                                this.setState({mapSharedSetting : event.target.checked});
+                                window.map.shared = event.target.checked;
+                            }}/>}
+                     label="分享地图"/>
+                {this.state.mapShared ? "已经分享" : ""}
+            </div>
+
             <div id={'editorGameContainer'}>
             {editorGameContainer}</div>
-            <Button onClick={() => this.updateMap()}>Update</Button>
-            <Button onClick={() => this.submitMap()}>Submit</Button>
             </Grid>
             <Grid>
                 <div>
@@ -132,13 +150,14 @@ const MapEditor = createReactClass({
         window.gameSetMap(map);
     },
     submitMap: function(){
-        if(this.map_id == -1){
+        if(this.state.map_id == -1){
             create_map(window.map).then(map_id => {
                 window.alert('New map ' + map_id + ' created!');
-                this.map_id = map_id;
+                this.setState({map_id : map_id, mapShared : window.map.shared});
             });
         } else{
-            modify_map(this.map_id, window.map);
+            modify_map(this.state.map_id, window.map);
+            this.setState({mapShared : window.map.shared})
         }
     },
     choosePlayer: function() {

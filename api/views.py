@@ -266,7 +266,7 @@ class MapListView(APIView):
         if is_self == 'true':
             if request.auth is None:
                 return Response({}, status=status.HTTP_403_FORBIDDEN), 2
-            author_id = self.user.id
+            author_id = request.user.id
         else:
             res = res.filter(shared=True)
         
