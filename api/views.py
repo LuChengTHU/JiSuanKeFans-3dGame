@@ -184,6 +184,8 @@ class UserView(APIView):
 user_view = UserView.as_view()
 
 class MapView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     # get a single map
     @with_res_code
@@ -193,6 +195,9 @@ class MapView(APIView):
         except:
             # not found
             return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+        # only accessible if the user is the author or the map is shared
+        if (request.auth is None or request.user.id != map.author.id) and not map.shared:
+            return Response({}, status=status.HTTP_403_FORBIDDEN), 2
         return Response({'map' : \
             MapFullSerializer.repr_inflate(MapFullSerializer(map).data)}), 1
 
@@ -206,6 +211,10 @@ class MapView(APIView):
                 traceback.print_exc()
             # not found
             return Response({}, status=status.HTTP_404_NOT_FOUND), 2
+
+        if request.user.id != map.author.id:
+            return Response({}, status=status.HTTP_403_FORBIDDEN), 2
+
         try:
             serializer = MapFullSerializer(map, \
                 data = MapFullSerializer.repr_deflate(request.data['new_map_info']))
@@ -233,6 +242,8 @@ class MapView(APIView):
             # the map not found
             return Response({}, status=status.HTTP_404_NOT_FOUND), 2
         # remove map from db
+        if request.user.id != map.author.id:
+            return Response({}, status=status.HTTP_403_FORBIDDEN), 2
         map.delete()
 
         return Response({}), 1
@@ -248,8 +259,17 @@ class MapListView(APIView):
     def get(self, request):
         author_id = request.query_params.get('authorId', None)
 
+        is_self = request.query_params.get('self', 'false')
+
         res = Map.objects
 
+        if is_self == 'true':
+            if request.auth is None:
+                return Response({}, status=status.HTTP_403_FORBIDDEN), 2
+            author_id = self.user.id
+        else:
+            res = res.filter(shared=True)
+        
         if request.auth is not None:
             res = res.extra(select = {'high_stars': '''
                     SELECT MAX(api_solution.stars)
