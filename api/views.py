@@ -326,13 +326,24 @@ def getUserLatestPassedMapId(user):
     return 4
 
 def mapId2StageId(map_id):
+    """Return the stage_id corresponding to the given map_id. 
+    None is returned when the stage is not found.
+
+    Parameters
+    ----------
+    map_id: 
+
+    Returns
+    -------
+    stage_id or None
+    """
     maps = Map.objects.filter(author_id=1).order_by("id").all()
     for i, item in enumerate(maps):
         if item.id == map_id:
             return i + 1
     return None # not found
 
-def StagePermission(map_id, request):
+def StagePermission(map_id, request, map_obj):
     map_id = int(map_id)
     print('StagePermission: ', request.user, map_id)
     user = request.user
@@ -341,13 +352,16 @@ def StagePermission(map_id, request):
     print('getUserLatestPassedMapId(user)', getUserLatestPassedMapId(user))
     print('mapId2StageId(getUserLatestPassedMapId(user))', mapId2StageId(getUserLatestPassedMapId(user)))
     print('isAdmin(user)',isAdmin(user))
-    return map_id <= 5 or isAdmin(user) \
-        or (# admin stage
+    shared_or_own = (map_obj.shared or map_obj.author == user)
+    return map_id <= 5 or isAdmin(user) or shared_or_own and (\
+        (# admin stage
+        stage_id is not None and
         user and (request.auth is not None) and \
-        stage_id is not None and mapId2StageId(getUserLatestPassedMapId(user)) + 1 >= stage_id) \
+        mapId2StageId(getUserLatestPassedMapId(user)) + 1 >= stage_id) \
         or ( # custom stage
-        request.auth is not None and stage_id is None
-        )
+        stage_id is None and
+        request.auth is not None
+        ))
 
 class StageView(APIView):
     authentication_classes = (TokenAuthentication,)
@@ -355,7 +369,6 @@ class StageView(APIView):
     def get(self, request, stage_id = None):
         try:
             map = Map.objects.get(id=stage_id)
-            # TODO: permission
         except:
             # not found
             traceback.print_exc()
@@ -365,7 +378,7 @@ class StageView(APIView):
         except:
             traceback.print_exc()
             return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
-        if StagePermission(stage_id, request):
+        if StagePermission(stage_id, request, map):
             return Response({'map' : data}), 1
         else:
             return Response({'map' : ''}), -1
