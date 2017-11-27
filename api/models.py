@@ -40,6 +40,8 @@ class Map(models.Model):
     height = models.IntegerField()
     width = models.IntegerField()
 
+    shared = models.BooleanField(default=False)
+
     stage = models.IntegerField(default=None, blank=True, null=True, unique=True)
 
     # ------------ restrictions -------------

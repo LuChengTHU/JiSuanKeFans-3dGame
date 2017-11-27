@@ -21,20 +21,6 @@ const styles = (/*theme*/) => ({
     },
   });
 
-//for testing only
-const MapListView = createReactClass({
-    render: function(){
-        return <MapChooser mapFetcher={ {fetch: (page_no)=>
-            {
-                return axios.get('map/?pageNo=' + page_no).then(function(response){
-                    return {map_list: response.data.list, has_prev: response.data.has_prev, 
-                        has_next: response.data.has_next};
-                    });
-            }
-        }} onClick={ (map) => this.props.history.push('/editor/' + map.id)}/>;
-    }
-});
-
 class App extends Component {
     constructor(props)
     {
@@ -97,7 +83,7 @@ class App extends Component {
                 <PrivateRoute exact path="/info/" component={InfoModify}/>
                 {this.state.user ?
                     <Route exact path="/mymaps/" component={(props) => <MapLibrary
-                         author={this.state.user} {...props}/>}/>
+                         author={this.state.user} self={true} {...props}/>}/>
                     : ""
                 }
                 {/* for testing only*/}

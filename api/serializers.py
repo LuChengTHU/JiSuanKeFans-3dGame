@@ -42,7 +42,7 @@ class MapBriefSerializer(serializers.ModelSerializer):
     high_stars = serializers.IntegerField(required=False, default=0)
     class Meta:
         model = Map
-        fields = ('id', 'title', 'width', 'height', 'author', 'high_stars')
+        fields = ('id', 'title', 'width', 'height', 'author', 'shared', 'high_stars')
 
 class MapFullSerializer(serializers.ModelSerializer):
     author = get_user_serializer_class(RATE_BRIEF)(required=False)
