@@ -385,7 +385,7 @@ export default class EditorGameContainer extends Component {
             
             window.map.init_AI_infos[id] = {
                 "pos": [gridX, gridY],
-                "id": "naive",
+                "id": this.props.aiName,
                 "hp": 1,
                 "attack": 1,
                 "code": "Game.gameTurn(Game.GameCW);",
