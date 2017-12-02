@@ -4,6 +4,7 @@ import React3 from 'react-three-renderer';
 import { Vector3, Euler, DoubleSide, } from 'three';
 
 import Player from './Player';
+import Map from './Map';
 import Bar from './Bar';
 import Monster from './Monster';
 
@@ -122,7 +123,7 @@ export default class Game extends Component {
                 <ambientLight
                     color={ 0xdddddd }
                 />
-				{ mapBlocks }
+				{/*{ mapBlocks }*/}
 				<Bar
 					position = {playerPosition}
 					curValue = {playerHp}
@@ -134,13 +135,13 @@ export default class Game extends Component {
 				<Player
                     position = {playerPosition}
                     rotation={playerRotation}
-                    playerMesh = {knightMesh}
-                />
-				<Player
-                    position={new Vector3( 0, 0, 0 )}
-                    rotation={new Euler( 0, -Math.PI / 2, 0 )}
                     playerMesh = {mapMesh}
                 />
+                {/*<Map*/}
+                    {/*position={new Vector3( -10, -2, 0 )}*/}
+                    {/*rotation={new Euler( 0, -Math.PI / 2, 0 )}*/}
+                    {/*mapMesh = {mapMesh}*/}
+                {/*/>*/}
 
             </scene>
         </React3>;

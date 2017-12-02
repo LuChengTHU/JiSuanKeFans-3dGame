@@ -401,38 +401,41 @@ export default class GameContainer extends Component {
                     currentAction: moveAction
                 });
 
-                const mapLoader = new THREE.JSONLoader();
-                mapLoader.load(`${process.env.PUBLIC_URL}/assets/baowu.json`,
+                const monsterLoader = new THREE.JSONLoader();
+                monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
                     (geometry, materials) => {
-                        for(let i = 0; i < materials.length; i++) {
-                            materials[i].emissive.set(0x101010);
-                            materials[i].skinning = true;
-                            materials[i].morphTargets = true;
-                        }
-                        const mapMesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-                        mapMesh.scale.set(1, 1, 1);
+                        const material = materials[0];
+                        material.emissive.set(0x101010);
+                        material.skinning = true;
+                        material.morphTargets = true;
 
                         this.setState({
-                            mapMesh: mapMesh
+                            monsterGeometry: geometry,
+                            monsterMaterial: material
                         });
-
-                        const monsterLoader = new THREE.JSONLoader();
-                        monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
-                            (geometry, materials) => {
-                                const material = materials[0];
-                                material.emissive.set(0x101010);
-                                material.skinning = true;
-                                material.morphTargets = true;
-
-                                this.setState({
-                                    monsterGeometry: geometry,
-                                    monsterMaterial: material
-                                });
-                                // Start the game loop when this component loads
-                                this.requestGameLoop();
-                            });
+                        // Start the game loop when this component loads
+                        this.requestGameLoop();
                     });
+
             });
+
+
+        const mapLoader = new THREE.JSONLoader();
+        mapLoader.load(`${process.env.PUBLIC_URL}/assets/baowu.json`,
+            (geometry, materials) => {
+                for(let i = 0; i < materials.length; i++) {
+                    materials[i].emissive.set(0x101010);
+                    materials[i].skinning = true;
+                    materials[i].morphTargets = true;
+                }
+                const mapMesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+                mapMesh.scale.set(1, 1, 1);
+
+                this.setState({
+                    mapMesh: mapMesh
+                });
+            });
+
 
 		if(typeof(this.props.onLoaded) !== 'undefined')
 			this.props.onLoaded();
