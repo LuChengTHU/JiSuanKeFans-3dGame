@@ -56,7 +56,8 @@ export default class EnhancedInterpreter {
             }));
         const alertWrapper = function(text) {
             text = text ? text.toString() : '';
-            return alert(text);
+            let trela = window.alert;
+            return trela(text);
         };
         interpreter.setProperty(scope, 'alert',
             interpreter.createNativeFunction(alertWrapper));

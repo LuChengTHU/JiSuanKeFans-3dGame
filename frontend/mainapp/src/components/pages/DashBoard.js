@@ -209,7 +209,9 @@ class DashBoard extends Component {
                                         this.setState({ map: response.data.map });
                                         this.initMap();
                                         } else {
-                                            alert('没有权限！');
+                                            // TODO: more friendly way
+                                            let trela = window.alert;
+                                            trela('没有权限！');
                                             this.props.history.push('/');
                                         }
                                 });

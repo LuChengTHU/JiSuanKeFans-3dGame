@@ -112,7 +112,7 @@ export default class Game {
 			const dat = {};
 			Game.map.ai_callbacks.push(() =>
 			{
-                let vm = new Vm();
+                const vm = new Vm();
                 vm.realm.global.Game = Game;
                 vm.realm.global.data = dat;
                 vm.realm.global.console = console;

@@ -1,2 +1,1 @@
-frontend/mainapp/publicl/ai/**
-**
+sonar.exclusions=frontend/mainapp/public/**/*
