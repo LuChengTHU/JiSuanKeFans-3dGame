@@ -1,5 +1,4 @@
 import React, { Component, PropTypes, } from 'react';
-import React3 from 'react-three-renderer';
 import { Euler, Vector3 } from 'three';
 
 export default class Bar extends Component {

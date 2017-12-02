@@ -1,12 +1,7 @@
 import React, { Component, PropTypes, } from 'react';
-import React3 from 'react-three-renderer';
 import { Euler, Vector3 } from 'three';
 
 export default class Monster extends Component {
-
-    constructor(props, context) {
-        super(props, context);
-    }
 
     componentDidMount() {
         const {monsterMesh,} = this.props;

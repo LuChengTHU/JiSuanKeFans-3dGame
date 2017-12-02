@@ -1,6 +1,5 @@
-import React, { Component, PropTypes, } from 'react';
-import React3 from 'react-three-renderer';
-import { Euler, Vector3, } from 'three';
+import React, { PropTypes, } from 'react';
+import { Vector3, } from 'three';
 
 const MapBlock = ({ x, z }) => <group
     position={ new Vector3(x, -0.05, z) }

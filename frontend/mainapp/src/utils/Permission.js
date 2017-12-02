@@ -1,11 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Typography from 'material-ui/Typography'
 import {
-    BrowserRouter as Router,
     Route,
-    Link,
-    Redirect,
-    withRouter
+    Redirect
   } from 'react-router-dom'
 export function isLoggedIn() {
     return localStorage.getItem('token') !== null;

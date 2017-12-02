@@ -2,15 +2,12 @@
 
 import React from 'react';
 import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import { SnackbarContent } from 'material-ui/Snackbar';
 import { withStyles } from 'material-ui/styles';
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle,
 } from 'material-ui/Dialog';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
 const styles = (/*theme*/) => ({
