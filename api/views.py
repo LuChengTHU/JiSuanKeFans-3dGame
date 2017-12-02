@@ -109,8 +109,15 @@ def with_pagination(page_size_lim = 40, page_size_default = 20,\
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
     parser_classes = (JSONParser, FormParser)
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication, TokenAuthentication)
 
+    @with_res_code
+    def get(self, request):
+        if request.auth is None:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
+
+        user_serializer_class = get_user_serializer_class(RATE_BRIEF)
+        return Response({'user': user_serializer_class(request.user).data}), 1
 
     @with_res_code
     def post(self, request):

@@ -86,13 +86,12 @@ class Nav extends Component {
                     <div className="profile">
                     <Button color="contrast" onClick={() => {
                         this.setState({loginOpen:false, registerOpen:false});
-                        this.props.history.push('/info');}}>{JSON.parse(localStorage.getItem('user'))['username']}
+                        this.props.history.push('/info');}}>{this.props.user.username}
                         </Button>
                     <Button color="contrast" onClick={(/*e*/) => {
                         localStorage.removeItem("token");
-                        localStorage.removeItem("user");
                         if(this.props.onLoginChange) {
-                            this.props.onLoginChange();
+                            this.props.onLoginChange(null);
                         }
                         this.props.history.push('/');
                     }}>

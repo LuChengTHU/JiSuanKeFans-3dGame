@@ -153,7 +153,9 @@ class DashBoard extends Component {
                     const code = this.blocklyContainer.getXmlText();
                     const map_id = this.props.match.params.map_id;
 
-                    create_solution(map_id, code, false, this.stars);
+                    create_solution(map_id, code, false, this.stars).then((id)=>{
+                        this.props.onUpdate();
+                    });
                     this.handleClick('passedOpen', false)();
                 }}>
                 <div><Button onClick={()=>{
@@ -165,7 +167,9 @@ class DashBoard extends Component {
                             this.setState({
                                 sharedOpen: true,
                                 solutionId: id
-                            });});
+                            });
+                            this.props.onUpdate();
+                        });
                     this.setState({passedOpen: false});
                 }}>分享解法</Button></div>
                 <p>{passedMsg}</p>
