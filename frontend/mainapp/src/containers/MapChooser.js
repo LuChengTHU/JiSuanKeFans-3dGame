@@ -48,7 +48,7 @@ const MapChooser = createReactClass(
                         <Grid item xs={12}>
                             <GridList cols={2} cellHeight={140} spacing={3} className={this.props.classes.map_chooser}>
                                 {this.state.mapList.map((map) => <MapLink key={map.id} map={map}
-                                onClick={() => this.props.onClick(map)}/>)}
+                                onClick={() => this.props.onClick(map)} locked={this.props.lock(map)}/>)}
                             </GridList>
                         </Grid>
                         <Grid item xs={12}>

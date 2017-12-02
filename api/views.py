@@ -316,14 +316,7 @@ def isAdmin(user):
     return (user is not None) and user.id == 1
 
 def getUserLatestPassedMapId(user):
-    if user is None:
-        return 1
-    user_id = user.id
-    solutions = Solution.objects.filter(user_id=user_id).order_by('-map_id').all()
-    for i in solutions:
-        if i.map.author.id == 1:
-            return i.map.id
-    return 4
+    return 1 if user is None or not user.is_authenticated else max(4, user.latest_level)
 
 def mapId2StageId(map_id):
     """Return the stage_id corresponding to the given map_id. 
@@ -402,7 +395,7 @@ class SolutionListView(APIView):
 
             if show_self == 'true':
                 if request.auth is None:
-                    return Solution.objects.none()
+                    return Solution.objects.none(), {}
                 user_id = request.user.id
 
             res = Solution.objects
@@ -424,11 +417,14 @@ class SolutionListView(APIView):
         sol_info = request.data['solution']
         solution = Solution()
         solution.user = request.user
-
+        
         serializer = get_solution_serializer_class(RATE_CREATE)(solution, data=sol_info)
         if serializer.is_valid():
             try:
                 solution = serializer.save()
+                if solution.map.author_id == 1: # official stage
+                    request.user.latest_level = max(request.user.latest_level, solution.map.id)
+                    request.user.save()
             except Exception as e:
                 print(e)
                 return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR), 0
