@@ -1,7 +1,7 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component} from 'react';
 import * as THREE from 'three';
 
-import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
+import { Vector3, Euler, } from 'three';
 
 import Game from '../components/Game';
 import MapBlock from '../components/MapBlock';

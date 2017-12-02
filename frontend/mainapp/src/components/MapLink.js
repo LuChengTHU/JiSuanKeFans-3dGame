@@ -1,9 +1,7 @@
 import createReactClass from 'create-react-class'
 import React from 'react'
-import Paper from 'material-ui/Paper'
 import {GridListTile, GridListTileBar} from 'material-ui/GridList'
 import {withStyles} from 'material-ui/styles'
-import Typography from 'material-ui/Typography'
 import IconButton from 'material-ui/IconButton'
 import LaunchIcon from 'material-ui-icons/Launch'
 import StarIcon from 'material-ui-icons/Star'
@@ -37,7 +35,7 @@ const MapLink = createReactClass({
     render: function(){
         return (<GridListTile className={this.props.classes.grid_list_tile} key={this.props.key}>
                 <div className={this.props.classes.tile_paper}>
-                    <img src="/assets/map_thumbnail.png" height={200}/>
+                    <img src="/assets/map_thumbnail.png" height={200} alt=""/>
                 </div>
                 <GridListTileBar title={<div>{this.props.map.title}<StarBar stars={this.props.map.high_stars}/></div>}
                     subtitle={"by " + this.props.map.author.username}

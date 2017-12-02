@@ -1,6 +1,5 @@
 import React from 'react'
 import createReactClass from 'create-react-class'
-import {withStyles} from 'material-ui/styles'
 import {fetch_map} from '../../interfaces/Map'
 import {fetch_solution} from '../../interfaces/Solution'
 import GameContainer from '../../containers/GameContainer'

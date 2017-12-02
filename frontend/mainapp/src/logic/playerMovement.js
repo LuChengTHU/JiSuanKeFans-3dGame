@@ -1,5 +1,3 @@
-import { Vector3, Euler, } from 'three';
-
 /**
  * We can manage our game state in a series of small, easy to reason about
  * functions

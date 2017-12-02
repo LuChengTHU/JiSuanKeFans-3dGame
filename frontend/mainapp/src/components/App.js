@@ -6,14 +6,11 @@ import { withStyles } from 'material-ui/styles';
 import DashBoard from './pages/DashBoard'
 import MapEditor from './pages/MapEditor'
 import {Route} from 'react-router-dom'
-import MapChooser from '../containers/MapChooser'
-import createReactClass from 'create-react-class'
-import {createHashHistory} from 'history'
 import StageGallery from './pages/StageGallery'
 import MapLibrary from './pages/MapLibrary'
 import SolutionViewer from './pages/SolutionViewer'
 import InfoModify from './pages/InfoModify'
-import {isLoggedIn, PleaseLogin, PrivateRoute} from '../utils/Permission'
+import {PleaseLogin, PrivateRoute} from '../utils/Permission'
 
 const styles = (/*theme*/) => ({
     root: {

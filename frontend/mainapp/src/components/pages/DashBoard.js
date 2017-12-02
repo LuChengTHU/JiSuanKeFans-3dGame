@@ -2,12 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
-import withRoot from '../withRoot';
-import App from '../App';
-import Nav from '../Nav';
-import axios from 'axios';
 import GameContainer from '../../containers/GameContainer';
 import BlocklyContainer from '../../containers/BlocklyContainer';
 import {fetch_map} from '../../interfaces/Map';
@@ -130,10 +125,10 @@ class DashBoard extends Component {
         const starNum = this.stars;
         const starImg = [];
         for(let i = 0; i < starNum; i++) {
-            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_true.jpg`}/>)
+            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_true.jpg`} alt=""/>)
         }
         for(let i = starNum; i < 3; i++) {
-            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_false.png`}/>)
+            starImg.push(<img src={`${process.env.PUBLIC_URL}/assets/star_false.png`} alt=""/>)
         }
         // TODO window.Game.gameSetMap(fetch_map(1));
 

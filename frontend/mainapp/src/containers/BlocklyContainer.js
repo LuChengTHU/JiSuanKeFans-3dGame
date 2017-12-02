@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import scriptLoader from 'react-async-script-loader';
-import Game from '../logic/logic';
 import PropTypes from 'prop-types';
 class BlocklyContainer extends Component {
     constructor(props) {

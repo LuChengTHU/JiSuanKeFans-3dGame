@@ -2,7 +2,6 @@ import EditorGameContainer from '../../containers/EditorGameContainer'
 import {TextField, Button, Grid} from 'material-ui'
 import Select from 'react-select';
 import React from 'react'
-import {Component} from 'react'
 import createReactClass from 'create-react-class'
 import {fetch_map, create_map, modify_map} from '../../interfaces/Map'
 import Checkbox from 'material-ui/Checkbox'
@@ -182,7 +181,7 @@ const MapEditor = createReactClass({
         window.gameSetMap(map);
     },
     submitMap: function(){
-        if(this.state.map_id == -1){
+        if(this.state.map_id === -1){
             create_map(window.map).then(map_id => {
                 this.setState({map_id : map_id, mapShared : window.map.shared});
 				if(map_id === -2)

@@ -1,14 +1,12 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component} from 'react';
 import * as THREE from 'three';
 
-import { Vector3, Euler, Geometry, DoubleSide, PerspectiveCamera, } from 'three';
+import { Vector3, Euler, PerspectiveCamera, } from 'three';
 
 import EditorGame from '../components/EditorGame';
 import MapBlock from '../components/MapBlock';
 import * as Logic from '../logic/logic';
 import TracerControls from '../utils/tracer';
-
-import playerMovement from '../logic/playerMovement';
 
 
 export default class EditorGameContainer extends Component {
@@ -341,7 +339,7 @@ export default class EditorGameContainer extends Component {
         if (this.state.selected === "Player") {
             const monsters = this.state.monsters;
             for (let i = 0; i < monsters.length; ++ i) 
-                if (monsters[i].hp > 0 && monsters[i].position.x == gridX && monsters[i].position.z == gridY)
+                if (monsters[i].hp > 0 && monsters[i].position.x === gridX && monsters[i].position.z === gridY)
                     return ;
             this.setState({
                 playerPosition: new THREE.Vector3(gridX, 0, gridY)
@@ -360,14 +358,14 @@ export default class EditorGameContainer extends Component {
         {
             return;
         }
-        if (this.state.playerPosition.x == gridX && this.state.playerPosition.z == gridY)
+        if (this.state.playerPosition.x === gridX && this.state.playerPosition.z === gridY)
             return;
         let exist = false;
         const monsters = this.state.monsters;
 
         for (let i = 0; i < monsters.length; ++ i) 
-            if (monsters[i].hp > 0 && Math.round(monsters[i].position.x) == gridX 
-              && Math.round(monsters[i].position.z) == gridY) {
+            if (monsters[i].hp > 0 && Math.round(monsters[i].position.x) === gridX 
+              && Math.round(monsters[i].position.z) === gridY) {
                 exist = true;
                 monsters[i].hp = -1;
                 window.map.init_AI_infos[i].hp = -1;

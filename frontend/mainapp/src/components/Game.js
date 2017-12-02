@@ -1,13 +1,10 @@
 import React, { Component, PropTypes, } from 'react';
 import React3 from 'react-three-renderer';
 
-import { Vector3, Euler, Geometry, DoubleSide, } from 'three';
-
-import * as THREE from 'three';
+import { Vector3, Euler, DoubleSide, } from 'three';
 
 import Player from './Player';
 import Bar from './Bar';
-import MapBlock from './MapBlock';
 import Monster from './Monster';
 
 /**
@@ -25,10 +22,6 @@ export default class Game extends Component {
         playerPosition: PropTypes.instanceOf( Vector3 ).isRequired,
         playerRotation: PropTypes.instanceOf( Euler ).isRequired,
     };
-
-    constructor(props, context) {
-        super(props, context);
-    }
 
     render() {
         const {
