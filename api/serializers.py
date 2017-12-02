@@ -23,9 +23,10 @@ def get_user_serializer_class(rate):
         class Meta:
             model = User
             if rate == RATE_BRIEF:
-                fields = ('id', 'username', 'email', 'gender', 'privilege')
+                fields = ('id', 'username', 'email', 'gender', 'privilege', 'latest_level')
             elif rate == RATE_FULL:
-                fields = ('id', 'username', 'email', 'gender', 'privilege', 'expiration', 'join_date')
+                fields = ('id', 'username', 'email', 'gender', 'privilege', 'expiration', 'join_date',\
+                    'latest_level')
             else:
                 fields = ('id', 'username', 'email', 'password')
 

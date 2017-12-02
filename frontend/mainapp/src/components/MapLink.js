@@ -37,7 +37,11 @@ const MapLink = createReactClass({
     render: function(){
         return (<GridListTile className={this.props.classes.grid_list_tile} key={this.props.key}>
                 <div className={this.props.classes.tile_paper}>
-                    <img src="/assets/map_thumbnail.png" height={200}/>
+                    {this.props.locked ? 
+                        <img src="/assets/map_lock.png" height={200}/>
+                        :
+                        <img src="/assets/map_thumbnail.png" height={200}/>
+                    }
                 </div>
                 <GridListTileBar title={<div>{this.props.map.title}<StarBar stars={this.props.map.high_stars}/></div>}
                     subtitle={"by " + this.props.map.author.username}

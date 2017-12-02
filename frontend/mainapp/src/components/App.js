@@ -77,9 +77,10 @@ class App extends Component {
                 <Route exact path="/solution/:sol_id/" component={SolutionViewer}/>
                 <Route path="/login" component={PleaseLogin}/>
                 <Route exact path="/searchmaps/:author_id/" component={StageGallery}/>
-                <Route exact path="/allmaps/" component={StageGallery}/>
+                <Route exact path="/allmaps/" component={(props) => <StageGallery
+                    user={this.state.user} {...props}/>}/>
 				<Route exact path="/stages/" component={(props) => <StageGallery
-                         author_id={1} {...props}/>}/>
+                         user={this.state.user} author_id={1} {...props}/>}/>
                 <PrivateRoute exact path="/info/" component={InfoModify}/>
                 {this.state.user ?
                     <Route exact path="/mymaps/" component={(props) => <MapLibrary
