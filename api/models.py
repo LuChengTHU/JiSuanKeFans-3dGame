@@ -20,6 +20,8 @@ class User(AbstractUser):
     expiration = models.DateField(default=None, blank=True, null=True)
     join_date = models.DateField(default=django.utils.timezone.now)
 
+    latest_level = models.IntegerField(default=0)
+
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'password']

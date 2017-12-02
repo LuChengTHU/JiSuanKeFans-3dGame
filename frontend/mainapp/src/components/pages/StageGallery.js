@@ -7,7 +7,18 @@ import {withStyles} from 'material-ui/styles'
 
 const styles = (/*theme*/) => ({});
 
+
 const StageGallery = createReactClass({
+	lock : function(map){
+		if(typeof(this.props.user) !== 'undefined' && this.props.user !== null &&
+			this.props.user.id === 1)
+			return false;
+		return map.author.id === 1 && (map.high_stars === 0 || map.high_stars === null) && 
+			((this.props.user === null || typeof(this.props.user) === 'undefined') ?
+				true : 
+				this.props.user.latest_level + 1 < map.id) &&
+			map.id > 5;
+	},
     getInitialState: function(){
         if(this.props.author_id)
             this.author_id = this.props.author_id;
@@ -32,7 +43,7 @@ const StageGallery = createReactClass({
 				<div>
 					<Typography type="title" align="center">主线关卡</Typography> 
 					<MapChooser mapFetcher={this.mapFetcher}
-						onClick={(map) => this.props.history.push('/game/' + map.id + '/')} />
+						lock={this.lock} onClick={(map) => this.props.history.push('/game/' + map.id + '/')} />
 				</div>
 			);
 		else
@@ -40,7 +51,7 @@ const StageGallery = createReactClass({
 				<div>
 					<Typography type="title" align="center">所有关卡</Typography> 
 					<MapChooser mapFetcher={this.mapFetcher}
-						onClick={(map) => this.props.history.push('/game/' + map.id + '/')} />
+						lock={this.lock} onClick={(map) => this.props.history.push('/game/' + map.id + '/')} />
 				</div>
 			);
     }
