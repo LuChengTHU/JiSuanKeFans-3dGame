@@ -48,17 +48,21 @@ export function create_map(map){
             }
             return -1;
         }).catch(function(/*error*/){
+			return -2;
             // TODO: deal with error
         });
 }
 
 export function modify_map(map_id, map){
-    axios.put('map/' + map_id + '/', {new_map_info: map})
+    return axios.put('map/' + map_id + '/', {new_map_info: map})
         .then(function(response){
             if(response.data.res_code === 1){
+				return true;
                 // TODO: deal with success
             }
+			return false;
         }).catch(function(/*error*/){
+			return false;
             // TODO: deal with error
         });
 }
