@@ -85,7 +85,7 @@ export default class Game extends Component {
                 </meshPhongMaterial>
                 <texture
                     resourceId="grassImage"
-                    url={ require( '../assets/grass.jpg' ) }
+                    url={ require( '../assets/baowu_tai.jpg' ) }
                     anisotropy={ 16 }
                 />
                 <meshPhongMaterial
@@ -123,7 +123,7 @@ export default class Game extends Component {
                 <ambientLight
                     color={ 0xdddddd }
                 />
-				{/*{ mapBlocks }*/}
+				{ mapBlocks }
 				<Bar
 					position = {playerPosition}
 					curValue = {playerHp}
@@ -134,14 +134,14 @@ export default class Game extends Component {
 				{target}
 				<Player
                     position = {playerPosition}
-                    rotation={playerRotation}
-                    playerMesh = {mapMesh}
+                    rotation = {playerRotation}
+                    playerMesh = {knightMesh}
                 />
-                {/*<Map*/}
-                    {/*position={new Vector3( -10, -2, 0 )}*/}
-                    {/*rotation={new Euler( 0, -Math.PI / 2, 0 )}*/}
-                    {/*mapMesh = {mapMesh}*/}
-                {/*/>*/}
+                <Map
+                    position={new Vector3(5.2, 0, 5.2)}
+                    rotation={new Euler( 0, 0, 0 )}
+                    mapMesh = {mapMesh}
+                />
 
             </scene>
         </React3>;

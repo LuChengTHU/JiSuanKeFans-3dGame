@@ -49,7 +49,7 @@ export default class GameContainer extends Component {
         this.state = {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, -Math.PI / 2, 0 ),
-            cameraPosition: new THREE.Vector3( -2, 4, -2 ),
+            cameraPosition: new THREE.Vector3( -2, 5.5, -2 ),
             lookAt: new THREE.Vector3( 0, 0, 0 ),
 			monsters: []
         };
@@ -113,7 +113,7 @@ export default class GameContainer extends Component {
 	addMonster(id, x, z, maxHp)
 	{
 	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
-        mesh.scale.set(0.15, 0.15, 0.15);
+        mesh.scale.set(0.1, 0.1, 0.1);
         const mixer = new THREE.AnimationMixer(mesh);
         const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
         const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
@@ -132,7 +132,7 @@ export default class GameContainer extends Component {
 			{
 				position: new Vector3(x, 0.3, z),
 				direction: new Vector3(1, 0, 0),
-				rotation: new Euler(),
+				rotation: new Euler(0, -Math.PI, 0),
 				maxHp: maxHp,
 				hp: maxHp,
                 mesh: mesh,
@@ -428,8 +428,8 @@ export default class GameContainer extends Component {
                     materials[i].skinning = true;
                     materials[i].morphTargets = true;
                 }
-                const mapMesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-                mapMesh.scale.set(1, 1, 1);
+                const mapMesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+                mapMesh.scale.set(0.7, 0.7, 0.7);
 
                 this.setState({
                     mapMesh: mapMesh
