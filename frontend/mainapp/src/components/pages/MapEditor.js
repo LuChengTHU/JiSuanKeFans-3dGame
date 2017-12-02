@@ -100,6 +100,7 @@ const MapEditor = createReactClass({
                                 mapShared : window.map.shared,
                                 mapSharedSetting : window.map.shared
 							});
+							this.map_id = map_id;
                         }
                     });
                 } else{
@@ -120,15 +121,6 @@ const MapEditor = createReactClass({
             <Grid item xs={12} sm={6} >
             <div>
 			{/*<Button onClick={() => this.updateMap()}>Update</Button>*/}
-                <Button onClick={() => this.submitMap()}>Submit</Button>
-                <FormControlLabel control={
-                    <Checkbox checked={this.state.mapSharedSetting}
-                            onChange={(event) => {
-                                this.setState({mapSharedSetting : event.target.checked});
-                                window.map.shared = event.target.checked;
-                            }}/>}
-                     label="分享地图"/>
-                {this.state.mapShared ? "已经分享" : ""}
             </div>
 
             <div id={'editorGameContainer'}>
@@ -163,6 +155,14 @@ const MapEditor = createReactClass({
 						value={this.state.aiName}
 					/>
                 </div>
+                <FormControlLabel control={
+                    <Checkbox checked={this.state.mapSharedSetting}
+                            onChange={(event) => {
+                                this.setState({mapSharedSetting : event.target.checked});
+                                window.map.shared = event.target.checked;
+                            }}/>}
+                     label="分享地图"/>
+                {this.state.mapShared ? "已经分享" : ""}
 				<Button onClick={() => this.submitMap()}>提交</Button>
             </Grid>
             {/* <Grid>
