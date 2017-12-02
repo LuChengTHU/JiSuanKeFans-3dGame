@@ -401,23 +401,37 @@ export default class GameContainer extends Component {
                     currentAction: moveAction
                 });
 
-
-                const monsterLoader = new THREE.JSONLoader();
-                monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
+                const mapLoader = new THREE.JSONLoader();
+                mapLoader.load(`${process.env.PUBLIC_URL}/assets/baowu.json`,
                     (geometry, materials) => {
-                        const material = materials[0];
-                        material.emissive.set(0x101010);
-                        material.skinning = true;
-                        material.morphTargets = true;
+                        for(let i = 0; i < materials.length; i++) {
+                            materials[i].emissive.set(0x101010);
+                            materials[i].skinning = true;
+                            materials[i].morphTargets = true;
+                        }
+                        const mapMesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+                        mapMesh.scale.set(1, 1, 1);
 
                         this.setState({
-                            monsterGeometry: geometry,
-                            monsterMaterial: material
+                            mapMesh: mapMesh
                         });
-                        // Start the game loop when this component loads
-                        this.requestGameLoop();
-                    });
 
+                        const monsterLoader = new THREE.JSONLoader();
+                        monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
+                            (geometry, materials) => {
+                                const material = materials[0];
+                                material.emissive.set(0x101010);
+                                material.skinning = true;
+                                material.morphTargets = true;
+
+                                this.setState({
+                                    monsterGeometry: geometry,
+                                    monsterMaterial: material
+                                });
+                                // Start the game loop when this component loads
+                                this.requestGameLoop();
+                            });
+                    });
             });
 
 		if(typeof(this.props.onLoaded) !== 'undefined')
@@ -559,7 +573,7 @@ export default class GameContainer extends Component {
         const {
 
             cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition,
-            monsterGeometry, monsterMaterial
+            monsterGeometry, monsterMaterial, mapMesh
         } = this.state;
 
         // Pass the data <Game /> needs to render. Note we don't show the game
@@ -567,7 +581,7 @@ export default class GameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
 			<div>
-				{ monsterGeometry&&monsterMaterial&&knightMesh ? <Game
+				{ monsterGeometry&&monsterMaterial&&knightMesh&&mapMesh ? <Game
 					width={ width }
 					height={ height }
 					cameraPosition={ cameraPosition }
@@ -580,6 +594,7 @@ export default class GameContainer extends Component {
 					playerHp={playerHp}
 					playerMaxHp={playerMaxHp}
 					targetPosition={targetPosition}
+                    mapMesh={mapMesh}
 				/> : 'Loading' }
 			</div>
 		</div>;

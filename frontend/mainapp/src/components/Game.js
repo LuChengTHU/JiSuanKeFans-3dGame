@@ -26,7 +26,7 @@ export default class Game extends Component {
     render() {
         const {
             width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp,
-            playerMaxHp, targetPosition, knightMesh
+            playerMaxHp, targetPosition, knightMesh, mapMesh
         } = this.props;
 
 		const ms = [];
@@ -136,21 +136,12 @@ export default class Game extends Component {
                     rotation={playerRotation}
                     playerMesh = {knightMesh}
                 />
-				<group
-					position={ new Vector3(0, -10, 0) }
-                    rotation={ new Euler(-Math.PI / 12, 0, Math.PI / 12) }
-				>
-					<mesh>
-						  <boxGeometry
-							width={100}
-							height={0.1}
-							depth={100}
-						  />
-						<materialResource
-							resourceId="backgroundTexture"
-						/>
-					</mesh>
-				</group>
+				<Player
+                    position={new Vector3( 0, 0, 0 )}
+                    rotation={new Euler( 0, -Math.PI / 2, 0 )}
+                    playerMesh = {mapMesh}
+                />
+
             </scene>
         </React3>;
     }
