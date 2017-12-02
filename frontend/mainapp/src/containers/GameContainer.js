@@ -539,18 +539,27 @@ export default class GameContainer extends Component {
         this.setState( newState );
 		if(newState.ready)
 			window.blocklyCallback();
-    };
-
+	};
+	outerHeight = (el) => {
+		var height = el.offsetHeight;
+		var style = getComputedStyle(el);
+	  
+		height += parseInt(style.marginTop) + parseInt(style.marginBottom);
+		return height;
+	  }
+	  
 
     render() {
 
 		const divObj = window.document.getElementById('gameContainer');
+		const navbarObj = window.document.getElementById('navbar');
+		const buttonObj = window.document.getElementById('control-button')
         let width = 0;
         let height = 0;
 		if(divObj)
 		{
 			width = divObj.clientWidth;
-			height = window.innerHeight * .8;
+			height = window.innerHeight - this.outerHeight(navbarObj) - this.outerHeight(buttonObj) - 5;
 			if(typeof(this.props.reportHeight) !== 'undefined') {
 				this.props.reportHeight(height);
 			}
