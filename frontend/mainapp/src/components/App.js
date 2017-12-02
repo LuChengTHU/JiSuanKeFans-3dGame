@@ -31,52 +31,56 @@ class App extends Component {
         else
             axios.defaults.baseURL = process.env.REACT_APP_AC_BACKEND + '/api/v0.1';
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-        if(localStorage.getItem('user')){
-            this.state = {
-                user: JSON.parse(localStorage.getItem('user')),
-                token: localStorage.getItem('token')
-            };
+        if(localStorage.getItem('token')){
             axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token');
+            this.reloadUser();
         } else{
-            this.state = {
-                user: null,
-                token: null
-            };
             axios.defaults.headers.common['Authorization'] = '';
         }
 
+        this.state = {
+            user: null,
+        };
 
         this.onLoginChange = this.onLoginChange.bind(this);
+        this.reloadUser = this.reloadUser.bind(this);
     }
 
-    onLoginChange(){
-        if(localStorage.getItem('user')){
+    reloadUser(){
+        axios.get('token/').then(
+            (response) => {
+                this.setState({user : response.data.user});
+            }
+        );
+    }
+
+    onLoginChange(user){
+        if(user){
             this.setState({
-                user: JSON.parse(localStorage.getItem('user')),
-                token: localStorage.getItem('token')
+                user: user,
             });
             axios.defaults.headers.common['Authorization'] = 'Token ' + localStorage.getItem('token');
         } else{
             this.setState({
                 user: null,
-                token: null
             });
             axios.defaults.headers.common['Authorization'] = '';
         }
 
     }
-
+    GameDashBoard = (props) => <DashBoard onUpdate={this.reloadUser} {...props}/>;
     render() 
     {
         return (
             <div className={this.classes.root}>
                 <Nav user={this.state.user} onLoginChange={this.onLoginChange}/>
-                <Route exact path="/game/:map_id/" component={DashBoard}/>
+                <Route exact path="/game/:map_id/" component={this.GameDashBoard}/>
                 <PrivateRoute exact path="/editor/:map_id/" component={MapEditor}/>
                 <PrivateRoute exact path="/editor/" component={MapEditor}/>
                 <Route exact path="/solution/:sol_id/" component={SolutionViewer}/>
                 <Route path="/login" component={PleaseLogin}/>
-                <Route exact path="/searchmaps/:author_id/" component={StageGallery}/>
+                <Route exact path="/searchmaps/:author_id/" component={(props) => <StageGallery
+                    user={this.state.user} {...props}/>}/>
                 <Route exact path="/allmaps/" component={(props) => <StageGallery
                     user={this.state.user} {...props}/>}/>
 				<Route exact path="/stages/" component={(props) => <StageGallery

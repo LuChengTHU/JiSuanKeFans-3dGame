@@ -77,9 +77,8 @@ class LoginFormDialog extends React.Component {
                 this.addMessage(MESSAGE[response.data.res_code]);
                 if (response.data.res_code === 1) {
                     localStorage.token = response.data['token'];
-                    localStorage.user = JSON.stringify(response.data['user']);
                     if(this.props.onLogin)
-                        this.props.onLogin();
+                        this.props.onLogin(response.data.user);
                     this.props.onRequestClose();
                 }
             }
