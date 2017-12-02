@@ -64,7 +64,8 @@ class BackendTestCase(TestCase):
             'username' : new_user['username'],
             'privilege': 0,
             'gender': 0,
-            'id': uid
+            'id': uid,
+            'latest_level': 0
             }
 
 
@@ -102,7 +103,8 @@ class BackendTestCase(TestCase):
             'expiration': None,
             'gender': 0,
             'join_date': str(c_date),
-            'id': uid
+            'id': uid,
+            'latest_level': 0
             }
 
 
@@ -143,7 +145,8 @@ class BackendTestCase(TestCase):
             'username' : new_user2['username'],
             'privilege': 0,
             'gender': 0,
-            'id': response.json()['user_id']
+            'id': response.json()['user_id'],
+            'latest_level': 0
             }
 
         user_list = {
@@ -254,7 +257,8 @@ class BackendTestCase(TestCase):
             "height": 10,
             "width": 10,
             "failed_msg": "failed!",
-            "passed_msg": "passed!"
+            "passed_msg": "passed!",
+            "shared": True
             }
         print(token)
         response = self.create_map(map, token)
@@ -262,11 +266,12 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.json()['res_code'], 1)
         mid = response.json()['map_id']
 
-        response = self.client.get(reverse('api:map', kwargs={'map_id': mid}))
+        response = self.client.get(reverse('api:map', kwargs={'map_id': mid}),
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['map']['author']['id'], uid)
         self.assertEqual(response.json()['map']['init_AI_infos'], map['init_AI_infos'])
-        self.assertEqual(response.json()['map']['welcome_msg'], u'无。')
+        self.assertEqual(response.json()['map']['welcome_msg'], u'Welcome!')
         self.assertEqual(response.json()['map']['passed_msg'], 'passed!')
         self.assertEqual(response.json()['map']['failed_msg'], 'failed!')
         self.assertEqual(response.json()['map']['std_blockly_code'], None)
@@ -279,11 +284,13 @@ class BackendTestCase(TestCase):
 
         # update map information
         map['init_ground_colors'] = [0, 0, 0]
-        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': map})
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': map},
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
 
         # delete map
-        response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}))
+        response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}),
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse('api:map_list'))
@@ -426,10 +433,21 @@ class BackendTestCase(TestCase):
 
 
         response = self.client.put(reverse('api:map', kwargs={'map_id': 0}))
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['res_code'], 2)
+        self.assertEqual(response.status_code, 401)
 
-        response = self.client.delete(reverse('api:map', kwargs={'map_id': 0}))
+
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+            }
+        response, c_date = self.create_user(new_user)
+        uid = response.json()['user_id']
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+ 
+
+        response = self.client.delete(reverse('api:map', kwargs={'map_id': 0}), 
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()['res_code'], 2)
 

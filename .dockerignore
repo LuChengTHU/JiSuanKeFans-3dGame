@@ -104,5 +104,7 @@ pip-selfcheck.json
 .vscode/
 
 frontend/
+!frontend/mainapp/public/ai/
+
 templates/
 node_modules/
