@@ -184,7 +184,7 @@ class DashBoard extends Component {
                 {gameoverMsg}
             </MessageDialog>
             <Grid container spacing={0} justify='center'>
-            <Grid item xs={12} sm={12} >
+            <Grid item xs={12} sm={12} id="control-button" >
                 <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
                 <Button onClick={this.initMap}>重置</Button>
                 <Button onClick={this.run}>运行</Button>
