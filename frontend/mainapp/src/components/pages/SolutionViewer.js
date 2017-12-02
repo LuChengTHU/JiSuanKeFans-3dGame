@@ -19,10 +19,10 @@ const SolutionViewer = createReactClass({
             <Grid container spacing={25} justify='center'>
             <Grid item xs={12} sm={6} >
             <div id={'gameContainer'}>
+            <Button onClick={this.resetGame}>重置</Button>
+            <Button onClick={this.run}>运行</Button>
             <GameContainer gameState={this.state.gameState} gameSetState={()=>{/* Initialize to avoid error */}}
             reportHeight={(h)=>{this.blocklyContainer.resize(h)}}/></div>
-            <Button onClick={this.loadSolution}>Load</Button>
-            <Button onClick={this.run}>Run</Button>
             </Grid>
             <Grid item xs={12} sm={6}>
             <BlocklyContainer readOnly refCallback={(e)=>{this.blocklyContainer = e;}}
@@ -40,6 +40,15 @@ const SolutionViewer = createReactClass({
             </Grid>
             </Grid>
         );
+    },
+    resetGame: function(){
+		window.blocklyCallback = () => {}
+        window.blocklyShouldRun = false;
+		window.animationShouldStop = true;
+        Logic.gameSetMap(window.map);
+        this.setState({gameState: "ready"});
+        this.blocklyContainer.highlightBlock('');
+        this.enhancedInterpreter = new EnhancedInterpreter(window.Game, this.blocklyContainer, this.gameSetState);
     },
     loadSolution: function(){
         fetch_map(this.solution.map.id).then((/*response*/) => {
