@@ -560,8 +560,6 @@ export default class GameContainer extends Component {
 		{
 			width = divObj.clientWidth;
 			height = window.innerHeight - this.outerHeight(navbarObj) - this.outerHeight(buttonObj) - 5;
-			window.test = navbarObj;
-			console.log(this.outerHeight(navbarObj), this.outerHeight(buttonObj));
 			if(typeof(this.props.reportHeight) !== 'undefined') {
 				this.props.reportHeight(height);
 			}
