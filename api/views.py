@@ -493,7 +493,7 @@ class ModifyView(APIView):
         serializer = ModifySerializer(data=request.data)
         user = request.user
         
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid(raise_exception=False):
             # check password
             encode_pwd = base64.b64encode(get_pwd_hash(\
                 serializer.validated_data['old_password']))

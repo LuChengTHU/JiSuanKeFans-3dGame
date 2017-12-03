@@ -477,10 +477,37 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['res_code'], 1)
 
+        # some bad margin cases
+
+        # bad request for post
+        # test create solution
+        response = self.client.post(reverse('api:solution_list'),
+            data={'solution':{}},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.data['res_code'], 2)
+        self.assertEqual(response.status_code, 400)
+
+
+        # bad sol_id, not found
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id + 1}),
+            data={'solution': solution},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['res_code'], 2)
+
+
+        # bad request
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            data={'solution': {}},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
 
         # test solution list
         response = self.client.get(reverse('api:solution_list'), data={'self': 'true'},
-            HTTP_AUTHORIZATION='Token ' + token)
+            HTTP_AUTHORIZATION='token ' + token)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['res_code'], 1)
         self.assertEqual(len(response.data['list']), 1)
@@ -504,6 +531,10 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(response.data['list']), 1)
         self.assertEqual(response.data['has_prev'], False)
         self.assertEqual(response.data['has_next'], False)
+        
+        # list self = true but not authenticated
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'true'})
+        self.assertEqual(response.status_code, 404)
     
     def test_forget(self):
         new_user = {
@@ -562,6 +593,15 @@ class BackendTestCase(TestCase):
 
         response = self.client.post(reverse('api:modify'))
         self.assertEqual(response.status_code, 403)
+
+
+        # bad request
+        response = self.client.post(reverse('api:modify'), data={
+            'old_password': 'test'},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 0)
+
 
         # wrong password
         response = self.client.post(reverse('api:modify'), data={
