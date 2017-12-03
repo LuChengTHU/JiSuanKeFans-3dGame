@@ -7,6 +7,7 @@ import {fetch_map, create_map, modify_map} from '../../interfaces/Map'
 import Checkbox from 'material-ui/Checkbox'
 import {FormControlLabel} from 'material-ui/Form'
 import 'react-select/dist/react-select.css';
+const SelectCreatable = Select.Creatable;
 const INIT_MAP = { // initial map
     title: 'Untitled',
     height: 10,
@@ -145,7 +146,7 @@ const MapEditor = createReactClass({
                 <div>
                     <Button onClick={() => this.chooseMonster()}> 放置一个怪物 </Button>，
                     怪物的AI名字：
-                    <Select.Creatable
+                    <SelectCreatable
                         options={[
                             {value: "naive", label: "naive"},
                             {value: "run", label: "run"},
