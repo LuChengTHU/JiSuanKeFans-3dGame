@@ -6,6 +6,7 @@ import { Vector3, Euler, DoubleSide, } from 'three';
 import Player from './Player';
 import Bar from './Bar';
 import Monster from './Monster';
+import Map from './Map';
 
 /**
  * Our main class to display the game. This contains only view code! It's very
@@ -41,7 +42,8 @@ export default class EditorGame extends Component {
             playerMaxHp, 
             
             targetPosition, 
-            knightMesh
+            knightMesh,
+            mapMesh
         } = this.props;
 
 		const ms = [];
@@ -99,7 +101,7 @@ export default class EditorGame extends Component {
                 </meshPhongMaterial>
                 <texture
                     resourceId="grassImage"
-                    url={ require( '../assets/grass.jpg' ) }
+                    url={ require( '../assets/baowu_tai.jpg' ) }
                     anisotropy={ 16 }
                 />
                 <meshPhongMaterial
@@ -137,6 +139,11 @@ export default class EditorGame extends Component {
                     position = {playerPosition}
                     rotation = {playerRotation}
                     playerMesh = {knightMesh}
+                />
+                <Map
+                    position={new Vector3(5.2, 0, 5.2)}
+                    rotation={new Euler( 0, 0, 0 )}
+                    mapMesh = {mapMesh}
                 />
             </scene>
         </React3>;

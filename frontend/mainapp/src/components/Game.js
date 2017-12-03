@@ -4,6 +4,7 @@ import React3 from 'react-three-renderer';
 import { Vector3, Euler, DoubleSide, } from 'three';
 
 import Player from './Player';
+import Map from './Map';
 import Bar from './Bar';
 import Monster from './Monster';
 
@@ -26,7 +27,7 @@ export default class Game extends Component {
     render() {
         const {
             width, height, cameraPosition, lookAt, mapBlocks, playerPosition, playerRotation, monsters, playerHp,
-            playerMaxHp, targetPosition, knightMesh
+            playerMaxHp, targetPosition, knightMesh, mapMesh
         } = this.props;
 
 		const ms = [];
@@ -84,7 +85,7 @@ export default class Game extends Component {
                 </meshPhongMaterial>
                 <texture
                     resourceId="grassImage"
-                    url={ require( '../assets/grass.jpg' ) }
+                    url={ require( '../assets/baowu_tai.jpg' ) }
                     anisotropy={ 16 }
                 />
                 <meshPhongMaterial
@@ -133,24 +134,15 @@ export default class Game extends Component {
 				{target}
 				<Player
                     position = {playerPosition}
-                    rotation={playerRotation}
+                    rotation = {playerRotation}
                     playerMesh = {knightMesh}
                 />
-				<group
-					position={ new Vector3(0, -10, 0) }
-                    rotation={ new Euler(-Math.PI / 12, 0, Math.PI / 12) }
-				>
-					<mesh>
-						  <boxGeometry
-							width={100}
-							height={0.1}
-							depth={100}
-						  />
-						<materialResource
-							resourceId="backgroundTexture"
-						/>
-					</mesh>
-				</group>
+                <Map
+                    position={new Vector3(5.2, 0, 5.2)}
+                    rotation={new Euler( 0, 0, 0 )}
+                    mapMesh = {mapMesh}
+                />
+
             </scene>
         </React3>;
     }

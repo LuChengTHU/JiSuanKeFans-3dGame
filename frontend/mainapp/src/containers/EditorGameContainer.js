@@ -64,7 +64,7 @@ export default class EditorGameContainer extends Component {
 			return;
 		}
 	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
-        mesh.scale.set(0.15, 0.15, 0.15);
+        mesh.scale.set(0.1, 0.1, 0.1);
         const mixer = new THREE.AnimationMixer(mesh);
         const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
         const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
@@ -130,7 +130,8 @@ export default class EditorGameContainer extends Component {
             mapBlocks,
             
             knightMesh,
-            monsters
+            monsters,
+            mapMesh
         } = this.state;
         
         // Pass the data <Game /> needs to render. Note we don't show the game
@@ -138,7 +139,7 @@ export default class EditorGameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { this.state.monsterGeometry&&this.state.monsterMaterial&&knightMesh ? <EditorGame ref={val => { this.gameRef = val; }}
+                { this.state.monsterGeometry&&this.state.monsterMaterial&&knightMesh&&mapMesh ? <EditorGame ref={val => { this.gameRef = val; }}
                     width={ width }
                     height={ height }
                     camera={ camera }
@@ -147,6 +148,7 @@ export default class EditorGameContainer extends Component {
                     targetPosition={ targetPosition }
                     mapBlocks={ mapBlocks }
                     knightMesh={ knightMesh }
+                    mapMesh={mapMesh}
                     monsters={ monsters }
                 /> : 'Loading' }
             </div>
@@ -234,7 +236,24 @@ export default class EditorGameContainer extends Component {
                     });
                 });
 
-		if(typeof(this.props.onLoaded) !== 'undefined')
+        const mapLoader = new THREE.JSONLoader();
+        mapLoader.load(`${process.env.PUBLIC_URL}/assets/baowu.json`,
+            (geometry, materials) => {
+                for(let i = 0; i < materials.length; i++) {
+                    materials[i].emissive.set(0x101010);
+                    materials[i].skinning = true;
+                    materials[i].morphTargets = true;
+                }
+                const mapMesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+                mapMesh.scale.set(0.7, 0.7, 0.7);
+
+                this.setState({
+                    mapMesh: mapMesh
+                });
+            });
+
+
+        if(typeof(this.props.onLoaded) !== 'undefined')
 			this.props.onLoaded();
     }
     
