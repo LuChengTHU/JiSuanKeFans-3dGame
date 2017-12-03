@@ -118,7 +118,7 @@ const MapEditor = createReactClass({
             multiline={true} fullWidth={true} rows={30} rowsMax={30}/>;
         return (
             <Grid container spacing={25} justify='center'>
-            <Grid item xs={12} sm={6} >
+            <Grid item xs={12} sm={9} >
             <div>
 			{/*<Button onClick={() => this.updateMap()}>Update</Button>*/}
             </div>
@@ -126,7 +126,7 @@ const MapEditor = createReactClass({
             <div id={'editorGameContainer'}>
             {editorGameContainer}</div>
             </Grid>
-            <Grid>
+            <Grid item xs={12} sm={3} >
 				<div>
                     地图名字：
 					<TextField onChange={

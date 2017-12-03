@@ -107,17 +107,30 @@ export default class EditorGameContainer extends Component {
 			this.setState({targetPosition: new Vector3(x, 0.05, z)});
 		else
 			this.setState({targetPosition: null});
-	}
+    }
+    
+	outerHeight = (el) => {
+		if (typeof(el) === 'undefined' || el === null) {
+			return 0;
+		}
+		var height = el.offsetHeight;
+		var style = getComputedStyle(el);
+	  
+		height += parseInt(style.marginTop) + parseInt(style.marginBottom);
+		return height;
+	  }
 
     render() {
 
         const divObj = window.document.getElementById('editorGameContainer');
+		const navbarObj = window.document.getElementById('navbar');
         let width = 0;
         let height = 0;
         if(divObj)
         {
             width = divObj.clientWidth;
-            height = window.innerHeight * .8;
+            // height = window.innerHeight * .8;
+			height = window.innerHeight - this.outerHeight(navbarObj) - 5;
         }
 
         const {
