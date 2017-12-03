@@ -65,7 +65,7 @@ class App extends Component {
         }
 
     }
-    GameDashBoard = (props) => <DashBoard onUpdate={this.reloadUser} {...props}/>;
+    GameDashBoard = (props) => <DashBoard user={this.state.user} onUpdate={this.reloadUser} {...props}/>;
     render() 
     {
         return (
