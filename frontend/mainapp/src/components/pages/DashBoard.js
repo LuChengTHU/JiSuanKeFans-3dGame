@@ -227,7 +227,7 @@ class DashBoard extends Component {
                                             this.props.history.push('/');
                                         } else {
                                             let trela = window.alert;
-                                            trela('位置错误！');
+                                            trela('未知错误！');
                                             this.props.history.push('/');
                                         }
                                 });
