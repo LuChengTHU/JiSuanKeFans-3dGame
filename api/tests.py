@@ -96,6 +96,18 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['res_code'], 3)
 
+        # get user info by token
+        response = self.client.get(reverse('api:token'))
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['res_code'], 2)
+
+        response = self.client.get(reverse('api:token'),
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.data['user']['username'], new_user['username'])
+
+
         new_user = {
             'email' : new_user['email'],
             'username' : new_user['username'],
@@ -239,7 +251,19 @@ class BackendTestCase(TestCase):
 
         # ---------- creating map ------------------
         token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+
+        new_user2 = {
+            'email' : 'test2@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+            }
+        response, c_date = self.create_user(new_user2)
         
+        uid2 = response.json()['user_id']
+
+        token2 = self.fetch_token({'email': 'test2@test.org', 'password' : 'test'}).json()['token']
+
+       
         map = {
             "init_ground_boxes": [0,0,0],
             "title": "imgod-map",
@@ -288,6 +312,25 @@ class BackendTestCase(TestCase):
             HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
 
+        # not such map
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid + 1}), data={'new_map_info': map},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['res_code'], 2)
+
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': map},
+            HTTP_AUTHORIZATION='Token ' + token2)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data['res_code'], 2)
+
+        # bad request
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': {}},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
+
+
+
         # some margin tests
         response = self.client.get(reverse('api:map_list'),
             data={'self': 'true'})
@@ -305,12 +348,30 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.data['res_code'], 2)
 
         # delete map
+        # not allowed
+        response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}),
+            HTTP_AUTHORIZATION='Token ' + token2)
+        self.assertEqual(response.status_code, 403)        
+        self.assertEqual(response.data['res_code'], 2)
+
         response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}),
             HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse('api:map_list'))
         self.assertEqual(response.status_code, 404)
+
+
+        # not shared
+        map['shared'] = False
+        response = self.create_map(map, token)
+        mid = response.data['map_id']
+
+        response = self.client.get(reverse('api:map', kwargs={'map_id' : mid}))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data['res_code'], 2)
+
+
        
     
     def test_map_stage_field(self):
