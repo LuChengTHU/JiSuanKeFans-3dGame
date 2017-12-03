@@ -181,8 +181,10 @@ export default class EditorGameContainer extends Component {
 
         this.refs.container.addEventListener('mousedown', this.onMouseDown, false);
         const divObj = window.document.getElementById('editorGameContainer');
+        const navbarObj = window.document.getElementById('navbar');
         const screenWidth = divObj.clientWidth;
-        const screenHeight = window.innerHeight * .8;
+        const screenHeight = window.innerHeight - this.outerHeight(navbarObj) - 5;
+        // const screenHeight = window.innerHeight * .8;
         this.camera = new PerspectiveCamera(60, screenWidth/screenHeight, 1, 100);
         this.camera.position.set(5, 5, 0);
 
@@ -337,12 +339,13 @@ export default class EditorGameContainer extends Component {
         document.removeEventListener('mousemove', this.onMouseMove, false);
         
         const divObj = window.document.getElementById('editorGameContainer');
+        const navbarObj = window.document.getElementById('navbar');
         if(!divObj)
         {
             return;
         }
         const screenWidth = divObj.clientWidth;
-        const screenHeight = window.innerHeight * .8;
+        const screenHeight = window.innerHeight - this.outerHeight(navbarObj) - 5;
         this.camera.aspect = screenWidth/screenHeight;
         this.camera.updateProjectionMatrix();
         this.camera.updateMatrixWorld();
