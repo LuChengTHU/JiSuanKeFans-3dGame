@@ -490,10 +490,6 @@ class ModifyView(APIView):
     
     @with_res_code
     def post(self, request):
-        # need authentication
-        if request.auth is None:
-            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
-    
         serializer = ModifySerializer(data=request.data)
         user = request.user
         

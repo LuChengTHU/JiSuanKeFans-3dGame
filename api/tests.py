@@ -534,8 +534,65 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.data['res_code'], 0)
         self.assertEqual(response.status_code, 404)
 
-       
+    def test_modify(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test',
+        }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
 
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+
+        # login required
+        response = self.client.get(reverse('api:modify'))
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['res_code'], 0)
+
+        response = self.client.get(reverse('api:modify'), HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.data['gender'], 0)
+        self.assertEqual(response.data['username'], new_user['username'])
+
+
+        # test the post interface
+
+        response = self.client.post(reverse('api:modify'))
+        self.assertEqual(response.status_code, 403)
+
+        # wrong password
+        response = self.client.post(reverse('api:modify'), data={
+            'old_password': 'haha',
+            'new_password': 'hoho',
+            'username': 'good',
+            'gender': 0},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 0)
+
+
+        # success
+        response = self.client.post(reverse('api:modify'), data={
+            'old_password': 'test',
+            'new_password': 'testtest',
+            'username': 'good',
+            'gender': 0},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+
+        # old password is not good
+        response = self.fetch_token({'email': 'test@test.org', 'password' : 'test'})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
+
+        # new password is good
+        response = self.fetch_token({'email': 'test@test.org', 'password' : 'testtest'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
 
     def test_margins(self):
         from .views import with_record_fetch, with_pagination
