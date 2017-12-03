@@ -51,7 +51,8 @@ export default class GameContainer extends Component {
             playerRotation: new Euler( 0, -Math.PI / 2, 0 ),
             cameraPosition: new THREE.Vector3( -2, 5.5, -2 ),
             lookAt: new THREE.Vector3( 0, 0, 0 ),
-			monsters: []
+			monsters: [],
+			monsterReady: false
         };
 
         this.createMap = this.createMap.bind(this);
@@ -112,6 +113,11 @@ export default class GameContainer extends Component {
 	
 	addMonster(id, x, z, maxHp)
 	{
+		if(!this.state.monsterReady)
+		{
+			window.setTimeout(() => this.addMonster(id, x, z, maxHp), 1000);
+			return;
+		}
 	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
         mesh.scale.set(0.1, 0.1, 0.1);
         const mixer = new THREE.AnimationMixer(mesh);
@@ -401,24 +407,24 @@ export default class GameContainer extends Component {
                     currentAction: moveAction
                 });
 
-                const monsterLoader = new THREE.JSONLoader();
-                monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
-                    (geometry, materials) => {
-                        const material = materials[0];
-                        material.emissive.set(0x101010);
-                        material.skinning = true;
-                        material.morphTargets = true;
-
-                        this.setState({
-                            monsterGeometry: geometry,
-                            monsterMaterial: material
-                        });
-                        // Start the game loop when this component loads
-                        this.requestGameLoop();
-                    });
-
             });
 
+		const monsterLoader = new THREE.JSONLoader();
+		monsterLoader.load(`${process.env.PUBLIC_URL}/assets/spider.json`,
+			(geometry, materials) => {
+				const material = materials[0];
+				material.emissive.set(0x101010);
+				material.skinning = true;
+				material.morphTargets = true;
+
+				this.setState({
+					monsterGeometry: geometry,
+					monsterMaterial: material,
+					monsterReady: true
+				});
+				// Start the game loop when this component loads
+				this.requestGameLoop();
+			});
 
         const mapLoader = new THREE.JSONLoader();
         mapLoader.load(`${process.env.PUBLIC_URL}/assets/baowu.json`,
