@@ -5,11 +5,11 @@ const MapBlock = ({ x, z }) => <group
     position={ new Vector3(x, -0.05, z) }
 >
     <mesh>
-		  <boxGeometry
-			width={1}
-			height={0.1}
-			depth={1}
-		  />
+          <boxGeometry
+            width={1}
+            height={0.1}
+            depth={1}
+          />
         <materialResource
             resourceId="grassTexture"
         />

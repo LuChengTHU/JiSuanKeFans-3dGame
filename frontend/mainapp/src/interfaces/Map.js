@@ -32,8 +32,8 @@ export function fetch_map(map_id, need_code){
                 window.map = response.data.map;
                 delete window.map.author;
             } else {
-				//error
-			}
+                //error
+            }
             return response;
         }).catch(function(/*error*/){
             // error
@@ -48,7 +48,7 @@ export function create_map(map){
             }
             return -1;
         }).catch(function(/*error*/){
-			return -2;
+            return -2;
             // TODO: deal with error
         });
 }
@@ -57,12 +57,12 @@ export function modify_map(map_id, map){
     return axios.put('map/' + map_id + '/', {new_map_info: map})
         .then(function(response){
             if(response.data.res_code === 1){
-				return true;
+                return true;
                 // TODO: deal with success
             }
-			return false;
+            return false;
         }).catch(function(/*error*/){
-			return false;
+            return false;
             // TODO: deal with error
         });
 }
