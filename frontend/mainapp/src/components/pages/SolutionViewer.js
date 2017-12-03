@@ -44,9 +44,9 @@ const SolutionViewer = createReactClass({
         );
     },
     resetGame: function(){
-		window.blocklyCallback = () => {}
+        window.blocklyCallback = () => {}
         window.blocklyShouldRun = false;
-		window.animationShouldStop = true;
+        window.animationShouldStop = true;
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
         this.blocklyContainer.highlightBlock('');
