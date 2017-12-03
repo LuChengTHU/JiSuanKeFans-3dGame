@@ -64,7 +64,8 @@ class BackendTestCase(TestCase):
             'username' : new_user['username'],
             'privilege': 0,
             'gender': 0,
-            'id': uid
+            'id': uid,
+            'latest_level': 0
             }
 
 
@@ -95,6 +96,18 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['res_code'], 3)
 
+        # get user info by token
+        response = self.client.get(reverse('api:token'))
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['res_code'], 2)
+
+        response = self.client.get(reverse('api:token'),
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.data['user']['username'], new_user['username'])
+
+
         new_user = {
             'email' : new_user['email'],
             'username' : new_user['username'],
@@ -102,7 +115,8 @@ class BackendTestCase(TestCase):
             'expiration': None,
             'gender': 0,
             'join_date': str(c_date),
-            'id': uid
+            'id': uid,
+            'latest_level': 0
             }
 
 
@@ -143,7 +157,8 @@ class BackendTestCase(TestCase):
             'username' : new_user2['username'],
             'privilege': 0,
             'gender': 0,
-            'id': response.json()['user_id']
+            'id': response.json()['user_id'],
+            'latest_level': 0
             }
 
         user_list = {
@@ -236,7 +251,19 @@ class BackendTestCase(TestCase):
 
         # ---------- creating map ------------------
         token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+
+        new_user2 = {
+            'email' : 'test2@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+            }
+        response, c_date = self.create_user(new_user2)
         
+        uid2 = response.json()['user_id']
+
+        token2 = self.fetch_token({'email': 'test2@test.org', 'password' : 'test'}).json()['token']
+
+       
         map = {
             "init_ground_boxes": [0,0,0],
             "title": "imgod-map",
@@ -254,7 +281,8 @@ class BackendTestCase(TestCase):
             "height": 10,
             "width": 10,
             "failed_msg": "failed!",
-            "passed_msg": "passed!"
+            "passed_msg": "passed!",
+            "shared": True
             }
         print(token)
         response = self.create_map(map, token)
@@ -262,11 +290,12 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.json()['res_code'], 1)
         mid = response.json()['map_id']
 
-        response = self.client.get(reverse('api:map', kwargs={'map_id': mid}))
+        response = self.client.get(reverse('api:map', kwargs={'map_id': mid}),
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['map']['author']['id'], uid)
         self.assertEqual(response.json()['map']['init_AI_infos'], map['init_AI_infos'])
-        self.assertEqual(response.json()['map']['welcome_msg'], u'无。')
+        self.assertEqual(response.json()['map']['welcome_msg'], u'Welcome!')
         self.assertEqual(response.json()['map']['passed_msg'], 'passed!')
         self.assertEqual(response.json()['map']['failed_msg'], 'failed!')
         self.assertEqual(response.json()['map']['std_blockly_code'], None)
@@ -279,15 +308,71 @@ class BackendTestCase(TestCase):
 
         # update map information
         map['init_ground_colors'] = [0, 0, 0]
-        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': map})
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': map},
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
 
+        # not such map
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid + 1}), data={'new_map_info': map},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['res_code'], 2)
+
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': map},
+            HTTP_AUTHORIZATION='Token ' + token2)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data['res_code'], 2)
+
+        # bad request
+        response = self.client.put(reverse('api:map', kwargs={'map_id' : mid}), data={'new_map_info': {}},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
+
+
+
+        # some margin tests
+        response = self.client.get(reverse('api:map_list'),
+            data={'self': 'true'})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['res_code'], 0)
+
+        response = self.client.get(reverse('api:map_list'),
+            data={'self': 'true'},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+
+        response = self.create_map({}, token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
+
         # delete map
-        response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}))
+        # not allowed
+        response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}),
+            HTTP_AUTHORIZATION='Token ' + token2)
+        self.assertEqual(response.status_code, 403)        
+        self.assertEqual(response.data['res_code'], 2)
+
+        response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}),
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse('api:map_list'))
         self.assertEqual(response.status_code, 404)
+
+
+        # not shared
+        map['shared'] = False
+        response = self.create_map(map, token)
+        mid = response.data['map_id']
+
+        response = self.client.get(reverse('api:map', kwargs={'map_id' : mid}))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data['res_code'], 2)
+
+
+       
     
     def test_map_stage_field(self):
         new_user = {
@@ -338,7 +423,7 @@ class BackendTestCase(TestCase):
             self.assertEqual(response.status_code, 201)
             self.assertEqual(response.json()['res_code'], 1)
             self.assertGreater(Map.objects.filter(id=mid).count(), 0, 'Map create failed!')
-        
+
     def test_get_stage(self):
         new_user = {
             'email' : 'test@test.org',
@@ -394,6 +479,239 @@ class BackendTestCase(TestCase):
             
             # TODO: Add permission tests
 
+    def test_solution(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+        }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
+
+        # ---------- creating map ------------------
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+
+        map = {
+            "init_ground_boxes": [0,0,0],
+            "title": "imgod-map",
+            "init_ground_colors": [0,1],
+            "init_pos": [0, 1],
+            "init_hand_boxes": [0, 0],
+            "init_AI_infos": [{'id': 'first', 'pos': [0, 0], 'dir': 16}, {'id': 'second', 'pos': [1, 0], 'dir': 17}],
+            "final_hand_boxes": [1, 1],
+            "final_ground_colors": [1],
+            "final_ground_boxes": [],
+            "final_pos": [0, 1],
+            "n_blockly": 10,
+            "n_max_hand_boxes": 10,
+            "instr_set": [True, True, False],
+            "height": 10,
+            "width": 10,
+            "failed_msg": "failed!",
+            "passed_msg": "passed!",
+            "shared": True
+            }
+
+        response = self.create_map(map, token)
+        map_id = response.data['map_id']
+        
+
+        solution = \
+            {'shared': False, 'code': 'haha', 'map': map_id, 'stars': 2}
+        # test create solution
+        response = self.client.post(reverse('api:solution_list'),
+            data={'solution':solution},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.status_code, 201)
+
+        sol_id = response.data['sol_id']
+
+        # test get solution
+        response = self.client.get(reverse('api:solution', kwargs={'sol_id':sol_id}))
+        self.assertEqual(response.status_code, 403)
+
+        '''
+        response = self.client.get(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            HTTP_AUTHORIZATION='Token' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        solution_ret = response.data['solution']
+        self.assertEqual(solution_ret['map']['id'], map_id)
+        self.assertEqual(solution_ret['user']['id'], uid)
+        self.assertEqual(solution_ret['shared'], solution['shared'])
+        self.assertEqual(solution_ret['code'], solution['code'])
+        self.assertEqual(solution_ret['stars'], solution['stars'])
+        '''
+
+        solution['stars'] = 3
+        solution['code'] = 'afae'
+
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            data={'solution': solution},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+
+        # some bad margin cases
+
+        # bad request for post
+        # test create solution
+        response = self.client.post(reverse('api:solution_list'),
+            data={'solution':{}},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.data['res_code'], 2)
+        self.assertEqual(response.status_code, 400)
+
+
+        # bad sol_id, not found
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id + 1}),
+            data={'solution': solution},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['res_code'], 2)
+
+
+        # bad request
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            data={'solution': {}},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
+
+        # test solution list
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'true'},
+            HTTP_AUTHORIZATION='token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(len(response.data['list']), 1)
+        self.assertEqual(response.data['has_prev'], False)
+        self.assertEqual(response.data['has_next'], False)
+
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'false', 'user': uid,
+            'map': map_id})
+        self.assertEqual(response.status_code, 404)
+
+        solution['shared'] = True
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            data={'solution': solution},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'false', 'user': uid,
+            'map': map_id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(len(response.data['list']), 1)
+        self.assertEqual(response.data['has_prev'], False)
+        self.assertEqual(response.data['has_next'], False)
+        
+        # list self = true but not authenticated
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'true'})
+        self.assertEqual(response.status_code, 404)
+    
+    def test_forget(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+        }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
+
+        # forget the password
+        response = self.client.post(reverse('api:forget'), data={'email':'test@test.org'})
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.status_code, 200)
+
+        # password has been changed
+        response = self.fetch_token({'email': 'test@test.org', 'password' : 'test'})
+        self.assertEqual(response.data['res_code'], 2)
+        self.assertEqual(response.status_code, 400)
+
+        # some margin tests
+        response = self.client.post(reverse('api:forget'), data={'email': 'haha@test.org'})
+        self.assertEqual(response.data['res_code'], 0)
+        self.assertEqual(response.status_code, 404)
+        
+        response = self.client.post(reverse('api:forget'), data={'mail': 'test@test.org'})
+        self.assertEqual(response.data['res_code'], 0)
+        self.assertEqual(response.status_code, 404)
+
+    def test_modify(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test',
+        }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
+
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+
+        # login required
+        response = self.client.get(reverse('api:modify'))
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['res_code'], 0)
+
+        response = self.client.get(reverse('api:modify'), HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.data['gender'], 0)
+        self.assertEqual(response.data['username'], new_user['username'])
+
+
+        # test the post interface
+
+        response = self.client.post(reverse('api:modify'))
+        self.assertEqual(response.status_code, 403)
+
+
+        # bad request
+        response = self.client.post(reverse('api:modify'), data={
+            'old_password': 'test'},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 0)
+
+
+        # wrong password
+        response = self.client.post(reverse('api:modify'), data={
+            'old_password': 'haha',
+            'new_password': 'hoho',
+            'username': 'good',
+            'gender': 0},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 0)
+
+
+        # success
+        response = self.client.post(reverse('api:modify'), data={
+            'old_password': 'test',
+            'new_password': 'testtest',
+            'username': 'good',
+            'gender': 0},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+
+        # old password is not good
+        response = self.fetch_token({'email': 'test@test.org', 'password' : 'test'})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
+
+        # new password is good
+        response = self.fetch_token({'email': 'test@test.org', 'password' : 'testtest'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+
     def test_margins(self):
         from .views import with_record_fetch, with_pagination
         from .models import User
@@ -426,10 +744,21 @@ class BackendTestCase(TestCase):
 
 
         response = self.client.put(reverse('api:map', kwargs={'map_id': 0}))
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['res_code'], 2)
+        self.assertEqual(response.status_code, 401)
 
-        response = self.client.delete(reverse('api:map', kwargs={'map_id': 0}))
+
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+            }
+        response, c_date = self.create_user(new_user)
+        uid = response.json()['user_id']
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+ 
+
+        response = self.client.delete(reverse('api:map', kwargs={'map_id': 0}), 
+            HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()['res_code'], 2)
 

@@ -295,10 +295,6 @@ class MapListView(APIView):
 
     @with_res_code
     def post(self, request):
-        # authentication required
-        if request.auth is None:
-            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
-
         map = Map()
         map.author = request.user
         try:
@@ -490,14 +486,10 @@ class ModifyView(APIView):
     
     @with_res_code
     def post(self, request):
-        # need authentication
-        if request.auth is None:
-            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
-    
         serializer = ModifySerializer(data=request.data)
         user = request.user
         
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid(raise_exception=False):
             # check password
             encode_pwd = base64.b64encode(get_pwd_hash(\
                 serializer.validated_data['old_password']))
