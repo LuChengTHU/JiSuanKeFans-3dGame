@@ -48,7 +48,7 @@ class Nav extends Component {
     render()
     {
         return (
-            <div className={this.classes.root}>
+            <div className={this.classes.root} id="navbar">
             <AppBar position="static">
                 <Toolbar>
                 <IconButton className={this.classes.menuButton} color="contrast" aria-label="Menu">

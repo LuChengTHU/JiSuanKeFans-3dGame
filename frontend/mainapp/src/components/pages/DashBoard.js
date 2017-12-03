@@ -14,6 +14,7 @@ import {create_solution, fetch_solution_list} from '../../interfaces/Solution'
 import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
+import Tooltip from 'material-ui/Tooltip'
 
 import EnhancedInterpreter from '../EnhancedInterpreter';
 const styles = (/*theme*/) => ({
@@ -150,28 +151,41 @@ class DashBoard extends Component {
             <MessageDialog title="提示" open={this.state.passedOpen}
                 closeText="关闭" onRequestClose={()=>{
                     // accepted. Store the code.
-                    const code = this.blocklyContainer.getXmlText();
-                    const map_id = this.props.match.params.map_id;
+                    if(this.props.user !== null && typeof(this.props.user) !== 'undefined'){
+                        const code = this.blocklyContainer.getXmlText();
+                        const map_id = this.props.match.params.map_id;
 
-                    create_solution(map_id, code, false, this.stars).then((id)=>{
-                        this.props.onUpdate();
-                    });
-                    this.handleClick('passedOpen', false)();
-                }}>
-                <div><Button onClick={()=>{
-                    const code = this.blocklyContainer.getXmlText();
-                    const map_id = this.props.match.params.map_id;
-                    const shared = true;
-                    create_solution(map_id, code, shared, this.stars).then(
-                        (id)=>{
-                            this.setState({
-                                sharedOpen: true,
-                                solutionId: id
-                            });
+                        create_solution(map_id, code, false, this.stars).then((id)=>{
                             this.props.onUpdate();
                         });
-                    this.setState({passedOpen: false});
-                }}>分享解法</Button></div>
+                    }
+                    this.handleClick('passedOpen', false)();
+                }}>
+                <div>
+                {this.props.user ? 
+                    <Tooltip placement="bottom" title="让其他玩家看到你的解法">
+                        <Button onClick={()=>{
+                        const code = this.blocklyContainer.getXmlText();
+                        const map_id = this.props.match.params.map_id;
+                        const shared = true;
+                        create_solution(map_id, code, shared, this.stars).then(
+                            (id)=>{
+                                this.setState({
+                                    sharedOpen: true,
+                                    solutionId: id
+                                });
+                                this.props.onUpdate();
+                            });
+                        this.setState({passedOpen: false});
+                    }} >
+                        分享解法
+                    </Button></Tooltip>
+                    :
+                    <Typography type="body2">
+                        登录后，你可以选择让其他玩家看到你的解法！
+                    </Typography>
+                        }
+                    </div>
                 <p>{passedMsg}</p>
                 {starImg}
             </MessageDialog>
@@ -184,7 +198,7 @@ class DashBoard extends Component {
                 {gameoverMsg}
             </MessageDialog>
             <Grid container spacing={0} justify='center'>
-            <Grid item xs={12} sm={12} >
+            <Grid item xs={12} sm={12} id="control-button" >
                 <Button onClick={this.handleClick('welcomeOpen', true)}>提示</Button>
                 <Button onClick={this.initMap}>重置</Button>
                 <Button onClick={this.run}>运行</Button>
