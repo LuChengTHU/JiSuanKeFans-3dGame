@@ -401,6 +401,82 @@ class BackendTestCase(TestCase):
             
             # TODO: Add permission tests
 
+    def test_solution(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+        }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
+
+        # ---------- creating map ------------------
+        token = self.fetch_token({'email': 'test@test.org', 'password' : 'test'}).json()['token']
+
+        map = {
+            "init_ground_boxes": [0,0,0],
+            "title": "imgod-map",
+            "init_ground_colors": [0,1],
+            "init_pos": [0, 1],
+            "init_hand_boxes": [0, 0],
+            "init_AI_infos": [{'id': 'first', 'pos': [0, 0], 'dir': 16}, {'id': 'second', 'pos': [1, 0], 'dir': 17}],
+            "final_hand_boxes": [1, 1],
+            "final_ground_colors": [1],
+            "final_ground_boxes": [],
+            "final_pos": [0, 1],
+            "n_blockly": 10,
+            "n_max_hand_boxes": 10,
+            "instr_set": [True, True, False],
+            "height": 10,
+            "width": 10,
+            "failed_msg": "failed!",
+            "passed_msg": "passed!",
+            "shared": True
+            }
+
+        response = self.create_map(map, token)
+        map_id = response.data['map_id']
+        
+
+        solution = \
+            {'shared': False, 'code': 'haha', 'map': map_id, 'stars': 2}
+        # test create solution
+        response = self.client.post(reverse('api:solution_list'),
+            data={'solution':solution},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.status_code, 201)
+
+        sol_id = response.data['sol_id']
+
+        # test get solution
+        response = self.client.get(reverse('api:solution', kwargs={'sol_id':sol_id}))
+        self.assertEqual(response.status_code, 403)
+
+        '''
+        response = self.client.get(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            HTTP_AUTHORIZATION='Token' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        solution_ret = response.data['solution']
+        self.assertEqual(solution_ret['map']['id'], map_id)
+        self.assertEqual(solution_ret['user']['id'], uid)
+        self.assertEqual(solution_ret['shared'], solution['shared'])
+        self.assertEqual(solution_ret['code'], solution['code'])
+        self.assertEqual(solution_ret['stars'], solution['stars'])
+        '''
+
+        solution['stars'] = 3
+        solution['code'] = 'afae'
+
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            data={'solution': solution},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+
     def test_margins(self):
         from .views import with_record_fetch, with_pagination
         from .models import User
