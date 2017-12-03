@@ -30,12 +30,12 @@ export default class EditorGameContainer extends Component {
 
     createMap(height, width)
     {
-    	const bs = [];
-		for(let i = 0; i < height; ++i)
-			for(let j = 0; j < width; ++j)
-				bs.push(<MapBlock x={i} z={j}/>);
-		this.setState({mapBlocks: bs, monsters: [], height: height, width: width});
-	}
+        const bs = [];
+        for(let i = 0; i < height; ++i)
+            for(let j = 0; j < width; ++j)
+                bs.push(<MapBlock x={i} z={j}/>);
+        this.setState({mapBlocks: bs, monsters: [], height: height, width: width});
+    }
 	
 	createPlayer(x, z)
 	{
