@@ -122,6 +122,8 @@ export default class Game {
                 }
                 catch(e)
                 {
+					if(e.message === 'GameFinished' || e.message === 'GameFailedLoop' || e.message === 'GameFailed' || e.message === 'Player Dead')
+						throw e;
                     // ignore ai errors
                     return undefined;
                 }

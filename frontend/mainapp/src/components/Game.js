@@ -95,6 +95,19 @@ export default class Game extends Component {
                         resourceId="grassImage"
                     />
                 </meshPhongMaterial>
+                <texture
+                    resourceId="backgroundImage"
+                    url={ require( '../assets/background.jpg' ) }
+                    anisotropy={ 16 }
+                />
+                <meshPhongMaterial
+                    resourceId="backgroundTexture"
+                    side={ DoubleSide }
+                >
+                    <textureResource
+                        resourceId="backgroundImage"
+                    />
+                </meshPhongMaterial>
             </resources>
             <scene ref={val => { this.sceneRef = val; }}>
                 <perspectiveCamera
@@ -123,6 +136,21 @@ export default class Game extends Component {
                     rotation={playerRotation}
                     playerMesh = {knightMesh}
                 />
+				<group
+					position={ new Vector3(0, -10, 0) }
+                    rotation={ new Euler(-Math.PI / 12, 0, Math.PI / 12) }
+				>
+					<mesh>
+						  <boxGeometry
+							width={100}
+							height={0.1}
+							depth={100}
+						  />
+						<materialResource
+							resourceId="backgroundTexture"
+						/>
+					</mesh>
+				</group>
             </scene>
         </React3>;
     }
