@@ -477,6 +477,37 @@ class BackendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['res_code'], 1)
 
+
+        # test solution list
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'true'},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(len(response.data['list']), 1)
+        self.assertEqual(response.data['has_prev'], False)
+        self.assertEqual(response.data['has_next'], False)
+
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'false', 'user': uid,
+            'map': map_id})
+        self.assertEqual(response.status_code, 404)
+
+        solution['shared'] = True
+        response = self.client.put(reverse('api:solution', kwargs={'sol_id':sol_id}),
+            data={'solution': solution},
+            HTTP_AUTHORIZATION='Token ' + token
+            )
+        
+        response = self.client.get(reverse('api:solution_list'), data={'self': 'false', 'user': uid,
+            'map': map_id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(len(response.data['list']), 1)
+        self.assertEqual(response.data['has_prev'], False)
+        self.assertEqual(response.data['has_next'], False)
+
+
+
+
     def test_margins(self):
         from .views import with_record_fetch, with_pagination
         from .models import User
