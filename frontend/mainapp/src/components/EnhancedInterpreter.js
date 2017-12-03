@@ -96,11 +96,11 @@ export default class EnhancedInterpreter {
     }
     step = () => {
         if(this.stepsAllowed <= 0)
-		{
+        {
             window.blocklyCallback = () => {/* clear callback */};
             window.blocklyShouldRun = false;
             throw new Error('GameFailedLoop');
-		}
+        }
         this.stepsAllowed--;
         if(!this.myInterpreter.step())
         {

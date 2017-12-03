@@ -29,41 +29,41 @@ export default class EditorGameContainer extends Component {
     }
 
     createMap(height, width)
-	{
-		const bs = [];
-		for(let i = 0; i < height; ++i)
-			for(let j = 0; j < width; ++j)
-				bs.push(<MapBlock x={i} z={j}/>);
-		this.setState({mapBlocks: bs, monsters: [], height: height, width: width});
-	}
-	
-	createPlayer(x, z)
-	{
-		this.setState(
-			{
-				playerPosition : new Vector3(x, 0, z),
-				playerTargetPosition : new Vector3(x, 0, z),
-				playerRotation : new Euler(0, -Math.PI / 2, 0),
-			}
-		);
-	}
-	
-	setPlayerDirection(x, z)
-	{
-		this.setState(
-			{	
+    {
+        const bs = [];
+        for(let i = 0; i < height; ++i)
+            for(let j = 0; j < width; ++j)
+                bs.push(<MapBlock x={i} z={j}/>);
+        this.setState({mapBlocks: bs, monsters: [], height: height, width: width});
+    }
+    
+    createPlayer(x, z)
+    {
+        this.setState(
+            {
+                playerPosition : new Vector3(x, 0, z),
+                playerTargetPosition : new Vector3(x, 0, z),
+                playerRotation : new Euler(0, -Math.PI / 2, 0),
+            }
+        );
+    }
+    
+    setPlayerDirection(x, z)
+    {
+        this.setState(
+            {    
                 playerDirection : new Vector3(x, 0, z),
-			}
-		);
+            }
+        );
     }
 
     addMonster(id, x, z, maxHp)
-	{
-		if(!this.state.monsterGeometry || !this.state.monsterMaterial)
-		{
-			return;
-		}
-	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
+    {
+        if(!this.state.monsterGeometry || !this.state.monsterMaterial)
+        {
+            return;
+        }
+        const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
         mesh.scale.set(0.1, 0.1, 0.1);
         const mixer = new THREE.AnimationMixer(mesh);
         const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
@@ -75,25 +75,25 @@ export default class EditorGameContainer extends Component {
             action.play();
         });
 
-		this.setState((prevState/*, props*/) => {
-			const ms = prevState.monsters.slice(0);
-			if(id >= ms.length)
-				ms.length = id + 1;
-			ms[id] =
-			{
-				position: new Vector3(x, 0.3, z),
-				direction: new Vector3(1, 0, 0),
-				rotation: new Euler(),
-				maxHp: maxHp,
-				hp: maxHp,
+        this.setState((prevState/*, props*/) => {
+            const ms = prevState.monsters.slice(0);
+            if(id >= ms.length)
+                ms.length = id + 1;
+            ms[id] =
+            {
+                position: new Vector3(x, 0.3, z),
+                direction: new Vector3(1, 0, 0),
+                rotation: new Euler(),
+                maxHp: maxHp,
+                hp: maxHp,
                 mesh: mesh,
                 mixer: mixer,
                 actions: actions,
                 currentAction: attackAction
-			};
-			return {monsters: ms};
-		});
-	}
+            };
+            return {monsters: ms};
+        });
+    }
     
     setWeight = ( action, weight ) => {
         action.enabled = true;
@@ -102,35 +102,35 @@ export default class EditorGameContainer extends Component {
     };
 
     setTargetPos(x, z)
-	{
-		if(x)
-			this.setState({targetPosition: new Vector3(x, 0.05, z)});
-		else
-			this.setState({targetPosition: null});
+    {
+        if(x)
+            this.setState({targetPosition: new Vector3(x, 0.05, z)});
+        else
+            this.setState({targetPosition: null});
     }
     
-	outerHeight = (el) => {
-		if (typeof(el) === 'undefined' || el === null) {
-			return 0;
-		}
-		var height = el.offsetHeight;
-		var style = getComputedStyle(el);
-	  
-		height += parseInt(style.marginTop) + parseInt(style.marginBottom);
-		return height;
-	  }
+    outerHeight = (el) => {
+        if (typeof(el) === 'undefined' || el === null) {
+            return 0;
+        }
+        var height = el.offsetHeight;
+        var style = getComputedStyle(el);
+      
+        height += parseInt(style.marginTop) + parseInt(style.marginBottom);
+        return height;
+      }
 
     render() {
 
         const divObj = window.document.getElementById('editorGameContainer');
-		const navbarObj = window.document.getElementById('navbar');
+        const navbarObj = window.document.getElementById('navbar');
         let width = 0;
         let height = 0;
         if(divObj)
         {
             width = divObj.clientWidth;
             // height = window.innerHeight * .8;
-			height = window.innerHeight - this.outerHeight(navbarObj) - 5;
+            height = window.innerHeight - this.outerHeight(navbarObj) - 5;
         }
 
         const {
@@ -267,7 +267,7 @@ export default class EditorGameContainer extends Component {
 
 
         if(typeof(this.props.onLoaded) !== 'undefined')
-			this.props.onLoaded();
+            this.props.onLoaded();
     }
     
     componentWillUnmount() {

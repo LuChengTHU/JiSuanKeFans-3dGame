@@ -77,11 +77,11 @@ class DashBoard extends Component {
     }
     initMap = () => 
     {
-		window.blocklyCallback = () => {
+        window.blocklyCallback = () => {
             // Remove any callback before start playing
         };
-		window.blocklyShouldRun = false;
-		window.animationShouldStop = true;
+        window.blocklyShouldRun = false;
+        window.animationShouldStop = true;
         Logic.gameSetMap(window.map);
         this.setState({gameState: "ready"});
         this.blocklyContainer.highlightBlock('');
@@ -91,8 +91,8 @@ class DashBoard extends Component {
         window.Game.gameInit();
         this.setState({gameState: "stepping"});
         this.enhancedInterpreter.loadProgram(this.blocklyContainer.getCode());
-		window.blocklyCallback = this.enhancedInterpreter.step;
-		window.blocklyShouldRun = true;
+        window.blocklyCallback = this.enhancedInterpreter.step;
+        window.blocklyShouldRun = true;
     }
     render()
     {
