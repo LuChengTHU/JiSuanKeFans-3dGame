@@ -295,10 +295,6 @@ class MapListView(APIView):
 
     @with_res_code
     def post(self, request):
-        # authentication required
-        if request.auth is None:
-            return Response({}, status=status.HTTP_401_UNAUTHORIZED), 2
-
         map = Map()
         map.author = request.user
         try:

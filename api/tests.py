@@ -288,6 +288,22 @@ class BackendTestCase(TestCase):
             HTTP_AUTHORIZATION='Token ' + token)
         self.assertEqual(response.status_code, 200)
 
+        # some margin tests
+        response = self.client.get(reverse('api:map_list'),
+            data={'self': 'true'})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['res_code'], 0)
+
+        response = self.client.get(reverse('api:map_list'),
+            data={'self': 'true'},
+            HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['res_code'], 1)
+
+        response = self.create_map({}, token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['res_code'], 2)
+
         # delete map
         response = self.client.delete(reverse('api:map', kwargs={'map_id' : mid}),
             HTTP_AUTHORIZATION='Token ' + token)
@@ -295,6 +311,7 @@ class BackendTestCase(TestCase):
 
         response = self.client.get(reverse('api:map_list'))
         self.assertEqual(response.status_code, 404)
+       
     
     def test_map_stage_field(self):
         new_user = {
@@ -345,7 +362,7 @@ class BackendTestCase(TestCase):
             self.assertEqual(response.status_code, 201)
             self.assertEqual(response.json()['res_code'], 1)
             self.assertGreater(Map.objects.filter(id=mid).count(), 0, 'Map create failed!')
-        
+
     def test_get_stage(self):
         new_user = {
             'email' : 'test@test.org',
