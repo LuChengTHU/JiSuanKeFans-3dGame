@@ -92,14 +92,21 @@ class LoginFormDialog extends React.Component {
             }
 
         });
-    e.preventDefault();
-  };
+        e.preventDefault();
+    };
 
   handleRequestForget = (e) => {
     const payload={
         "email":this.state.email
     }
-    axios.post('forget/', payload)
+    axios.post('forget/', payload).then((response) => {
+        if(response.data.res_code === 1)
+            window.alert("已经申请找回密码，请查收邮件！");
+        else
+            window.alert("发生错误，请稍后重试！");
+    }).catch(() => {
+        window.alert("发生错误，请稍后重试！");
+    });
 
     e.preventDefault();
   }
