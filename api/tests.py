@@ -504,8 +504,37 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(response.data['list']), 1)
         self.assertEqual(response.data['has_prev'], False)
         self.assertEqual(response.data['has_next'], False)
+    
+    def test_forget(self):
+        new_user = {
+            'email' : 'test@test.org',
+            'username' : 'test_user',
+            'password' : 'test'
+        }
+        response, c_date = self.create_user(new_user)
+        
+        uid = response.json()['user_id']
 
+        # forget the password
+        response = self.client.post(reverse('api:forget'), data={'email':'test@test.org'})
+        self.assertEqual(response.data['res_code'], 1)
+        self.assertEqual(response.status_code, 200)
 
+        # password has been changed
+        response = self.fetch_token({'email': 'test@test.org', 'password' : 'test'})
+        self.assertEqual(response.data['res_code'], 2)
+        self.assertEqual(response.status_code, 400)
+
+        # some margin tests
+        response = self.client.post(reverse('api:forget'), data={'email': 'haha@test.org'})
+        self.assertEqual(response.data['res_code'], 0)
+        self.assertEqual(response.status_code, 404)
+        
+        response = self.client.post(reverse('api:forget'), data={'mail': 'test@test.org'})
+        self.assertEqual(response.data['res_code'], 0)
+        self.assertEqual(response.status_code, 404)
+
+       
 
 
     def test_margins(self):
