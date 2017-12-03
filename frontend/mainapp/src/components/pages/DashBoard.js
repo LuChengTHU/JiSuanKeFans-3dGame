@@ -221,10 +221,13 @@ class DashBoard extends Component {
                                     if(response && response.data && response.data.res_code === 1) {
                                         this.setState({ map: response.data.map });
                                         this.initMap();
-                                        } else {
-                                            // TODO: more friendly way
+                                        } else if (response && response.data && response.data.res_code === -1) {
                                             let trela = window.alert;
                                             trela('没有权限！');
+                                            this.props.history.push('/');
+                                        } else {
+                                            let trela = window.alert;
+                                            trela('位置错误！');
                                             this.props.history.push('/');
                                         }
                                 });
