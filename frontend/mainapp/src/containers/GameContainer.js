@@ -118,7 +118,16 @@ export default class GameContainer extends Component {
 			window.setTimeout(() => this.addMonster(id, x, z, maxHp), 1000);
 			return;
 		}
-	    const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial)
+		let mesh;
+		try
+		{
+			mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial);
+		}
+		catch(e)
+		{
+			window.setTimeout(() => this.addMonster(id, x, z, maxHp), 1000);
+			return;
+		}
         mesh.scale.set(0.1, 0.1, 0.1);
         const mixer = new THREE.AnimationMixer(mesh);
         const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
