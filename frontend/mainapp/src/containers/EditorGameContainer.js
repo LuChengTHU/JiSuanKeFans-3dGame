@@ -29,8 +29,8 @@ export default class EditorGameContainer extends Component {
     }
 
     createMap(height, width)
-	{
-		const bs = [];
+    {
+    	const bs = [];
 		for(let i = 0; i < height; ++i)
 			for(let j = 0; j < width; ++j)
 				bs.push(<MapBlock x={i} z={j}/>);
@@ -181,7 +181,7 @@ export default class EditorGameContainer extends Component {
 
         this.refs.container.addEventListener('mousedown', this.onMouseDown, false);
         const divObj = window.document.getElementById('editorGameContainer');
-		const navbarObj = window.document.getElementById('navbar');
+        const navbarObj = window.document.getElementById('navbar');
         const screenWidth = divObj.clientWidth;
         const screenHeight = window.innerHeight - this.outerHeight(navbarObj) - 5;
         // const screenHeight = window.innerHeight * .8;
@@ -339,7 +339,7 @@ export default class EditorGameContainer extends Component {
         document.removeEventListener('mousemove', this.onMouseMove, false);
         
         const divObj = window.document.getElementById('editorGameContainer');
-		const navbarObj = window.document.getElementById('navbar');
+        const navbarObj = window.document.getElementById('navbar');
         if(!divObj)
         {
             return;
