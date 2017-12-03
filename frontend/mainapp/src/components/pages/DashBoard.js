@@ -224,11 +224,11 @@ class DashBoard extends Component {
                                         } else if (response && response.data && response.data.res_code === -1) {
                                             let trela = window.alert;
                                             trela('没有权限！');
-                                            this.props.history.push('/');
+                                            this.props.history.go(-1);
                                         } else {
                                             let trela = window.alert;
                                             trela('未知错误！');
-                                            this.props.history.push('/');
+                                            this.props.history.go(-1);
                                         }
                                 });
 
