@@ -558,6 +558,7 @@ export default class GameContainer extends Component {
 			window.blocklyCallback();
 	};
 	outerHeight = (el) => {
+		if (typeof(el) === 'undefined' || el === null) return 0;
 		var height = el.offsetHeight;
 		var style = getComputedStyle(el);
 	  

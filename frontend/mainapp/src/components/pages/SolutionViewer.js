@@ -19,8 +19,10 @@ const SolutionViewer = createReactClass({
             <Grid container spacing={25} justify='center'>
             <Grid item xs={12} sm={6} >
             <div id={'gameContainer'}>
+            <div id={'control-button'}>
             <Button onClick={this.resetGame}>重置</Button>
             <Button onClick={this.run}>运行</Button>
+            </div>
             <GameContainer gameState={this.state.gameState} gameSetState={()=>{/* Initialize to avoid error */}}
             reportHeight={(h)=>{this.blocklyContainer.resize(h)}}/></div>
             </Grid>
