@@ -151,7 +151,7 @@ const MapEditor = createReactClass({
                             {value: "run", label: "run"},
                             {value: "suicide", label: "suicide"}
                         ]}
-                        onChange={value => this.setState({aiName: value})}
+                        onChange={value => this.setState({aiName: value.value})}
                         value={this.state.aiName}
                     />
                 </div>
