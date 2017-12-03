@@ -46,40 +46,40 @@ export default class EditorGame extends Component {
             mapMesh
         } = this.props;
 
-		const ms = [];
-		const mbar = [];
-		for(let i = 0; i < monsters.length; ++i)
-			if(monsters[i].hp <= 0)
-			{
-				ms.push(null);
+        const ms = [];
+        const mbar = [];
+        for(let i = 0; i < monsters.length; ++i)
+            if(monsters[i].hp <= 0)
+            {
+                ms.push(null);
                 mbar.push(null);
-			}
-			else
-			{
-				ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation} monsterMesh={monsters[i].mesh}/>);
-				mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp}/>);
-			}
-		
-		let target = null;
-		if(targetPosition)
-		{
-			target = <group
-				position={ targetPosition }
-			>
-				<mesh>
+            }
+            else
+            {
+                ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation} monsterMesh={monsters[i].mesh}/>);
+                mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp}/>);
+            }
+        
+        let target = null;
+        if(targetPosition)
+        {
+            target = <group
+                position={ targetPosition }
+            >
+                <mesh>
                     <boxGeometry
                         width={1}
                         height={0.1}
                         depth={1}
                     />
-					<meshLambertMaterial
-						color={0xffff00}
-					/>
-				</mesh>
-			</group>;
-		}
+                    <meshLambertMaterial
+                        color={0xffff00}
+                    />
+                </mesh>
+            </group>;
+        }
 
-		return <React3
+        return <React3
             mainCamera="camera"
             width={ width }
             height={ height }
@@ -126,16 +126,16 @@ export default class EditorGame extends Component {
                 <ambientLight
                     color={ 0xdddddd }
                 />
-				{ mapBlocks }
-				<Bar
-					position = {playerPosition}
-					curValue = {playerHp}
-					maxValue = {playerMaxHp}
-				/>
-				{ ms }
-				{mbar}
-				{target}
-				<Player
+                { mapBlocks }
+                <Bar
+                    position = {playerPosition}
+                    curValue = {playerHp}
+                    maxValue = {playerMaxHp}
+                />
+                { ms }
+                {mbar}
+                {target}
+                <Player
                     position = {playerPosition}
                     rotation = {playerRotation}
                     playerMesh = {knightMesh}

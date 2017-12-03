@@ -80,7 +80,7 @@ class App extends Component {
                     user={this.state.user} {...props}/>}/>
                 <Route exact path="/allmaps/" component={(props) => <StageGallery
                     user={this.state.user} {...props}/>}/>
-				<Route exact path="/stages/" component={(props) => <StageGallery
+                <Route exact path="/stages/" component={(props) => <StageGallery
                          user={this.state.user} author_id={1} {...props}/>}/>
                 <PrivateRoute exact path="/info/" component={InfoModify}/>
                 {this.state.user ?

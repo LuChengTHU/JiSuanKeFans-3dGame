@@ -13,17 +13,17 @@ export default class Player extends Component {
         const {
             position, rotation
         } = this.props;
-		
-		this.group = <group ref={
+        
+        this.group = <group ref={
                 val => {
                     this.groupRef = val;
                 }
             }
-			position={ position }
-			rotation={ rotation }
-		>
+            position={ position }
+            rotation={ rotation }
+        >
 
-		</group>;
+        </group>;
 
         return this.group;
 
