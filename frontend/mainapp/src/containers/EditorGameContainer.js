@@ -62,7 +62,7 @@ export default class EditorGameContainer extends Component {
         let mesh;
         try
         {
-            const mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial);
+            mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial);
         }
         catch(e)
         {
