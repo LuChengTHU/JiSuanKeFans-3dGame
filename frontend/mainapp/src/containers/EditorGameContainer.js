@@ -62,7 +62,7 @@ export default class EditorGameContainer extends Component {
         let mesh;
         try
         {
-            mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial);
+            mesh = new THREE.Mesh(this.state.thinpadGeometry, new THREE.MeshFaceMaterial(this.state.thinpadMaterial));
         }
         catch(e)
         {
@@ -70,15 +70,15 @@ export default class EditorGameContainer extends Component {
             return;
         }
         mesh.scale.set(0.1, 0.1, 0.1);
-        const mixer = new THREE.AnimationMixer(mesh);
-        const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
-        const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
-        this.setWeight(moveAction, 0);
-        this.setWeight(attackAction, 1);
-        const actions = [moveAction, attackAction];
-        actions.forEach(function (action) {
-            action.play();
-        });
+        // const mixer = new THREE.AnimationMixer(mesh);
+        // const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
+        // const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
+        // this.setWeight(moveAction, 0);
+        // this.setWeight(attackAction, 1);
+        // const actions = [moveAction, attackAction];
+        // actions.forEach(function (action) {
+        //     action.play();
+        // });
 
         this.setState((prevState/*, props*/) => {
             const ms = prevState.monsters.slice(0);
@@ -92,9 +92,9 @@ export default class EditorGameContainer extends Component {
                 maxHp: maxHp,
                 hp: maxHp,
                 mesh: mesh,
-                mixer: mixer,
-                actions: actions,
-                currentAction: attackAction
+                // mixer: mixer,
+                // actions: actions,
+                // currentAction: attackAction
             };
             return {monsters: ms};
         });
@@ -149,7 +149,8 @@ export default class EditorGameContainer extends Component {
             
             knightMesh,
             monsters,
-            mapMesh
+            mapMesh,
+            lssMesh
         } = this.state;
         
         // Pass the data <Game /> needs to render. Note we don't show the game
@@ -157,7 +158,7 @@ export default class EditorGameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { this.state.monsterGeometry&&this.state.monsterMaterial&&knightMesh&&mapMesh ? <EditorGame ref={val => { this.gameRef = val; }}
+                { this.state.monsterGeometry&&this.state.monsterMaterial&&knightMesh&&mapMesh&&lssMesh ? <EditorGame ref={val => { this.gameRef = val; }}
                     width={ width }
                     height={ height }
                     camera={ camera }
@@ -168,6 +169,7 @@ export default class EditorGameContainer extends Component {
                     knightMesh={ knightMesh }
                     mapMesh={mapMesh}
                     monsters={ monsters }
+                    lssMesh={ lssMesh }
                 /> : 'Loading' }
             </div>
         </div>;
@@ -269,6 +271,39 @@ export default class EditorGameContainer extends Component {
 
                 this.setState({
                     mapMesh: mapMesh
+                });
+            });
+
+        const lssLoader = new THREE.JSONLoader();
+        lssLoader.load(`${process.env.PUBLIC_URL}/assets/lss.json`,
+            (geometry, materials) => {
+                for(let i = 0; i < materials.length; i++) {
+                    materials[i].emissive.set(0x101010);
+                    materials[i].skinning = true;
+                    materials[i].morphTargets = true;
+                }
+                const lssMesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+                lssMesh.scale.set(0.5, 0.5, 0.5);
+
+                this.setState({
+                    lssMesh: lssMesh
+                });
+            });
+
+        const thinpadLoader = new THREE.JSONLoader();
+        thinpadLoader.load(`${process.env.PUBLIC_URL}/assets/thinpad.json`,
+            (geometry, materials) => {
+                for(let i = 0; i < materials.length; i++) {
+                    materials[i].emissive.set(0x101010);
+                    materials[i].skinning = true;
+                    materials[i].morphTargets = true;
+    
+                }
+
+                this.setState({
+                    thinpadGeometry: geometry,
+                    thinpadMaterial: materials,
+                    thinpadReady: true
                 });
             });
 

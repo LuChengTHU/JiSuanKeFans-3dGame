@@ -43,7 +43,8 @@ export default class EditorGame extends Component {
             
             targetPosition, 
             knightMesh,
-            mapMesh
+            mapMesh,
+            lssMesh
         } = this.props;
 
         const ms = [];
@@ -57,26 +58,18 @@ export default class EditorGame extends Component {
             else
             {
                 ms.push(<Monster position={monsters[i].position} rotation={monsters[i].rotation} monsterMesh={monsters[i].mesh}/>);
-                mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp}/>);
+                mbar.push(<Bar position={monsters[i].position} curValue={monsters[i].hp} maxValue={monsters[i].maxHp} isThinpad={true}/>);
             }
         
         let target = null;
         if(targetPosition)
         {
-            target = <group
-                position={ targetPosition }
-            >
-                <mesh>
-                    <boxGeometry
-                        width={1}
-                        height={0.1}
-                        depth={1}
-                    />
-                    <meshLambertMaterial
-                        color={0xffff00}
-                    />
-                </mesh>
-            </group>;
+            target =
+            <Player
+                position = { new Vector3(targetPosition.x, targetPosition.y, targetPosition.z) }
+                rotation = { new Euler(0, Math.PI, 0) }
+                playerMesh = { lssMesh }
+            />
         }
 
         return <React3
@@ -124,7 +117,7 @@ export default class EditorGame extends Component {
                     rotation={ camera.rotation.clone() }
                 />
                 <ambientLight
-                    color={ 0xdddddd }
+                    color={ 0xffffff }
                 />
                 { mapBlocks }
                 <Bar
