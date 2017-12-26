@@ -49,10 +49,11 @@ export default class GameContainer extends Component {
         this.state = {
             playerPosition: new Vector3( 0, 0, 0 ),
             playerRotation: new Euler( 0, -Math.PI / 2, 0 ),
-            cameraPosition: new THREE.Vector3( -2, 5.5, -2 ),
+            cameraPosition: new THREE.Vector3( -2, 4.5, -2 ),
             lookAt: new THREE.Vector3( 0, 0, 0 ),
             monsters: [],
-            monsterReady: false
+            monsterReady: false,
+            thinpadReady: false
         };
 
         this.createMap = this.createMap.bind(this);
@@ -106,14 +107,14 @@ export default class GameContainer extends Component {
     setTargetPos(x, z)
     {
         if(x)
-            this.setState({targetPosition: new Vector3(x, 0.05, z)});
+            this.setState({targetPosition: new Vector3(x, 0, z)});
         else
             this.setState({targetPosition: null});
     }
     
     addMonster(id, x, z, maxHp)
     {
-        if(!this.state.monsterReady)
+        if(!this.state.thinpadReady)
         {
             window.setTimeout(() => this.addMonster(id, x, z, maxHp), 1000);
             return;
@@ -121,14 +122,16 @@ export default class GameContainer extends Component {
         let mesh;
         try
         {
-            mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterMaterial);
+            // mesh = new THREE.SkinnedMesh(this.state.monsterGeometry, this.state.monsterGeometry);
+            mesh = new THREE.Mesh(this.state.thinpadGeometry, new THREE.MeshFaceMaterial(this.state.thinpadMaterial));
         }
         catch(e)
         {
             window.setTimeout(() => this.addMonster(id, x, z, maxHp), 1000);
             return;
         }
-        mesh.scale.set(0.1, 0.1, 0.1);
+        mesh.scale.set(0.13, 0.13, 0.13);
+        /*
         const mixer = new THREE.AnimationMixer(mesh);
         const moveAction = mixer.clipAction(mesh.geometry.animations[1]);
         const attackAction = mixer.clipAction(mesh.geometry.animations[0]);
@@ -138,6 +141,7 @@ export default class GameContainer extends Component {
         actions.forEach(function (action) {
             action.play();
         });
+        */
 
         this.setState((prevState/*, props*/) => {
             const ms = prevState.monsters.slice(0);
@@ -151,9 +155,9 @@ export default class GameContainer extends Component {
                 maxHp: maxHp,
                 hp: maxHp,
                 mesh: mesh,
-                mixer: mixer,
-                actions: actions,
-                currentAction: attackAction
+                //mixer: mixer,
+                //actions: actions,
+                //currentAction: attackAction
             };
             return {monsters: ms};
         });
@@ -451,6 +455,37 @@ export default class GameContainer extends Component {
                 });
             });
 
+        const lssLoader = new THREE.JSONLoader();
+        lssLoader.load(`${process.env.PUBLIC_URL}/assets/lss.json`,
+            (geometry, materials) => {
+                for(let i = 0; i < materials.length; i++) {
+                    materials[i].emissive.set(0x101010);
+                    materials[i].skinning = true;
+                    materials[i].morphTargets = true;
+                }
+                const lssMesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+                lssMesh.scale.set(0.5, 0.5, 0.5);
+
+                this.setState({
+                    lssMesh: lssMesh
+                });
+            });
+
+        const thinpadLoader = new THREE.JSONLoader();
+        thinpadLoader.load(`${process.env.PUBLIC_URL}/assets/thinpad.json`,
+            (geometry, materials) => {
+                for(let i = 0; i < materials.length; i++) {
+                    materials[i].emissive.set(0x101010);
+                    materials[i].skinning = true;
+                    materials[i].morphTargets = true;
+                }
+
+                this.setState({
+                    thinpadGeometry: geometry,
+                    thinpadMaterial: materials,
+                    thinpadReady: true
+                });
+            });
 
         if(typeof(this.props.onLoaded) !== 'undefined')
             this.props.onLoaded();
@@ -603,7 +638,7 @@ export default class GameContainer extends Component {
         const {
 
             cameraPosition, lookAt, playerPosition, playerRotation, mapBlocks, knightMesh, monsters, playerMaxHp, playerHp, targetPosition,
-            monsterGeometry, monsterMaterial, mapMesh
+            monsterGeometry, monsterMaterial, mapMesh, lssMesh
         } = this.state;
 
         // Pass the data <Game /> needs to render. Note we don't show the game
@@ -611,7 +646,7 @@ export default class GameContainer extends Component {
         // a loading  screen, or even a 3d scene without geometry in it
         return <div ref="container">
             <div>
-                { monsterGeometry&&monsterMaterial&&knightMesh&&mapMesh ? <Game
+                { monsterGeometry&&monsterMaterial&&knightMesh&&mapMesh&&lssMesh ? <Game
                     width={ width }
                     height={ height }
                     cameraPosition={ cameraPosition }
@@ -625,6 +660,7 @@ export default class GameContainer extends Component {
                     playerMaxHp={playerMaxHp}
                     targetPosition={targetPosition}
                     mapMesh={mapMesh}
+                    lssMesh={lssMesh}
                 /> : 'Loading' }
             </div>
         </div>;

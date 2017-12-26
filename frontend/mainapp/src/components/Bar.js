@@ -10,11 +10,15 @@ export default class Bar extends Component {
 
     render() {
         const {
-            position, curValue, maxValue
+            position, curValue, maxValue, isThinpad
         } = this.props;
         
+        let barPosition;
+        if(isThinpad) barPosition = new Vector3(position.x, 1, position.z);
+        else barPosition = new Vector3(position.x, 2, position.z);
+
         return <group
-            position={ new Vector3(position.x, 2, position.z) }
+            position={ barPosition }
             rotation={ this.rotation }
         >
             <mesh>

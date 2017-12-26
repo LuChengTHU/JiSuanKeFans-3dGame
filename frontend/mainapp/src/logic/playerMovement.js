@@ -162,9 +162,9 @@ export default function playerMovement( oldState/*, time*/ ) {
 
     const delta = state.clock.getDelta();
     state.mixer.update(delta);
-    for(let i = 0; i < state.monsters.length; i++) {
-        state.monsters[i].mixer.update(delta);
-    }
+    // for(let i = 0; i < state.monsters.length; i++) {
+    //     state.monsters[i].mixer.update(delta);
+    // }
 
 
     return state;
